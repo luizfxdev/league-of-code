@@ -1,62 +1,69 @@
 # Operadores em JavaScript ? LoL Edition
 
-## Exemplo Prático: Validação e Atualização de OS no cadastrar_OrdemServico.js
+## Exemplo Prático: Game Loop e Detecção de Combate
 
 ```javascript
 // Classe = Campeão (ES6)
-class OrdemServico {
+class Champion {
     // Atributos de instância = Stats do campeão
-    constructor(osId, veiculoId, kmRequisicao, dataCriacao) {
-        this.osId = osId;               // ID única (SummName)
-        this.veiculoId = veiculoId;     // Referência (team mate)
-        this.kmRequisicao = kmRequisicao;  // HP necessário
-        this.dataCriacao = dataCriacao;    // Timestamp do spawn
-        this.status = "ABERTA";         // Estado: Alive/Dead
+    constructor(nome, healthAtual, manaAtual, attackDamage, level) {
+        this.nome = nome;                   // "Garen", "Lux", "Ahri"
+        this.healthAtual = healthAtual;     // HP desta instância
+        this.manaAtual = manaAtual;         // Mana (varia)
+        this.attackDamage = attackDamage;   // AD (aumenta com itens)
+        this.level = level;                 // Level (1-18)
+        this.estaStunado = false;           // Estado: CC aplicado?
+        this.ultimaProntaEm = 0;            // Cooldown da ulti
     }
     
-    // Membro estático = Buff global
-    static KM_MAXIMO_POR_OS = 50_000;
-    static TAXA_PROCESSAMENTO = 0.12;
-    static STATUS_VALIDOS = ["ABERTA", "PROCESSANDO", "CONCLUIDA"];
+    // Membro estático = Buff global para TODOS os campeões
+    static VELOCIDADE_MOVIMENTO_BASE = 330;
+    static MANA_REGENERACAO_BASE = 5;
+    static DANO_MINION_BASE = 5;
 }
 
-// Validação antes do teamfight
-function podeProcessarOS(os, kmVeiculoAtual) {
-    // Guard 1: OS existe?
-    if (!os || typeof os !== "object") {
-        return false;  // Personagem não foi spawnado
+// Validação antes do engagement no game loop
+function podeAtacarAgora(campeao, alvo) {
+    // Guard 1: Campeão existe?
+    if (!campeao || typeof campeao !== "object") {
+        return false;  // Campeão não foi criado
     }
     
-    // Guard 2: KM é válido?
-    if (!kmRequisicao || kmRequisicao <= 0 || kmRequisicao > OrdemServico.KM_MAXIMO_POR_OS) {
-        return false;  // Parâmetro fora do range
+    // Guard 2: Mana é suficiente?
+    if (campeao.manaAtual <= 0) {
+        return false;  // Broke de mana ? não pode cashar habilidade
     }
     
-    // Guard 3: Status está OK?
-    if (!OrdemServico.STATUS_VALIDOS.includes(os.status)) {
-        return false;  // CC aplicado (status inválido)
+    // Guard 3: Alvo é válido e não tá morto?
+    if (!alvo || alvo.healthAtual <= 0) {
+        return false;  // Alvo morto ou null
     }
     
-    // Guard 4: Não vai exceder km total?
-    if ((kmVeiculoAtual + kmRequisicao) > 500_000_000) {
-        return false;  // Vai ficar oom
+    // Guard 4: Está CC'd (stunado)?
+    if (campeao.estaStunado) {
+        return false;  // CC aplicado, sem permissão de agir
     }
     
-    return true;  // Win condition
+    // Guard 5: Cooldown da ulti abaixou?
+    if (campeao.level < 6 && campeao.ultimaProntaEm > Date.now()) {
+        return false;  // Ulti ainda no cooldown
+    }
+    
+    return true;  // Win condition ? pode atacar!
 }
 
-// Modificar estado (mutação controlada)
-function executarOS(os, kmRequisicao) {
-    if (!podeProcessarOS(os, kmRequisicao)) {
-        alert("Não pode executar esta OS");
+// Executar ataque (mutação controlada)
+function executarAtaque(campeao, alvo) {
+    if (!podeAtacarAgora(campeao, alvo)) {
+        console.warn("Não pode atacar agora");
         return false;
     }
     
-    // Seguro para mutar agora
-    os.status = "PROCESSANDO";
-    os.kmExecutado = kmRequisicao;
-    os.dataExecucao = new Date();
+    // Seguro para alterar estado agora
+    campeao.manaAtual -= 50;  // Consome mana
+    alvo.healthAtual -= campeao.attackDamage;  // Aplica dano
     
+    console.log(`${campeao.nome} atacou ${alvo.nome}!`);
     return true;
 }
 ```
@@ -67,37 +74,43 @@ function executarOS(os, kmRequisicao) {
 
 | Operador | Significado | LoL | Exemplo |
 |----------|------------|-----|---------|
-| `==` | Igual (coerção) | Mesmo nível | `if (status == "ABERTA")` |
-| `===` | Estritamente igual | Mesmo nível + mesmo tipo | `if (status === "ABERTA")` |
-| `!=` | Diferente (coerção) | Inimigos | `if (status != "")` |
-| `!==` | Estritamente diferente | Inimigos (tipo importa) | `if (status !== "")` |
-| `>` | Maior que | Mais HP | `if (kmRequisicao > 100)` |
-| `<` | Menor que | Menos ouro | `if (kmRequisicao < 50_000)` |
-| `>=` | Maior ou igual | HP >= necessário | `if (idade >= 18)` |
-| `<=` | Menor ou igual | Mana <= cap | `if (nivel <= 30)` |
+| `==` | Igual (coerção) | Mesmo nível? | `if (level == 6)` ? cuidado com type coercion |
+| `===` | Estritamente igual | Mesmo nível + mesmo tipo | `if (level === 6)` |
+| `!=` | Diferente (coerção) | Campeões diferentes | `if (nome != "Garen")` |
+| `!==` | Estritamente diferente | Campeões diferentes (tipo importa) | `if (nome !== "Garen")` |
+| `>` | Maior que | Mais HP | `if (healthAtual > 100)` |
+| `<` | Menor que | Menos mana | `if (manaAtual < 50)` |
+| `>=` | Maior ou igual | HP >= necessário | `if (level >= 6)` ? ulti pronta |
+| `<=` | Menor ou igual | Mana <= cap | `if (cooldown <= 0)` ? ready |
 
-### Exemplo Comparativo: `==` vs `===`
+### Exemplo: `==` vs `===` (Trap comum)
 
 ```javascript
-// ? Evite ==, causa problemas
-console.log(0 == "0");        // true  ? Coerção tipo!
-console.log(false == 0);      // true  ? Inesperado
-console.log("" == null);      // false ? Confuso
+// ? Evite ==, JS faz coerção invisível
+console.log(0 == "0");        // true  ? JavaScript converteu "0" pra 0!
+console.log(false == 0);      // true  ? false virou 0!
+console.log("" == null);      // false ? Confuso mesmo
 
-// ? Use ===, sem coerção
-console.log(0 === "0");       // false ? Claro
-console.log(false === 0);     // false ? Esperado
+// ? Use ===, sem coerção ? explícito
+console.log(0 === "0");       // false ? Claro, tipos diferentes
+console.log(false === 0);     // false ? Esperado, bool != number
 console.log("" === null);     // false ? Óbvio
 
-// Validação real
-const status = "ATIVO";
+// Validação real em jogo
+const levelAtual = "6";  // Vindo de API, é string
 
-if (status == "ATIVO") {  // ?? Risco: coerção invisível
-    console.log("OK");
+if (levelAtual == 6) {      // ?? Risco: "6" == 6 é TRUE
+    console.log("Ulti pronta!");  // Pode quebrar se nivel for "5"
 }
 
-if (status === "ATIVO") {  // ? Seguro: sem surpresas
-    console.log("OK");
+if (levelAtual === 6) {     // ? Seguro: "6" === 6 é FALSE
+    console.log("Ulti pronta!");  // Só executa se realmente for número 6
+}
+
+// Comparação correta
+const level = parseInt(levelAtual);
+if (level === 6) {
+    console.log("Agora é seguro!");  // ?
 }
 ```
 
@@ -108,77 +121,83 @@ if (status === "ATIVO") {  // ? Seguro: sem surpresas
 | Operador | Significado | LoL | Quando Usar |
 |----------|------------|-----|------------|
 | `&&` | E (AND) | **Ambos** têm que estar certos | Validações em série |
-| `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas |
+| `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas, valores padrão |
 | `!` | NÃO (NOT) | Inverte condição | Negar estado |
 
-### AND (`&&`) ? Guard Clauses
+### AND (`&&`) ? Decisão de Engajamento
 
 ```javascript
-const podeAtacar = temMana && temVida && naoEmStun && temAlvo;
-//                 ^^^^^^^^  ^^^^^^^^  ^^^^^^^^^^^  ^^^^^^^^^
-//                 Tudo tem que ser TRUE
+const podeEngajar = temMana && estaVivo && !estaStunado && temAlvoVisivel;
+//                  ^^^^^^^^  ^^^^^^^^  ^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^
+//                  Tudo tem que ser TRUE para atacar
 
-if (podeAtacar) {
-    soltarUlt();  // Só executa se TUDO passar
+if (podeEngajar) {
+    executarCombo();  // Só executa se TUDO passar
 }
 ```
 
-**Analogia:** Você precisa estar vivo **E** ter mana **E** não estar stun. Se um for false, não ataca.
+**Analogia:** Você precisa estar vivo **E** ter mana **E** não estar CC'd **E** ver o inimigo. Se um falhar, sai do fight.
 
-**Short-circuit em JavaScript:**
+**Short-circuit em JavaScript (otimização):**
 ```javascript
-let veiculoId = null;
+const alvo = null;
 
 // Para na primeira condição false
-if (veiculoId && veiculoId > 0 && validarVeiculo(veiculoId)) {
-    console.log("Processando...");  // Nunca executa (veiculoId é null)
+if (alvo && alvo.healthAtual > 0 && calcularDistancia(alvo) < 550) {
+    console.log("Pode atacar...");  // Nunca executa (alvo é null)
 }
 
-// validarVeiculo() nem é chamado!
+// calcularDistancia() NUNCA é chamado! (short-circuit)
 ```
 
-### OR (`||`) ? Valores Padrão
+### OR (`||`) ? Valor Padrão (Fallback)
 
 ```javascript
-let nome = usuarioLogado || "Visitante";
-//          ^^^^^^^^^^^^^^   ^^^^^^^^^^^
-//          Usa este se existir, senão usa padrão
+// Tenta usar o primeiro; se não existir, usa o segundo
+let nomeChampion = inputUsuario || "Champion Padrão";
+//                 ^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^
+//                 Usa este se existir, senão usa fallback
 
 // Equivalente a:
-let nome;
-if (usuarioLogado) {
-    nome = usuarioLogado;
+let nomeChampion;
+if (inputUsuario) {
+    nomeChampion = inputUsuario;
 } else {
-    nome = "Visitante";
+    nomeChampion = "Champion Padrão";
 }
 ```
 
-**Analogia:** Usa o primeiro recurso disponível, se não houver, usa a reserva.
+**Analogia:** Vai pra lane de prioridade, se não tiver, vai pra outra.
 
 ```javascript
-// Validação com alternativas
-const statusPermitido = 
-    statusOS === "ATIVA" ||
-    statusOS === "PENDENTE" ||
-    statusOS === "EMERGENCIA";
+// Validação com múltiplas alternativas
+const podeEntrarNoFight = 
+    timeStatusGanho === "VENCENDO" ||
+    timeStatusGanho === "EQUILIBRADO" ||
+    temUltisProntas;
 
-if (statusPermitido) {
-    processarOS();  // Executa se alguma condição for true
+if (podeEntrarNoFight) {
+    engajar();  // Executa se alguma condição for true
 }
 ```
 
-### NOT (`!`) ? Negação
+### NOT (`!`) ? Negação de Estado
 
 ```javascript
-const podeUsar = !emManutencao;  // Inverte: true ? false, false ? true
+const podeRecuar = !estaEngajado;  // Inverte: true ? false, false ? true
 
-if (!temProblema) {
-    console.log("Tudo certo");  // Executa se temProblema for FALSE
+if (!estaStunado) {
+    console.log("Posso me mover!");  // Executa se estaStunado for FALSE
 }
 
-// Dupla negação (evitar)
-if (!!valor) {  // ?? Converte para boolean (não faça isso)
-    console.log("Tem valor");
+// ? Evite dupla negação (confunde)
+if (!!temVisao) {  // ?? Converte para boolean (desnecessário)
+    console.log("Tem visão");
+}
+
+// ? Melhor: use simples
+if (temVisao) {  // Já é boolean
+    console.log("Tem visão");
 }
 ```
 
@@ -189,79 +208,85 @@ if (!!valor) {  // ?? Converte para boolean (não faça isso)
 ### Classes = Campeões Únicos
 
 ```javascript
-class Veiculo {
-    constructor(placa, kmAtual, valor) {
-        this.placa = placa;          // Nome único do champ
-        this.kmAtual = kmAtual;      // HP desta instância
-        this.valorCustodia = valor;  // Gold deste champ
+class Champion {
+    constructor(nome, healthAtual, manaAtual, attackDamage) {
+        this.nome = nome;                   // "Garen", "Lux", "Ahri"
+        this.healthAtual = healthAtual;     // HP desta instância
+        this.manaAtual = manaAtual;         // Mana desta instância
+        this.attackDamage = attackDamage;   // AD deste champ
     }
 }
 
-const v1 = new Veiculo("ABC1234", 100_000, 50_000);
-const v2 = new Veiculo("XYZ9876", 250_000, 75_000);
+const garen = new Champion("Garen", 590, 0, 80);
+const lux = new Champion("Lux", 520, 380, 50);
 
-// v1 e v2 são instâncias DIFERENTES
-// cada uma tem seus próprios stats
-console.log(v1.placa);  // "ABC1234"
-console.log(v2.placa);  // "XYZ9876"
+// garen e lux são DIFERENTES
+// cada um tem seus próprios stats
+console.log(garen.nome);  // "Garen"
+console.log(lux.nome);    // "Lux"
 ```
 
-### Atributos = Stats do Campeão
+### Atributos = Stats da Instância
 
 ```javascript
-class Veiculo {
-    constructor(placa, kmAtual, valor) {
-        this.placa = placa;              // Identificador
-        this.kmAtual = kmAtual;          // Health
-        this.valorCustodia = valor;      // Armor
-        this.emManutencao = false;       // Flag: true/false
+class Champion {
+    constructor(nome, healthAtual, manaAtual, attackDamage) {
+        this.nome = nome;              // Identificador único
+        this.healthAtual = healthAtual;  // Health desta instância
+        this.manaAtual = manaAtual;    // Mana desta instância
+        this.attackDamage = attackDamage;  // AD (varia com itens)
+        this.estaVivo = true;          // Flag: true/false
     }
 }
 
-// Cada instância tem stats INDEPENDENTES
-v1.kmAtual = 150_000;
-v2.kmAtual = 200_000;
+// Cada Champion tem stats INDEPENDENTES
+garen.healthAtual = 590;
+lux.healthAtual = 520;  // Diferente de Garen!
 
-console.log(v1.kmAtual);  // 150_000
-console.log(v2.kmAtual);  // 200_000 (diferente!)
+console.log(garen.healthAtual);  // 590
+console.log(lux.healthAtual);    // 520 (diferente!)
 ```
 
-### Estáticos = Buff Global
+### Estáticos = Buff Global do Jogo
 
 ```javascript
-class Veiculo {
-    // Estático = Compartilhado por TODAS as instâncias
-    static KM_LIMITE_MANUTENCAO = 50_000;
-    static TAXA_OPERACAO = 0.15;
+class Champion {
+    // Estático = Compartilhado por TODOS os campeões
+    static VELOCIDADE_MOVIMENTO_BASE = 330;
+    static MANA_REGENERACAO_BASE = 5;
+    static DANO_MINION_BASE = 5;
     
-    constructor(placa, kmAtual) {
-        this.placa = placa;
-        this.kmAtual = kmAtual;
+    constructor(nome, healthAtual, manaAtual, attackDamage) {
+        this.nome = nome;
+        this.healthAtual = healthAtual;
+        this.manaAtual = manaAtual;
+        this.attackDamage = attackDamage;
     }
     
-    calcularCusto() {
-        // Usa membro estático (igual para todos)
-        return this.valorCustodia * Veiculo.TAXA_OPERACAO;
+    calcularDanoFinal() {
+        // Usa membro estático (igual para TODOS)
+        return this.attackDamage + Champion.DANO_MINION_BASE;
     }
 }
 
 // Acesso estático (não precisa de instância)
-console.log(Veiculo.KM_LIMITE_MANUTENCAO);  // 50_000 (para todos)
+console.log(Champion.VELOCIDADE_MOVIMENTO_BASE);  // 330 (para todos)
 
-// Alterar estático = afeta TODA classe
-Veiculo.TAXA_OPERACAO = 0.20;  // Alterou globalmente
+// Alterar estático = afeta TODO mundo
+Champion.DANO_MINION_BASE = 7;  // Patch que afeta TODOS
 
-const v1 = new Veiculo("ABC", 100_000);
-const v2 = new Veiculo("XYZ", 200_000);
+const garen = new Champion("Garen", 590, 0, 80);
+const lux = new Champion("Lux", 520, 380, 50);
 
-// Ambos usam a nova taxa
-console.log(v1.calcularCusto());  // Usa TAXA_OPERACAO 0.20
-console.log(v2.calcularCusto());  // Usa TAXA_OPERACAO 0.20
+// Ambos usam o novo dano base
+console.log(garen.calcularDanoFinal());  // 80 + 7 = 87
+console.log(lux.calcularDanoFinal());    // 50 + 7 = 57 (novo buff)
 ```
 
 **Analogia:**
-- **Atributo:** Garen tem 100 HP, Darius tem 120 HP
-- **Estático:** Ambos têm o mesmo cd de Flash ? é um buff do servidor, não do champ
+- **Atributo:** Garen tem 590 HP, Lux tem 520 HP ? stats únicos
+- **Estático:** Todos têm velocidade 330 ? é regra do jogo
+  - Mudar `DANO_MINION_BASE` de 5 pra 7 = patch que afeta TODO mundo simultaneamente
 
 ---
 
