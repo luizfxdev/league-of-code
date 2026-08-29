@@ -1,13 +1,13 @@
 # Operadores em PostgreSQL ? LoL Edition
 
-## Exemplo Pr·tico: Database de Game Server
+## Exemplo Pr√°tico: Database de Game Server
 
 ```sql
 -- Tabelas do jogo
 CREATE TABLE champions (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,            -- "Garen", "Lux"
-    health_base FLOAT NOT NULL,            -- HP base do campe„o
+    health_base FLOAT NOT NULL,            -- HP base do campe√£o
     mana_base FLOAT NOT NULL,              -- Mana base
     attack_damage FLOAT NOT NULL,          -- AD base
     armor_resist FLOAT NOT NULL,           -- Armor base
@@ -60,18 +60,18 @@ VALUES
 
 | Operador | Significado | LoL | Exemplo |
 |----------|------------|-----|---------|
-| `=` | Igual a | Mesmo nÌvel | `WHERE level = 6` |
-| `!=` ou `<>` | Diferente de | Campeıes diferentes | `WHERE champion_id != 1` |
+| `=` | Igual a | Mesmo n√≠vel | `WHERE level = 6` |
+| `!=` ou `<>` | Diferente de | Campe√µes diferentes | `WHERE champion_id != 1` |
 | `>` | Maior que | Mais HP | `WHERE health_current > 100` |
 | `<` | Menor que | Menos ouro | `WHERE gold < 1300` |
-| `>=` | Maior ou igual | HP >= necess·rio | `WHERE level >= 6` |
+| `>=` | Maior ou igual | HP >= necess√°rio | `WHERE level >= 6` |
 | `<=` | Menor ou igual | Mana <= cap | `WHERE experience <= 10000` |
-| `BETWEEN` | Intervalo | Range de nÌvel | `WHERE level BETWEEN 5 AND 9` |
-| `IN` | Um dos valores | M˙ltiplos status | `WHERE champion_id IN (1, 2, 3)` |
-| `LIKE` | Padr„o de texto | Buscar nome | `WHERE summoner_name LIKE '%King%'` |
+| `BETWEEN` | Intervalo | Range de n√≠vel | `WHERE level BETWEEN 5 AND 9` |
+| `IN` | Um dos valores | M√∫ltiplos status | `WHERE champion_id IN (1, 2, 3)` |
+| `LIKE` | Padr√£o de texto | Buscar nome | `WHERE summoner_name LIKE '%King%'` |
 | `IS NULL` | Nulo/Vazio | Sem valor | `WHERE champion_id IS NULL` |
 
-### Exemplos Pr·ticos:
+### Exemplos Pr√°ticos:
 
 ```sql
 -- Players com level >= 6 (ulti destravada)
@@ -79,12 +79,12 @@ SELECT summoner_name, champion_id, level
 FROM players
 WHERE level >= 6;
 
--- Players que est„o vivos
+-- Players que est√£o vivos
 SELECT summoner_name, health_current
 FROM players
 WHERE is_alive = true;
 
--- Players em estado especÌfico
+-- Players em estado espec√≠fico
 SELECT summoner_name
 FROM players
 WHERE champion_id IN (1, 2)  -- Garen ou Lux
@@ -104,18 +104,18 @@ WHERE summoner_name LIKE '%King%';
 
 ---
 
-## Operadores LÛgicos em SQL
+## Operadores L√≥gicos em SQL
 
 | Operador | Significado | LoL | Quando Usar |
 |----------|------------|-----|------------|
-| `AND` | E (AND) | **Ambos** tÍm que ser verdadeiro | M˙ltiplas condiÁıes |
+| `AND` | E (AND) | **Ambos** t√™m que ser verdadeiro | M√∫ltiplas condi√ß√µes |
 | `OR` | OU (OR) | **Um ou outro** vale | Alternativas |
-| `NOT` | N√O (NOT) | Inverte condiÁ„o | Negar |
+| `NOT` | N√ÉO (NOT) | Inverte condi√ß√£o | Negar |
 
-### AND ? ValidaÁıes em SÈrie
+### AND ? Valida√ß√µes em S√©rie
 
 ```sql
--- Players vivos AND com nÌvel alto AND Com ouro suficiente
+-- Players vivos AND com n√≠vel alto AND Com ouro suficiente
 SELECT summoner_name, level, gold
 FROM players
 WHERE is_alive = true 
@@ -125,21 +125,21 @@ AND is_stunned = false;
 -- Tudo tem que ser TRUE para aparecer na resultado
 ```
 
-**Analogia:** VocÍ precisa estar vivo **E** ter nÌvel 6 **E** ter ouro **E** n„o estar stunado. Se um falhar, n„o aparece.
+**Analogia:** Voc√™ precisa estar vivo **E** ter n√≠vel 6 **E** ter ouro **E** n√£o estar stunado. Se um falhar, n√£o aparece.
 
 ```sql
--- Exemplo: Players elegÌveis para teamfight
+-- Exemplo: Players eleg√≠veis para teamfight
 SELECT p.summoner_name, c.nome AS champion, p.level, p.health_current, p.mana_current
 FROM players p
 JOIN champions c ON p.champion_id = c.id
 WHERE p.is_alive = true                    -- Vivo
 AND p.level >= 5                           -- Level suficiente
-AND p.health_current > (c.health_base * 0.3)  -- Com HP razo·vel
+AND p.health_current > (c.health_base * 0.3)  -- Com HP razo√°vel
 AND p.mana_current > 50                    -- Com mana
 AND p.is_stunned = false;                  -- Sem CC
 ```
 
-### OR ? Alternativas Aceit·veis
+### OR ? Alternativas Aceit√°veis
 
 ```sql
 -- Qualquer player que seja Garen OU Lux OU Ahri
@@ -148,61 +148,61 @@ FROM players
 WHERE champion_id = 1  -- Garen
 OR champion_id = 2     -- Lux
 OR champion_id = 3;    -- Ahri
--- Se UMA condiÁ„o for TRUE, aparece no resultado
+-- Se UMA condi√ß√£o for TRUE, aparece no resultado
 ```
 
-**Analogia:** VocÍ ganha se destrÛi Nexo **OU** mata Baron **OU** destrui todas towers.
+**Analogia:** Voc√™ ganha se destr√≥i Nexo **OU** mata Baron **OU** destrui todas towers.
 
 ```sql
--- Players que entraram em matches RECENTEMENTE ou tÍm kills altas
+-- Players que entraram em matches RECENTEMENTE ou t√™m kills altas
 SELECT p.summoner_name, m.kills, m.match_date
 FROM players p
 LEFT JOIN matches m ON p.id = m.player_id
-WHERE m.match_date >= NOW() - INTERVAL '1 hour'  -- ⁄ltima hora
+WHERE m.match_date >= NOW() - INTERVAL '1 hour'  -- √öltima hora
 OR m.kills >= 5;                                   -- Ou com 5+ kills
 ```
 
-### NOT ? NegaÁ„o
+### NOT ? Nega√ß√£o
 
 ```sql
--- Players que N√O est„o stunados
+-- Players que N√ÉO est√£o stunados
 SELECT summoner_name
 FROM players
 WHERE NOT is_stunned;
 -- Equivalente a: WHERE is_stunned = false
 
--- Players que n„o s„o Garen
+-- Players que n√£o s√£o Garen
 SELECT summoner_name, champion_id
 FROM players
 WHERE NOT champion_id = 1;
 -- Equivalente a: WHERE champion_id != 1
 ```
 
-**Analogia:** … o oposto. Se `is_stunned` È true, `NOT is_stunned` È false. Se È false, `NOT` vira true.
+**Analogia:** √â o oposto. Se `is_stunned` √© true, `NOT is_stunned` √© false. Se √© false, `NOT` vira true.
 
 ---
 
-## JOINs ? CombinaÁ„o de Tabelas (Operador de Relacionamento)
+## JOINs ? Combina√ß√£o de Tabelas (Operador de Relacionamento)
 
 | Tipo | Significado | LoL | Uso |
 |------|------------|-----|-----|
-| `INNER JOIN` | Ambas existem | Jogador + Campe„o | Dados que existem nos dois lados |
-| `LEFT JOIN` | MantÈm esquerda | Todos players (com/sem match) | Todos do lado esquerdo |
-| `RIGHT JOIN` | MantÈm direita | Todos matches (com/sem player) | Todos do lado direito |
-| `FULL OUTER JOIN` | Ambos lados | Tudo que existe | CombinaÁ„o completa |
+| `INNER JOIN` | Ambas existem | Jogador + Campe√£o | Dados que existem nos dois lados |
+| `LEFT JOIN` | Mant√©m esquerda | Todos players (com/sem match) | Todos do lado esquerdo |
+| `RIGHT JOIN` | Mant√©m direita | Todos matches (com/sem player) | Todos do lado direito |
+| `FULL OUTER JOIN` | Ambos lados | Tudo que existe | Combina√ß√£o completa |
 
 ### INNER JOIN ? "E ambos existem"
 
 ```sql
--- Players E seus campeıes (sÛ quem tem campe„o atribuÌdo)
+-- Players E seus campe√µes (s√≥ quem tem campe√£o atribu√≠do)
 SELECT p.summoner_name, c.nome, p.level
 FROM players p
 INNER JOIN champions c ON p.champion_id = c.id;
 
--- Resultado: sÛ players que tÍm champion_id preenchido
+-- Resultado: s√≥ players que t√™m champion_id preenchido
 ```
 
-**Analogia:** SÛ mostra jogadores que tÍm campe„o selecionado. Se `champion_id` È NULL, n„o aparece.
+**Analogia:** S√≥ mostra jogadores que t√™m campe√£o selecionado. Se `champion_id` √© NULL, n√£o aparece.
 
 ### LEFT JOIN ? "Jogadores + seus matches (mesmo sem match)"
 
@@ -213,10 +213,10 @@ FROM players p
 LEFT JOIN matches m ON p.id = m.player_id
 ORDER BY m.match_date DESC;
 
--- Resultado: todos os players, mas se n„o tem match, as colunas de match ficam NULL
+-- Resultado: todos os players, mas se n√£o tem match, as colunas de match ficam NULL
 ```
 
-**Analogia:** Mostra todos os jogadores. Se n„o tem partida registrada, as colunas de match aparecem em branco.
+**Analogia:** Mostra todos os jogadores. Se n√£o tem partida registrada, as colunas de match aparecem em branco.
 
 ---
 
@@ -226,15 +226,15 @@ ORDER BY m.match_date DESC;
 |----------|------------|-----|---------|
 | `COUNT()` | Contar linhas | Quantos players | `COUNT(*)` |
 | `SUM()` | Somar valores | Total de kills | `SUM(kills)` |
-| `AVG()` | MÈdia | KDA mÈdio | `AVG(kills)` |
-| `MAX()` | M·ximo | Maior HP | `MAX(health_current)` |
-| `MIN()` | MÌnimo | Menor ouro | `MIN(gold)` |
+| `AVG()` | M√©dia | KDA m√©dio | `AVG(kills)` |
+| `MAX()` | M√°ximo | Maior HP | `MAX(health_current)` |
+| `MIN()` | M√≠nimo | Menor ouro | `MIN(gold)` |
 | `GROUP_CONCAT()` | Concatenar (MySQL) | Juntar nomes | `STRING_AGG()` em PostgreSQL |
 
-### Exemplos Pr·ticos:
+### Exemplos Pr√°ticos:
 
 ```sql
--- Quantos players est„o vivos agora?
+-- Quantos players est√£o vivos agora?
 SELECT COUNT(*) AS players_vivos
 FROM players
 WHERE is_alive = true;
@@ -251,7 +251,7 @@ LEFT JOIN matches m ON p.id = m.player_id
 GROUP BY p.id, p.summoner_name
 ORDER BY kills_total DESC;
 
--- Dano mÈdio por campe„o
+-- Dano m√©dio por campe√£o
 SELECT 
     c.nome,
     COUNT(m.id) AS matches_played,
@@ -264,7 +264,7 @@ GROUP BY c.id, c.nome
 HAVING COUNT(m.id) > 0
 ORDER BY damage_medio DESC;
 
--- Campe„o mais jogado
+-- Campe√£o mais jogado
 SELECT 
     c.nome,
     COUNT(p.id) AS times_picked
@@ -277,7 +277,7 @@ LIMIT 1;
 
 ---
 
-## WHERE vs HAVING ? DiferenÁa CrÌtica
+## WHERE vs HAVING ? Diferen√ßa Cr√≠tica
 
 | Comando | Usa | Quando | Exemplo |
 |---------|-----|--------|---------|
@@ -285,7 +285,7 @@ LIMIT 1;
 | `HAVING` | Filtro agregado | Depois de GROUP BY | `HAVING SUM(kills) > 10` |
 
 ```sql
--- ? Errado: n„o pode usar agregado em WHERE
+-- ? Errado: n√£o pode usar agregado em WHERE
 SELECT champion_id, SUM(kills)
 FROM matches m
 JOIN players p ON m.player_id = p.id
@@ -299,7 +299,7 @@ JOIN players p ON m.player_id = p.id
 GROUP BY champion_id
 HAVING SUM(kills) > 5;     -- ? Correto!
 
--- ? TambÈm certo: WHERE antes de GROUP BY
+-- ? Tamb√©m certo: WHERE antes de GROUP BY
 SELECT champion_id, SUM(kills) AS total_kills
 FROM matches m
 JOIN players p ON m.player_id = p.id
@@ -309,10 +309,10 @@ GROUP BY champion_id;
 
 ---
 
-## Boas Pr·ticas ? Query Otimizada
+## Boas Pr√°ticas ? Query Otimizada
 
 ```sql
--- ? Ruim: sem Ìndices, sem constraints
+-- ? Ruim: sem √≠ndices, sem constraints
 SELECT p.summoner_name, c.nome, m.kills
 FROM players p
 LEFT JOIN champions c ON p.champion_id = c.id
@@ -320,7 +320,7 @@ LEFT JOIN matches m ON p.id = m.player_id
 WHERE p.level > 5;
 -- Pode ser LENTO se tabelas crescerem
 
--- ? Bom: com Ìndices, com validaÁ„o
+-- ? Bom: com √≠ndices, com valida√ß√£o
 CREATE INDEX idx_players_level ON players(level);
 CREATE INDEX idx_matches_player ON matches(player_id);
 
@@ -328,7 +328,7 @@ SELECT p.summoner_name, c.nome, COUNT(m.id) as matches
 FROM players p
 INNER JOIN champions c ON p.champion_id = c.id
 LEFT JOIN matches m ON p.id = m.player_id
-WHERE p.level >= 6              -- Guard: nÌvel v·lido
+WHERE p.level >= 6              -- Guard: n√≠vel v√°lido
 AND p.is_alive = true           -- Guard: vivo
 AND m.match_date >= NOW() - INTERVAL '7 days'  -- Guard: semana recente
 GROUP BY p.id, p.summoner_name, c.nome
@@ -337,7 +337,7 @@ ORDER BY matches DESC
 LIMIT 10;
 ```
 
-**Analogia:** Guard clauses em SQL = Ìndices + WHERE + HAVING. Rejeita dados in˙teis cedo.
+**Analogia:** Guard clauses em SQL = √≠ndices + WHERE + HAVING. Rejeita dados in√∫teis cedo.
 
 ---
 
@@ -358,26 +358,26 @@ FROM players p
 ORDER BY p.level DESC;
 
 -- Resultado:
--- ProGamer123    | Pro           | 9      (n„o È realmente "Pro", mas est· em 9)
+-- ProGamer123    | Pro           | 9      (n√£o √© realmente "Pro", mas est√° em 9)
 -- MidLaneKing    | Intermediate  | 8
 ```
 
-**Analogia:** CASE È como um if/else/else dentro do SELECT. Classifica resultado dinamicamente.
+**Analogia:** CASE √© como um if/else/else dentro do SELECT. Classifica resultado dinamicamente.
 
 ---
 
-## Resumo: Quando Usar O QuÍ
+## Resumo: Quando Usar O Qu√™
 
-| SituaÁ„o | Operador | Exemplo |
+| Situa√ß√£o | Operador | Exemplo |
 |----------|----------|---------|
 | Filtrar por um valor | `=` | `WHERE level = 6` |
 | Filtrar por intervalo | `BETWEEN` | `WHERE level BETWEEN 5 AND 10` |
-| M˙ltiplos valores especÌficos | `IN` | `WHERE champion_id IN (1, 2, 3)` |
-| Padr„o de texto | `LIKE` | `WHERE name LIKE '%King%'` |
-| M˙ltiplas condiÁıes (todas true) | `AND` | `WHERE vivo AND level >= 6 AND ouro > 1000` |
-| M˙ltiplas condiÁıes (uma true) | `OR` | `WHERE status = 'A' OR status = 'B'` |
-| Negar condiÁ„o | `NOT` ou `!=` | `WHERE NOT stunned` |
-| Combinar tabelas (dados que existem em ambas) | `INNER JOIN` | Jogador + Campe„o |
+| M√∫ltiplos valores espec√≠ficos | `IN` | `WHERE champion_id IN (1, 2, 3)` |
+| Padr√£o de texto | `LIKE` | `WHERE name LIKE '%King%'` |
+| M√∫ltiplas condi√ß√µes (todas true) | `AND` | `WHERE vivo AND level >= 6 AND ouro > 1000` |
+| M√∫ltiplas condi√ß√µes (uma true) | `OR` | `WHERE status = 'A' OR status = 'B'` |
+| Negar condi√ß√£o | `NOT` ou `!=` | `WHERE NOT stunned` |
+| Combinar tabelas (dados que existem em ambas) | `INNER JOIN` | Jogador + Campe√£o |
 | Manter todos do lado esquerdo | `LEFT JOIN` | Todos players (com/sem match) |
-| Resumir dados (count, sum, avg) | `GROUP BY + HAVING` | Kills por campe„o |
+| Resumir dados (count, sum, avg) | `GROUP BY + HAVING` | Kills por campe√£o |
 | Condicional em resultado | `CASE` | Classificar por tier |

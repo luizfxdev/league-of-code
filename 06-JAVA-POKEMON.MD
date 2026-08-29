@@ -1,25 +1,25 @@
-# ProgramaÁ„o Orientada a Objetos (POO) em Java com PokÈmon
+# Programa√ß√£o Orientada a Objetos (POO) em Java com Pok√©mon
 
 ## 1. Conceitos Fundamentais
 
-### O que È POO?
+### O que √© POO?
 
-ProgramaÁ„o Orientada a Objetos È um paradigma que organiza o cÛdigo em **objetos** (inst‚ncias de classes) que possuem **estado** (dados) e **comportamento** (mÈtodos).
+Programa√ß√£o Orientada a Objetos √© um paradigma que organiza o c√≥digo em **objetos** (inst√¢ncias de classes) que possuem **estado** (dados) e **comportamento** (m√©todos).
 
-**Analogia PokÈmon:**
-- Um PokÈmon È um objeto
-- Pikachu È uma inst‚ncia da classe PokÈmon
-- Atributos: nome, nÌvel, tipo, HP
-- MÈtodos: atacar(), ganharExp(), evoluir()
+**Analogia Pok√©mon:**
+- Um Pok√©mon √© um objeto
+- Pikachu √© uma inst√¢ncia da classe Pok√©mon
+- Atributos: nome, n√≠vel, tipo, HP
+- M√©todos: atacar(), ganharExp(), evoluir()
 
 ---
 
 ## 2. Classes e Objetos
 
-### DefiniÁ„o
+### Defini√ß√£o
 
 **Classe** = Molde, blueprint, tipo de dado estruturado
-**Objeto** = Inst‚ncia concreta da classe
+**Objeto** = Inst√¢ncia concreta da classe
 
 ```java
 // Classe (o molde)
@@ -30,12 +30,12 @@ public class Pokemon {
     public int hp;
 }
 
-// Criando objetos (inst‚ncias)
+// Criando objetos (inst√¢ncias)
 Pokemon pikachu = new Pokemon();
 Pokemon charmander = new Pokemon();
 
 pikachu.nome = "Pikachu";
-pikachu.tipo = "ElÈtrico";
+pikachu.tipo = "El√©trico";
 pikachu.nivel = 5;
 pikachu.hp = 35;
 
@@ -45,14 +45,14 @@ charmander.nivel = 5;
 charmander.hp = 39;
 ```
 
-### Estrutura em MemÛria
+### Estrutura em Mem√≥ria
 
 ```
 Stack                          Heap
 ???????????????               ????????????????????
 ? pikachu ???????????????????>? Pokemon          ?
 ? charmander ?????????????    ? nome: "Pikachu"  ?
-???????????????          ?    ? tipo: "ElÈtrico" ?
+???????????????          ?    ? tipo: "El√©trico" ?
                          ?    ? nivel: 5         ?
                          ?    ? hp: 35           ?
                          ?    ????????????????????
@@ -70,9 +70,9 @@ Stack                          Heap
 
 ## 3. Atributos (Propriedades)
 
-### O que s„o?
+### O que s√£o?
 
-Dados que descrevem o estado do objeto. Em PokÈmon: nome, HP, ataque, defesa, tipo.
+Dados que descrevem o estado do objeto. Em Pok√©mon: nome, HP, ataque, defesa, tipo.
 
 ```java
 public class Pokemon {
@@ -93,21 +93,21 @@ public class Pokemon {
 Pokemon pikachu = new Pokemon();
 pikachu.nome = "Pikachu";           // Escrita
 System.out.println(pikachu.nome);   // Leitura: "Pikachu"
-pikachu.hp = pikachu.hp - 10;       // ModificaÁ„o
+pikachu.hp = pikachu.hp - 10;       // Modifica√ß√£o
 ```
 
-**ReferÍncia Clean Code (Robert Martin):**
+**Refer√™ncia Clean Code (Robert Martin):**
 - Use nomes descritivos
 - Evite prefixos/sufixos redundantes: ? `pokemonNome`, ? `nome`
 - Um atributo = uma responsabilidade
 
 ---
 
-## 4. MÈtodos (Comportamentos)
+## 4. M√©todos (Comportamentos)
 
-### O que s„o?
+### O que s√£o?
 
-FunÁıes que definem as aÁıes que um objeto pode executar.
+Fun√ß√µes que definem as a√ß√µes que um objeto pode executar.
 
 ```java
 public class Pokemon {
@@ -122,7 +122,7 @@ public class Pokemon {
     }
     
     public void ganharExp(int exp) {
-        System.out.println(this.nome + " ganhou " + exp + " de experiÍncia!");
+        System.out.println(this.nome + " ganhou " + exp + " de experi√™ncia!");
     }
     
     public int calcularDano() {
@@ -144,21 +144,21 @@ squirtle.nome = "Squirtle";
 squirtle.hp = 44;
 
 pikachu.atacar(squirtle);  // Pikachu atacou Squirtle!
-pikachu.ganharExp(100);    // Pikachu ganhou 100 de experiÍncia!
+pikachu.ganharExp(100);    // Pikachu ganhou 100 de experi√™ncia!
 ```
 
-### DiferenÁa entre `this` e sem `this`
+### Diferen√ßa entre `this` e sem `this`
 
 ```java
 public void atacar(Pokemon adversario) {
-    // Com this (explÌcito, mais legÌvel):
+    // Com this (expl√≠cito, mais leg√≠vel):
     int dano1 = this.ataque;
     
-    // Sem this (implÌcito, funciona igual):
+    // Sem this (impl√≠cito, funciona igual):
     int dano2 = ataque;
     
-    // Use this quando h· ambiguidade:
-    this.ataque = this.ataque + 5;  // Claro que È o atributo da classe
+    // Use this quando h√° ambiguidade:
+    this.ataque = this.ataque + 5;  // Claro que √© o atributo da classe
 }
 ```
 
@@ -166,9 +166,9 @@ public void atacar(Pokemon adversario) {
 
 ## 5. Construtores
 
-### O que È?
+### O que √©?
 
-MÈtodo especial que inicializa o objeto. Executado automaticamente com `new`.
+M√©todo especial que inicializa o objeto. Executado automaticamente com `new`.
 
 ```java
 public class Pokemon {
@@ -177,13 +177,13 @@ public class Pokemon {
     public int nivel;
     public int hp;
     
-    // Construtor sem par‚metros (padr„o)
+    // Construtor sem par√¢metros (padr√£o)
     public Pokemon() {
         this.nivel = 1;
         this.hp = 20;
     }
     
-    // Construtor com par‚metros (overload)
+    // Construtor com par√¢metros (overload)
     public Pokemon(String nome, String tipo, int hp) {
         this.nome = nome;
         this.tipo = tipo;
@@ -193,7 +193,7 @@ public class Pokemon {
 }
 
 // Uso
-Pokemon pikachu = new Pokemon();  // Usa construtor padr„o
+Pokemon pikachu = new Pokemon();  // Usa construtor padr√£o
 Pokemon charmander = new Pokemon("Charmander", "Fogo", 39);
 ```
 
@@ -205,7 +205,7 @@ public class Pokemon {
     public int hp;
     public int nivel;
     
-    // Construtor 1: sem par‚metros
+    // Construtor 1: sem par√¢metros
     public Pokemon() {
         this("Pokemon", 20, 1);
     }
@@ -215,7 +215,7 @@ public class Pokemon {
         this(nome, hp, 1);
     }
     
-    // Construtor 3: nome + HP + nÌvel
+    // Construtor 3: nome + HP + n√≠vel
     public Pokemon(String nome, int hp, int nivel) {
         this.nome = nome;
         this.hp = hp;
@@ -223,7 +223,7 @@ public class Pokemon {
     }
 }
 
-// Cada construtor È uma forma diferente de criar o objeto
+// Cada construtor √© uma forma diferente de criar o objeto
 Pokemon p1 = new Pokemon();
 Pokemon p2 = new Pokemon("Pikachu", 35);
 Pokemon p3 = new Pokemon("Charmander", 39, 5);
@@ -233,7 +233,7 @@ Pokemon p3 = new Pokemon("Charmander", 39, 5);
 
 ## 6. Encapsulamento
 
-### O Problema do Acesso P˙blico
+### O Problema do Acesso P√∫blico
 
 ```java
 public class Pokemon {
@@ -241,26 +241,26 @@ public class Pokemon {
 }
 
 Pokemon pikachu = new Pokemon();
-pikachu.hp = -500;  // ? Inv·lido! HP nunca deve ser negativo
+pikachu.hp = -500;  // ? Inv√°lido! HP nunca deve ser negativo
 ```
 
-### A SoluÁ„o: Getters e Setters com ValidaÁ„o
+### A Solu√ß√£o: Getters e Setters com Valida√ß√£o
 
 ```java
 public class Pokemon {
-    private int hp;  // private: sÛ acessa dentro da classe
+    private int hp;  // private: s√≥ acessa dentro da classe
     
-    // Getter: ler o valor com seguranÁa
+    // Getter: ler o valor com seguran√ßa
     public int getHp() {
         return this.hp;
     }
     
-    // Setter: escrever o valor com validaÁ„o
+    // Setter: escrever o valor com valida√ß√£o
     public void setHp(int hp) {
         if (hp < 0) {
-            this.hp = 0;  // N„o permite negativo
+            this.hp = 0;  // N√£o permite negativo
         } else if (hp > 100) {
-            this.hp = 100;  // Limita ao m·ximo
+            this.hp = 100;  // Limita ao m√°ximo
         } else {
             this.hp = hp;
         }
@@ -268,26 +268,26 @@ public class Pokemon {
 }
 
 Pokemon pikachu = new Pokemon();
-pikachu.setHp(50);      // ? V·lido
+pikachu.setHp(50);      // ? V√°lido
 pikachu.setHp(-100);    // ? Ajustado para 0
 System.out.println(pikachu.getHp());  // 0
 ```
 
 ### Modificadores de Acesso
 
-| Modificador | Mesmo Pacote | Pacotes Diferentes | ObservaÁ„o |
+| Modificador | Mesmo Pacote | Pacotes Diferentes | Observa√ß√£o |
 |------------|-----------|--------|-----------|
-| `public` | ? | ? | AcessÌvel de qualquer lugar |
-| `private` | ? | ? | AcessÌvel apenas dentro da classe |
-| `protected` | ? | ? (subclasses) | Herd·vel, restrito |
-| (padr„o) | ? | ? | Padr„o do pacote |
+| `public` | ? | ? | Acess√≠vel de qualquer lugar |
+| `private` | ? | ? | Acess√≠vel apenas dentro da classe |
+| `protected` | ? | ? (subclasses) | Herd√°vel, restrito |
+| (padr√£o) | ? | ? | Padr√£o do pacote |
 
 ```java
 public class Pokemon {
-    private String nome;           // SÛ Pokemon acessa
+    private String nome;           // S√≥ Pokemon acessa
     protected int ataque;          // Pokemon + subclasses acessam
     public void atacar() {}        // Qualquer um acessa
-    void recuperarEnergia() {}     // SÛ o pacote acessa
+    void recuperarEnergia() {}     // S√≥ o pacote acessa
 }
 ```
 
@@ -297,7 +297,7 @@ public class Pokemon {
 
 ### toString()
 
-Converte o objeto em String para exibiÁ„o legÌvel.
+Converte o objeto em String para exibi√ß√£o leg√≠vel.
 
 ```java
 public class Pokemon {
@@ -314,12 +314,12 @@ public class Pokemon {
     }
 }
 
-Pokemon pikachu = new Pokemon("Pikachu", "ElÈtrico", 35);
+Pokemon pikachu = new Pokemon("Pikachu", "El√©trico", 35);
 System.out.println(pikachu);  
-// SaÌda: Pokemon{nome='Pikachu', tipo='ElÈtrico', hp=35}
+// Sa√≠da: Pokemon{nome='Pikachu', tipo='El√©trico', hp=35}
 ```
 
-### MÈtodos herdados de Object
+### M√©todos herdados de Object
 
 Toda classe em Java herda de `Object`:
 
@@ -332,29 +332,29 @@ public class Pokemon {
     // equals(): compara igualdade entre objetos
     Pokemon p1 = new Pokemon("Pikachu", 35);
     Pokemon p2 = new Pokemon("Pikachu", 35);
-    System.out.println(p1.equals(p2));  // false (referÍncias diferentes)
+    System.out.println(p1.equals(p2));  // false (refer√™ncias diferentes)
     
-    // hashCode(): cÛdigo ˙nico do objeto
+    // hashCode(): c√≥digo √∫nico do objeto
     System.out.println(p1.hashCode());  // e.g., 1550089733
     
-    // toString(): representaÁ„o em String (j· sobrescrito acima)
+    // toString(): representa√ß√£o em String (j√° sobrescrito acima)
 }
 ```
 
 ---
 
-## 8. Membros Est·ticos (Static)
+## 8. Membros Est√°ticos (Static)
 
-### O que È?
+### O que √©?
 
-Membros que pertencem ‡ **classe**, n„o ao **objeto**. Compartilhados por todas as inst‚ncias.
+Membros que pertencem √† **classe**, n√£o ao **objeto**. Compartilhados por todas as inst√¢ncias.
 
 ```java
 public class Pokemon {
     private String nome;
     private int nivel;
     
-    // Atributo est·tico: um valor compartilhado por todos os PokÈmon
+    // Atributo est√°tico: um valor compartilhado por todos os Pok√©mon
     public static int totalCapturados = 0;
     
     public Pokemon(String nome) {
@@ -374,22 +374,22 @@ Pokemon charmander = new Pokemon("Charmander");
 Pokemon.exibirTotal();  // Total capturado: 2
 ```
 
-### Est·tico vs Inst‚ncia
+### Est√°tico vs Inst√¢ncia
 
 ```java
 public class Calculadora {
-    // Atributo de inst‚ncia: cada calculadora tem sua memÛria
+    // Atributo de inst√¢ncia: cada calculadora tem sua mem√≥ria
     private double memoriaLocal = 0;
     
-    // Atributo est·tico: compartilhado entre todas as calculadoras
+    // Atributo est√°tico: compartilhado entre todas as calculadoras
     public static final double PI = 3.14159;
     
-    // MÈtodo de inst‚ncia: usa dados do objeto
+    // M√©todo de inst√¢ncia: usa dados do objeto
     public void adicionar(double valor) {
         this.memoriaLocal += valor;
     }
     
-    // MÈtodo est·tico: n„o acessa dados da inst‚ncia
+    // M√©todo est√°tico: n√£o acessa dados da inst√¢ncia
     public static double circunferencia(double raio) {
         return 2.0 * PI * raio;
     }
@@ -401,16 +401,16 @@ Calculadora calc2 = new Calculadora();
 calc1.adicionar(5);  // Afeta apenas calc1
 // calc2.memoriaLocal permanece 0
 
-Calculadora.circunferencia(10);  // N„o precisa de inst‚ncia
+Calculadora.circunferencia(10);  // N√£o precisa de inst√¢ncia
 ```
 
-### Constantes Est·ticas
+### Constantes Est√°ticas
 
 ```java
 public class Tipo {
-    public static final String ELETRICO = "ElÈtrico";
+    public static final String ELETRICO = "El√©trico";
     public static final String FOGO = "Fogo";
-    public static final String AGUA = "¡gua";
+    public static final String AGUA = "√Ågua";
     public static final String GRAMA = "Grama";
 }
 
@@ -419,11 +419,11 @@ Pokemon pikachu = new Pokemon("Pikachu", Tipo.ELETRICO);
 
 ---
 
-## 9. HeranÁa
+## 9. Heran√ßa
 
-### O que È?
+### O que √©?
 
-ReutilizaÁ„o de cÛdigo. Uma classe **herda** atributos e mÈtodos de outra.
+Reutiliza√ß√£o de c√≥digo. Uma classe **herda** atributos e m√©todos de outra.
 
 ```java
 // Classe base (superclasse)
@@ -432,7 +432,7 @@ public class Animal {
     protected int idade;
     
     public void dormir() {
-        System.out.println(this.nome + " est· dormindo...");
+        System.out.println(this.nome + " est√° dormindo...");
     }
 }
 
@@ -449,25 +449,25 @@ public class Pokemon extends Animal {
 Pokemon pikachu = new Pokemon();
 pikachu.nome = "Pikachu";
 pikachu.dormir();   // Herdado de Animal
-pikachu.atacar();   // PrÛprio de Pokemon
+pikachu.atacar();   // Pr√≥prio de Pokemon
 ```
 
-### Hierarquia em PokÈmon
+### Hierarquia em Pok√©mon
 
 ```java
-// NÌvel 1: Animal (super genÈrico)
+// N√≠vel 1: Animal (super gen√©rico)
 public class Animal {
     protected String nome;
     public void fazer_som() { }
 }
 
-// NÌvel 2: Criatura (mais especÌfico)
+// N√≠vel 2: Criatura (mais espec√≠fico)
 public class Criatura extends Animal {
     protected int hp;
     protected String tipo;
 }
 
-// NÌvel 3: Pokemon (ainda mais especÌfico)
+// N√≠vel 3: Pokemon (ainda mais espec√≠fico)
 public class Pokemon extends Criatura {
     private int nivel;
     public void atacar() { }
@@ -484,7 +484,7 @@ public class Criatura {
     protected String nome = "Criatura";
     
     public void apresentar() {
-        System.out.println("Ol·, sou uma " + this.nome);
+        System.out.println("Ol√°, sou uma " + this.nome);
     }
 }
 
@@ -495,24 +495,24 @@ public class Pokemon extends Criatura {
     
     @Override
     public void apresentar() {
-        super.apresentar();  // Chama o mÈtodo da superclasse
-        System.out.println("E sou um PokÈmon do tipo elÈtrico!");
+        super.apresentar();  // Chama o m√©todo da superclasse
+        System.out.println("E sou um Pok√©mon do tipo el√©trico!");
     }
 }
 
 Pokemon pikachu = new Pokemon("Pikachu");
 pikachu.apresentar();
-// Ol·, sou uma Pikachu
-// E sou um PokÈmon do tipo elÈtrico!
+// Ol√°, sou uma Pikachu
+// E sou um Pok√©mon do tipo el√©trico!
 ```
 
 ---
 
 ## 10. Polimorfismo
 
-### O que È?
+### O que √©?
 
-"Muitas formas". Objetos podem ser usados atravÈs de suas superclasses.
+"Muitas formas". Objetos podem ser usados atrav√©s de suas superclasses.
 
 ```java
 public class Criatura {
@@ -523,67 +523,67 @@ public class Criatura {
 public class Pokemon extends Criatura {
     @Override
     public void atacar() {
-        System.out.println(this.nome + " usou um movimento PokÈmon!");
+        System.out.println(this.nome + " usou um movimento Pok√©mon!");
     }
 }
 
 public class Dragao extends Criatura {
     @Override
     public void atacar() {
-        System.out.println(this.nome + " lanÁa fogo drag„o!");
+        System.out.println(this.nome + " lan√ßa fogo drag√£o!");
     }
 }
 
-// Polimorfismo: uma lista contÈm tipos diferentes
+// Polimorfismo: uma lista cont√©m tipos diferentes
 List<Criatura> criaturas = new ArrayList<>();
 criaturas.add(new Pokemon("Pikachu"));
 criaturas.add(new Dragao("Dragonite"));
 
-// Mesmo mÈtodo, comportamentos diferentes
+// Mesmo m√©todo, comportamentos diferentes
 for (Criatura criatura : criaturas) {
     criatura.atacar();
 }
-// Pikachu usou um movimento PokÈmon!
-// Dragonite lanÁa fogo drag„o!
+// Pikachu usou um movimento Pok√©mon!
+// Dragonite lan√ßa fogo drag√£o!
 ```
 
-### Tipo em Tempo de ExecuÁ„o (instanceof)
+### Tipo em Tempo de Execu√ß√£o (instanceof)
 
 ```java
 Criatura pikachu = new Pokemon("Pikachu");
 
 if (pikachu instanceof Pokemon) {
-    System.out.println("… um PokÈmon!");
+    System.out.println("√â um Pok√©mon!");
 }
 
 if (pikachu instanceof Dragao) {
-    System.out.println("… um drag„o!");
+    System.out.println("√â um drag√£o!");
 }
 ```
 
 ---
 
-## 11. AbstraÁ„o
+## 11. Abstra√ß√£o
 
 ### Classes Abstratas
 
-N„o podem ser instanciadas diretamente. Definem um contrato.
+N√£o podem ser instanciadas diretamente. Definem um contrato.
 
 ```java
 // Classe abstrata
 public abstract class Criatura {
     protected String nome;
     
-    // MÈtodo abstrato: subclasses DEVEM implementar
+    // M√©todo abstrato: subclasses DEVEM implementar
     public abstract void atacar();
     
-    // MÈtodo concreto: j· implementado
+    // M√©todo concreto: j√° implementado
     public void dormir() {
         System.out.println(this.nome + " dormiu!");
     }
 }
 
-// Deve implementar o mÈtodo abstrato
+// Deve implementar o m√©todo abstrato
 public class Pokemon extends Criatura {
     @Override
     public void atacar() {
@@ -591,7 +591,7 @@ public class Pokemon extends Criatura {
     }
 }
 
-// ? N„o pode fazer isso
+// ? N√£o pode fazer isso
 // Criatura c = new Criatura();
 
 // ? Mas pode fazer assim
@@ -601,7 +601,7 @@ pikachu.atacar();
 
 ### Interfaces
 
-Contrato que define apenas mÈtodos (sem implementaÁ„o).
+Contrato que define apenas m√©todos (sem implementa√ß√£o).
 
 ```java
 public interface Combatente {
@@ -631,7 +631,7 @@ public class Pokemon implements Combatente {
     }
 }
 
-// Uso polimÛrfico
+// Uso polim√≥rfico
 Combatente pikachu = new Pokemon("Pikachu", 55, 40);
 pikachu.atacar(null);
 pikachu.defender();
@@ -639,34 +639,34 @@ pikachu.defender();
 
 ---
 
-## 12. ComposiÁ„o vs HeranÁa
+## 12. Composi√ß√£o vs Heran√ßa
 
 ### Quando usar?
 
-**HeranÁa ("È um"):** Pokemon **È um** Animal
+**Heran√ßa ("√© um"):** Pokemon **√© um** Animal
 ```java
 public class Pokemon extends Animal { }
 ```
 
-**ComposiÁ„o ("tem um"):** Pokemon **tem um** Treinador
+**Composi√ß√£o ("tem um"):** Pokemon **tem um** Treinador
 ```java
 public class Pokemon {
-    private Treinador treinador;  // ComposiÁ„o
+    private Treinador treinador;  // Composi√ß√£o
 }
 ```
 
-### Exemplo Pr·tico
+### Exemplo Pr√°tico
 
 ```java
-// ? HeranÁa excessiva (errado)
+// ? Heran√ßa excessiva (errado)
 public class Pikachu extends Pokemon {
     // Pikachu herda tudo de Pokemon
 }
 
-// ? ComposiÁ„o (correto - "um Pikachu tem caracterÌsticas especÌficas")
+// ? Composi√ß√£o (correto - "um Pikachu tem caracter√≠sticas espec√≠ficas")
 public class Pokemon {
     private String especie = "Pikachu";  // Atributo
-    private Habilidade habilidade;       // ComposiÁ„o
+    private Habilidade habilidade;       // Composi√ß√£o
 }
 
 public class Habilidade {
@@ -677,7 +677,7 @@ public class Habilidade {
 
 ---
 
-## 13. PrincÌpios SOLID (Clean Code)
+## 13. Princ√≠pios SOLID (Clean Code)
 
 ### S - Single Responsibility Principle
 
@@ -708,13 +708,13 @@ public class PokemonRenderer {
 
 ### O - Open/Closed Principle
 
-Aberto para extens„o, fechado para modificaÁ„o.
+Aberto para extens√£o, fechado para modifica√ß√£o.
 
 ```java
 // ? Violando OCP - precisa modificar a classe a cada novo tipo
 public class Ataque {
     public int calcularDano(String tipo) {
-        if (tipo.equals("ElÈtrico")) return 50;
+        if (tipo.equals("El√©trico")) return 50;
         if (tipo.equals("Fogo")) return 60;
         // Sempre que novo tipo aparece, modifica aqui
     }
@@ -738,7 +738,7 @@ public class AtaqueFogo extends Ataque {
 
 ### L - Liskov Substitution Principle
 
-Objetos de subclasses devem ser substituÌveis pelos da superclasse.
+Objetos de subclasses devem ser substitu√≠veis pelos da superclasse.
 
 ```java
 // ? LSP respeitado
@@ -756,7 +756,7 @@ c.atacar();  // Funciona perfeitamente
 
 ### I - Interface Segregation Principle
 
-Interfaces pequenas, especÌficas.
+Interfaces pequenas, espec√≠ficas.
 
 ```java
 // ? Interface gigante (errado)
@@ -783,16 +783,16 @@ public interface Aquatico {
 }
 
 public class Dragonite implements Combatente, Voador {
-    // Implementa apenas o necess·rio
+    // Implementa apenas o necess√°rio
 }
 ```
 
 ### D - Dependency Inversion Principle
 
-Dependa de abstraÁıes, n„o de implementaÁıes concretas.
+Dependa de abstra√ß√µes, n√£o de implementa√ß√µes concretas.
 
 ```java
-// ? DependÍncia de implementaÁ„o concreta
+// ? Depend√™ncia de implementa√ß√£o concreta
 public class Treinador {
     private PokemonBancoDados banco = new PokemonBancoDados();
     
@@ -801,7 +801,7 @@ public class Treinador {
     }
 }
 
-// ? DependÍncia de abstraÁ„o
+// ? Depend√™ncia de abstra√ß√£o
 public interface RepositorioPokemon {
     void salvar(Pokemon p);
 }
@@ -821,10 +821,10 @@ public class Treinador {
 
 ---
 
-## 14. Exemplo Completo: Sistema de PokÈmon
+## 14. Exemplo Completo: Sistema de Pok√©mon
 
 ```java
-// ===== ABSTRA«’ES =====
+// ===== ABSTRA√á√ïES =====
 
 public abstract class Criatura {
     protected String nome;
@@ -850,7 +850,7 @@ public abstract class Criatura {
     }
 }
 
-// ===== IMPLEMENTA«’ES =====
+// ===== IMPLEMENTA√á√ïES =====
 
 public class Pokemon extends Criatura {
     private String tipo;
@@ -873,7 +873,7 @@ public class Pokemon extends Criatura {
     }
 }
 
-// ===== L”GICA DE JOGO =====
+// ===== L√ìGICA DE JOGO =====
 
 public class Batalha {
     private Criatura criatura1;
@@ -914,7 +914,7 @@ public class Batalha {
 
 public class Main {
     public static void main(String[] args) {
-        Pokemon pikachu = new Pokemon("Pikachu", "ElÈtrico", 35, 55, 40);
+        Pokemon pikachu = new Pokemon("Pikachu", "El√©trico", 35, 55, 40);
         Pokemon charmander = new Pokemon("Charmander", "Fogo", 39, 52, 43);
         
         Batalha batalha = new Batalha(pikachu, charmander);
@@ -925,7 +925,7 @@ public class Main {
 
 ---
 
-## 15. Padrıes de CÛdigo Clean
+## 15. Padr√µes de C√≥digo Clean
 
 ### Nomes Significativos
 
@@ -943,15 +943,15 @@ public class Pokemon {
 }
 ```
 
-### MÈtodos Pequenos e Focados
+### M√©todos Pequenos e Focados
 
 ```java
-// ? MÈtodo grande
+// ? M√©todo grande
 public void batalha(Pokemon p1, Pokemon p2) {
-    // 50 linhas de lÛgica
+    // 50 linhas de l√≥gica
 }
 
-// ? MÈtodos pequenos e compostos
+// ? M√©todos pequenos e compostos
 public void batalha(Pokemon p1, Pokemon p2) {
     inicializarBatalha(p1, p2);
     executarTurnos(p1, p2);
@@ -966,7 +966,7 @@ private void finalizarBatalha(Pokemon p1, Pokemon p2) { }
 ### Evite Magic Numbers
 
 ```java
-// ? O que È 0.5? Por que 100?
+// ? O que √© 0.5? Por que 100?
 public int calcularDano(Pokemon atacante) {
     return (int)(atacante.ataque * 0.5 + 100);
 }
@@ -980,7 +980,7 @@ public int calcularDano(Pokemon atacante) {
 }
 ```
 
-### Uso de ExceÁıes Apropriadamente
+### Uso de Exce√ß√µes Apropriadamente
 
 ```java
 // ? Retorna null (confuso)
@@ -989,10 +989,10 @@ public Pokemon buscarPokemon(String nome) {
     return banco.buscar(nome);
 }
 
-// ? LanÁa exceÁ„o (claro)
+// ? Lan√ßa exce√ß√£o (claro)
 public Pokemon buscarPokemon(String nome) {
     if (nome == null || nome.isEmpty()) {
-        throw new IllegalArgumentException("Nome inv·lido");
+        throw new IllegalArgumentException("Nome inv√°lido");
     }
     Pokemon p = banco.buscar(nome);
     if (p == null) {
@@ -1003,21 +1003,21 @@ public Pokemon buscarPokemon(String nome) {
 
 class PokemonNaoEncontradoException extends RuntimeException {
     public PokemonNaoEncontradoException(String nome) {
-        super("PokÈmon " + nome + " n„o encontrado");
+        super("Pok√©mon " + nome + " n√£o encontrado");
     }
 }
 ```
 
 ---
 
-## 16. ExercÌcios Pr·ticos
+## 16. Exerc√≠cios Pr√°ticos
 
-### ExercÌcio 1: Classe Rectangle
+### Exerc√≠cio 1: Classe Rectangle
 
 Crie uma classe `Rectangle` com largura e altura. Implemente:
-- Getters e setters com validaÁ„o (n„o permitir valores ? 0)
-- MÈtodo `calcularArea()`
-- MÈtodo `calcularPerimetro()`
+- Getters e setters com valida√ß√£o (n√£o permitir valores ? 0)
+- M√©todo `calcularArea()`
+- M√©todo `calcularPerimetro()`
 - Sobrescrita de `toString()`
 
 **Entrada:**
@@ -1026,7 +1026,7 @@ Largura: 3.0
 Altura: 4.0
 ```
 
-**SaÌda:**
+**Sa√≠da:**
 ```
 AREA = 12.00
 PERIMETRO = 14.00
@@ -1035,37 +1035,37 @@ Rectangle{largura=3.0, altura=4.0}
 
 ---
 
-### ExercÌcio 2: Classe Employee
+### Exerc√≠cio 2: Classe Employee
 
-Crie uma classe `Employee` com nome, sal·rio bruto e imposto. Implemente:
+Crie uma classe `Employee` com nome, sal√°rio bruto e imposto. Implemente:
 - Getters e setters
-- MÈtodo `calcularSalarioLiquido()` (bruto - imposto)
-- MÈtodo `aumentarSalario(porcentagem)` - aumenta apenas o bruto
+- M√©todo `calcularSalarioLiquido()` (bruto - imposto)
+- M√©todo `aumentarSalario(porcentagem)` - aumenta apenas o bruto
 - Sobrescrita de `toString()`
 
 **Entrada:**
 ```
-Nome: Jo„o Silva
-Sal·rio bruto: 6000.00
+Nome: Jo√£o Silva
+Sal√°rio bruto: 6000.00
 Imposto: 1000.00
 Aumento de 10%
 ```
 
-**SaÌda:**
+**Sa√≠da:**
 ```
-Antes: Jo„o Silva, $ 5000.00
-Depois: Jo„o Silva, $ 5600.00
+Antes: Jo√£o Silva, $ 5000.00
+Depois: Jo√£o Silva, $ 5600.00
 ```
 
 ---
 
-### ExercÌcio 3: Classe Student
+### Exerc√≠cio 3: Classe Student
 
 Crie uma classe `Student` com nome e 3 notas. Implemente:
 - Construtor que recebe nome e 3 notas
-- MÈtodo `calcularNotaFinal()` (mÈdia ponderada: 30%, 35%, 35%)
-- MÈtodo `passou()` retorna true se nota ? 60
-- MÈtodo `pontosFaltantes()` retorna quantos pontos faltam para passar
+- M√©todo `calcularNotaFinal()` (m√©dia ponderada: 30%, 35%, 35%)
+- M√©todo `passou()` retorna true se nota ? 60
+- M√©todo `pontosFaltantes()` retorna quantos pontos faltam para passar
 - Sobrescrita de `toString()`
 
 **Entrada:**
@@ -1076,7 +1076,7 @@ Alex Green
 32.00
 ```
 
-**SaÌda:**
+**Sa√≠da:**
 ```
 FINAL GRADE = 90.00
 PASS
@@ -1089,7 +1089,7 @@ Alex Green
 20.00
 15.00
 
-SaÌda:
+Sa√≠da:
 FINAL GRADE = 52.00
 FAILED
 MISSING 8.00 POINTS
@@ -1097,34 +1097,34 @@ MISSING 8.00 POINTS
 
 ---
 
-### ExercÌcio 4: Classe CurrencyConverter
+### Exerc√≠cio 4: Classe CurrencyConverter
 
-Crie uma classe utilit·ria `CurrencyConverter` com:
-- Atributo est·tico `IOF = 0.06` (imposto)
-- MÈtodo est·tico `dollarToReal(amount, dollarPrice)` 
-- C·lculo: amount * dollarPrice * (1 + IOF)
+Crie uma classe utilit√°ria `CurrencyConverter` com:
+- Atributo est√°tico `IOF = 0.06` (imposto)
+- M√©todo est√°tico `dollarToReal(amount, dollarPrice)` 
+- C√°lculo: amount * dollarPrice * (1 + IOF)
 
 **Entrada:**
 ```
-PreÁo do dÛlar: 3.10
-DÛlares a comprar: 200.00
+Pre√ßo do d√≥lar: 3.10
+D√≥lares a comprar: 200.00
 ```
 
-**SaÌda:**
+**Sa√≠da:**
 ```
 Amount to be paid in reais = 657.20
 ```
 
 ---
 
-### ExercÌcio 5: Classe Triangulo
+### Exerc√≠cio 5: Classe Triangulo
 
-Crie uma classe `Triangle` com trÍs lados (a, b, c). Implemente:
+Crie uma classe `Triangle` com tr√™s lados (a, b, c). Implemente:
 - Getters e setters
-- MÈtodo `area()` usando fÛrmula de Heron
-- Classe `Program` que lÍ 2 tri‚ngulos e diz qual tem maior ·rea
+- M√©todo `area()` usando f√≥rmula de Heron
+- Classe `Program` que l√™ 2 tri√¢ngulos e diz qual tem maior √°rea
 
-**FÛrmula de Heron:**
+**F√≥rmula de Heron:**
 ```
 p = (a + b + c) / 2
 area = sqrt(p * (p-a) * (p-b) * (p-c))
@@ -1132,18 +1132,18 @@ area = sqrt(p * (p-a) * (p-b) * (p-c))
 
 ---
 
-### ExercÌcio 6: Pokemon com HeranÁa
+### Exerc√≠cio 6: Pokemon com Heran√ßa
 
 Crie:
 - Classe abstrata `Criatura` com nome, hp, ataque, defesa
 - Classe `Pokemon(extends Criatura)` com tipo
-- Classe `Dragao(extends Criatura)` com forÁa de asas
+- Classe `Dragao(extends Criatura)` com for√ßa de asas
 - Implemente `atacar(Criatura alvo)` em ambas (com dano diferente)
 - Teste polimorfismo em uma lista
 
 ---
 
-### ExercÌcio 7: Conversor de Moedas (Dependency Injection)
+### Exerc√≠cio 7: Conversor de Moedas (Dependency Injection)
 
 Crie:
 - Interface `ConversorMoeda` com `converter(valor, taxa)`
@@ -1153,22 +1153,22 @@ Crie:
 
 ---
 
-### ExercÌcio 8: Sistema de Pokedex
+### Exerc√≠cio 8: Sistema de Pokedex
 
 Crie:
 - Classe `Pokemon` com nome, tipo, hp, ataque
 - Interface `RepositorioPokemon` com `salvar()`, `buscar()`, `listarTodos()`
 - Classe `PokedexEmMemoria implements RepositorioPokemon`
-- Classe `Pokedex` que usa o repositÛrio (composiÁ„o)
+- Classe `Pokedex` que usa o reposit√≥rio (composi√ß√£o)
 
 ---
 
-### ExercÌcio 9: ValidaÁ„o e ExceÁıes
+### Exerc√≠cio 9: Valida√ß√£o e Exce√ß√µes
 
 Crie:
-- Classe `Pokemon` que valida: nome n„o vazio, hp > 0, ataque ? 0
-- ExceÁ„o customizada `PokemonInvalidoException`
-- LanÁar a exceÁ„o quando dados inv·lidos
+- Classe `Pokemon` que valida: nome n√£o vazio, hp > 0, ataque ? 0
+- Exce√ß√£o customizada `PokemonInvalidoException`
+- Lan√ßar a exce√ß√£o quando dados inv√°lidos
 
 **Exemplo:**
 ```java
@@ -1181,16 +1181,16 @@ try {
 
 ---
 
-### ExercÌcio 10: Batalha entre PokÈmons
+### Exerc√≠cio 10: Batalha entre Pok√©mons
 
 Crie um sistema completo:
 - Classe `Pokemon` com hp, ataque, defesa
-- Classe `Batalha` que simula dois PokÈmons lutando
-- Cada turno: um ataca (dano aleatÛrio 10%), outro se defende
-- Continua atÈ um morrer
-- Exiba status apÛs cada turno
+- Classe `Batalha` que simula dois Pok√©mons lutando
+- Cada turno: um ataca (dano aleat√≥rio 10%), outro se defende
+- Continua at√© um morrer
+- Exiba status ap√≥s cada turno
 
-**SaÌda esperada:**
+**Sa√≠da esperada:**
 ```
 === BATALHA INICIADA ===
 Pikachu [HP: 35/35] vs Charmander [HP: 39/39]
@@ -1204,30 +1204,30 @@ PIKACHU VENCEU!
 
 ---
 
-## 17. ReferÍncias Bibliogr·ficas
+## 17. Refer√™ncias Bibliogr√°ficas
 
 ### Livros Recomendados
 
 1. **Clean Code** - Robert Martin
    - Nomes significativos
-   - FunÁıes pequenas
+   - Fun√ß√µes pequenas
    - Tratamento de erros
 
 2. **Effective Java** - Joshua Bloch
-   - Patterns e boas pr·ticas
+   - Patterns e boas pr√°ticas
    - Quando usar static
    - Encapsulamento
 
 3. **Head First Design Patterns** - Freeman & Freeman
-   - Padrıes de design
-   - AbstraÁ„o e interfaces
-   - Polimorfismo pr·tico
+   - Padr√µes de design
+   - Abstra√ß√£o e interfaces
+   - Polimorfismo pr√°tico
 
 4. **The Pragmatic Programmer** - Hunt & Thomas
-   - PrincÌpios gerais
-   - CÛdigo mantÌvel
+   - Princ√≠pios gerais
+   - C√≥digo mant√≠vel
 
-### DocumentaÁ„o Oficial
+### Documenta√ß√£o Oficial
 
 - [Java Tutorials - Oracle](https://docs.oracle.com/javase/tutorial/)
 - [Effective Java - Third Edition](https://www.oracle.com/java/)
@@ -1236,16 +1236,16 @@ PIKACHU VENCEU!
 
 ## Checklist de Aprendizado
 
-- [ ] Entendo a diferenÁa entre classe e objeto
+- [ ] Entendo a diferen√ßa entre classe e objeto
 - [ ] Consigo criar construtores com sobrecarga
-- [ ] Sei usar getters e setters com validaÁ„o
-- [ ] Implementei heranÁa com `extends`
+- [ ] Sei usar getters e setters com valida√ß√£o
+- [ ] Implementei heran√ßa com `extends`
 - [ ] Usei polimorfismo com List<>
 - [ ] Criei classes abstratas e interfaces
-- [ ] Apliquei static para utilit·rios
+- [ ] Apliquei static para utilit√°rios
 - [ ] Sobrescrevi `toString()` apropriadamente
 - [ ] Respeitei SRP (Single Responsibility)
-- [ ] Testei exceÁıes customizadas
+- [ ] Testei exce√ß√µes customizadas
 
 ---
 

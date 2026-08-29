@@ -1,14 +1,14 @@
 # Operadores em JavaScript ? LoL Edition
 
-## Exemplo Pr·tico: Game Loop e DetecÁ„o de Combate
+## Exemplo Pr√°tico: Game Loop e Detec√ß√£o de Combate
 
 ```javascript
-// Classe = Campe„o (ES6)
+// Classe = Campe√£o (ES6)
 class Champion {
-    // Atributos de inst‚ncia = Stats do campe„o
+    // Atributos de inst√¢ncia = Stats do campe√£o
     constructor(nome, healthAtual, manaAtual, attackDamage, level) {
         this.nome = nome;                   // "Garen", "Lux", "Ahri"
-        this.healthAtual = healthAtual;     // HP desta inst‚ncia
+        this.healthAtual = healthAtual;     // HP desta inst√¢ncia
         this.manaAtual = manaAtual;         // Mana (varia)
         this.attackDamage = attackDamage;   // AD (aumenta com itens)
         this.level = level;                 // Level (1-18)
@@ -16,32 +16,32 @@ class Champion {
         this.ultimaProntaEm = 0;            // Cooldown da ulti
     }
     
-    // Membro est·tico = Buff global para TODOS os campeıes
+    // Membro est√°tico = Buff global para TODOS os campe√µes
     static VELOCIDADE_MOVIMENTO_BASE = 330;
     static MANA_REGENERACAO_BASE = 5;
     static DANO_MINION_BASE = 5;
 }
 
-// ValidaÁ„o antes do engagement no game loop
+// Valida√ß√£o antes do engagement no game loop
 function podeAtacarAgora(campeao, alvo) {
-    // Guard 1: Campe„o existe?
+    // Guard 1: Campe√£o existe?
     if (!campeao || typeof campeao !== "object") {
-        return false;  // Campe„o n„o foi criado
+        return false;  // Campe√£o n√£o foi criado
     }
     
-    // Guard 2: Mana È suficiente?
+    // Guard 2: Mana √© suficiente?
     if (campeao.manaAtual <= 0) {
-        return false;  // Broke de mana ? n„o pode cashar habilidade
+        return false;  // Broke de mana ? n√£o pode cashar habilidade
     }
     
-    // Guard 3: Alvo È v·lido e n„o t· morto?
+    // Guard 3: Alvo √© v√°lido e n√£o t√° morto?
     if (!alvo || alvo.healthAtual <= 0) {
         return false;  // Alvo morto ou null
     }
     
-    // Guard 4: Est· CC'd (stunado)?
+    // Guard 4: Est√° CC'd (stunado)?
     if (campeao.estaStunado) {
-        return false;  // CC aplicado, sem permiss„o de agir
+        return false;  // CC aplicado, sem permiss√£o de agir
     }
     
     // Guard 5: Cooldown da ulti abaixou?
@@ -52,10 +52,10 @@ function podeAtacarAgora(campeao, alvo) {
     return true;  // Win condition ? pode atacar!
 }
 
-// Executar ataque (mutaÁ„o controlada)
+// Executar ataque (muta√ß√£o controlada)
 function executarAtaque(campeao, alvo) {
     if (!podeAtacarAgora(campeao, alvo)) {
-        console.warn("N„o pode atacar agora");
+        console.warn("N√£o pode atacar agora");
         return false;
     }
     
@@ -74,57 +74,57 @@ function executarAtaque(campeao, alvo) {
 
 | Operador | Significado | LoL | Exemplo |
 |----------|------------|-----|---------|
-| `==` | Igual (coerÁ„o) | Mesmo nÌvel? | `if (level == 6)` ? cuidado com type coercion |
-| `===` | Estritamente igual | Mesmo nÌvel + mesmo tipo | `if (level === 6)` |
-| `!=` | Diferente (coerÁ„o) | Campeıes diferentes | `if (nome != "Garen")` |
-| `!==` | Estritamente diferente | Campeıes diferentes (tipo importa) | `if (nome !== "Garen")` |
+| `==` | Igual (coer√ß√£o) | Mesmo n√≠vel? | `if (level == 6)` ? cuidado com type coercion |
+| `===` | Estritamente igual | Mesmo n√≠vel + mesmo tipo | `if (level === 6)` |
+| `!=` | Diferente (coer√ß√£o) | Campe√µes diferentes | `if (nome != "Garen")` |
+| `!==` | Estritamente diferente | Campe√µes diferentes (tipo importa) | `if (nome !== "Garen")` |
 | `>` | Maior que | Mais HP | `if (healthAtual > 100)` |
 | `<` | Menor que | Menos mana | `if (manaAtual < 50)` |
-| `>=` | Maior ou igual | HP >= necess·rio | `if (level >= 6)` ? ulti pronta |
+| `>=` | Maior ou igual | HP >= necess√°rio | `if (level >= 6)` ? ulti pronta |
 | `<=` | Menor ou igual | Mana <= cap | `if (cooldown <= 0)` ? ready |
 
 ### Exemplo: `==` vs `===` (Trap comum)
 
 ```javascript
-// ? Evite ==, JS faz coerÁ„o invisÌvel
+// ? Evite ==, JS faz coer√ß√£o invis√≠vel
 console.log(0 == "0");        // true  ? JavaScript converteu "0" pra 0!
 console.log(false == 0);      // true  ? false virou 0!
 console.log("" == null);      // false ? Confuso mesmo
 
-// ? Use ===, sem coerÁ„o ? explÌcito
+// ? Use ===, sem coer√ß√£o ? expl√≠cito
 console.log(0 === "0");       // false ? Claro, tipos diferentes
 console.log(false === 0);     // false ? Esperado, bool != number
-console.log("" === null);     // false ? ”bvio
+console.log("" === null);     // false ? √ìbvio
 
-// ValidaÁ„o real em jogo
-const levelAtual = "6";  // Vindo de API, È string
+// Valida√ß√£o real em jogo
+const levelAtual = "6";  // Vindo de API, √© string
 
-if (levelAtual == 6) {      // ?? Risco: "6" == 6 È TRUE
+if (levelAtual == 6) {      // ?? Risco: "6" == 6 √© TRUE
     console.log("Ulti pronta!");  // Pode quebrar se nivel for "5"
 }
 
-if (levelAtual === 6) {     // ? Seguro: "6" === 6 È FALSE
-    console.log("Ulti pronta!");  // SÛ executa se realmente for n˙mero 6
+if (levelAtual === 6) {     // ? Seguro: "6" === 6 √© FALSE
+    console.log("Ulti pronta!");  // S√≥ executa se realmente for n√∫mero 6
 }
 
-// ComparaÁ„o correta
+// Compara√ß√£o correta
 const level = parseInt(levelAtual);
 if (level === 6) {
-    console.log("Agora È seguro!");  // ?
+    console.log("Agora √© seguro!");  // ?
 }
 ```
 
 ---
 
-## Operadores LÛgicos
+## Operadores L√≥gicos
 
 | Operador | Significado | LoL | Quando Usar |
 |----------|------------|-----|------------|
-| `&&` | E (AND) | **Ambos** tÍm que estar certos | ValidaÁıes em sÈrie |
-| `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas, valores padr„o |
-| `!` | N√O (NOT) | Inverte condiÁ„o | Negar estado |
+| `&&` | E (AND) | **Ambos** t√™m que estar certos | Valida√ß√µes em s√©rie |
+| `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas, valores padr√£o |
+| `!` | N√ÉO (NOT) | Inverte condi√ß√£o | Negar estado |
 
-### AND (`&&`) ? Decis„o de Engajamento
+### AND (`&&`) ? Decis√£o de Engajamento
 
 ```javascript
 const podeEngajar = temMana && estaVivo && !estaStunado && temAlvoVisivel;
@@ -132,56 +132,56 @@ const podeEngajar = temMana && estaVivo && !estaStunado && temAlvoVisivel;
 //                  Tudo tem que ser TRUE para atacar
 
 if (podeEngajar) {
-    executarCombo();  // SÛ executa se TUDO passar
+    executarCombo();  // S√≥ executa se TUDO passar
 }
 ```
 
-**Analogia:** VocÍ precisa estar vivo **E** ter mana **E** n„o estar CC'd **E** ver o inimigo. Se um falhar, sai do fight.
+**Analogia:** Voc√™ precisa estar vivo **E** ter mana **E** n√£o estar CC'd **E** ver o inimigo. Se um falhar, sai do fight.
 
-**Short-circuit em JavaScript (otimizaÁ„o):**
+**Short-circuit em JavaScript (otimiza√ß√£o):**
 ```javascript
 const alvo = null;
 
-// Para na primeira condiÁ„o false
+// Para na primeira condi√ß√£o false
 if (alvo && alvo.healthAtual > 0 && calcularDistancia(alvo) < 550) {
-    console.log("Pode atacar...");  // Nunca executa (alvo È null)
+    console.log("Pode atacar...");  // Nunca executa (alvo √© null)
 }
 
-// calcularDistancia() NUNCA È chamado! (short-circuit)
+// calcularDistancia() NUNCA √© chamado! (short-circuit)
 ```
 
-### OR (`||`) ? Valor Padr„o (Fallback)
+### OR (`||`) ? Valor Padr√£o (Fallback)
 
 ```javascript
-// Tenta usar o primeiro; se n„o existir, usa o segundo
-let nomeChampion = inputUsuario || "Champion Padr„o";
+// Tenta usar o primeiro; se n√£o existir, usa o segundo
+let nomeChampion = inputUsuario || "Champion Padr√£o";
 //                 ^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^
-//                 Usa este se existir, sen„o usa fallback
+//                 Usa este se existir, sen√£o usa fallback
 
 // Equivalente a:
 let nomeChampion;
 if (inputUsuario) {
     nomeChampion = inputUsuario;
 } else {
-    nomeChampion = "Champion Padr„o";
+    nomeChampion = "Champion Padr√£o";
 }
 ```
 
-**Analogia:** Vai pra lane de prioridade, se n„o tiver, vai pra outra.
+**Analogia:** Vai pra lane de prioridade, se n√£o tiver, vai pra outra.
 
 ```javascript
-// ValidaÁ„o com m˙ltiplas alternativas
+// Valida√ß√£o com m√∫ltiplas alternativas
 const podeEntrarNoFight = 
     timeStatusGanho === "VENCENDO" ||
     timeStatusGanho === "EQUILIBRADO" ||
     temUltisProntas;
 
 if (podeEntrarNoFight) {
-    engajar();  // Executa se alguma condiÁ„o for true
+    engajar();  // Executa se alguma condi√ß√£o for true
 }
 ```
 
-### NOT (`!`) ? NegaÁ„o de Estado
+### NOT (`!`) ? Nega√ß√£o de Estado
 
 ```javascript
 const podeRecuar = !estaEngajado;  // Inverte: true ? false, false ? true
@@ -190,29 +190,29 @@ if (!estaStunado) {
     console.log("Posso me mover!");  // Executa se estaStunado for FALSE
 }
 
-// ? Evite dupla negaÁ„o (confunde)
-if (!!temVisao) {  // ?? Converte para boolean (desnecess·rio)
-    console.log("Tem vis„o");
+// ? Evite dupla nega√ß√£o (confunde)
+if (!!temVisao) {  // ?? Converte para boolean (desnecess√°rio)
+    console.log("Tem vis√£o");
 }
 
 // ? Melhor: use simples
-if (temVisao) {  // J· È boolean
-    console.log("Tem vis„o");
+if (temVisao) {  // J√° √© boolean
+    console.log("Tem vis√£o");
 }
 ```
 
 ---
 
-## Classes, Atributos e Est·ticos em JavaScript
+## Classes, Atributos e Est√°ticos em JavaScript
 
-### Classes = Campeıes ⁄nicos
+### Classes = Campe√µes √önicos
 
 ```javascript
 class Champion {
     constructor(nome, healthAtual, manaAtual, attackDamage) {
         this.nome = nome;                   // "Garen", "Lux", "Ahri"
-        this.healthAtual = healthAtual;     // HP desta inst‚ncia
-        this.manaAtual = manaAtual;         // Mana desta inst‚ncia
+        this.healthAtual = healthAtual;     // HP desta inst√¢ncia
+        this.manaAtual = manaAtual;         // Mana desta inst√¢ncia
         this.attackDamage = attackDamage;   // AD deste champ
     }
 }
@@ -220,20 +220,20 @@ class Champion {
 const garen = new Champion("Garen", 590, 0, 80);
 const lux = new Champion("Lux", 520, 380, 50);
 
-// garen e lux s„o DIFERENTES
-// cada um tem seus prÛprios stats
+// garen e lux s√£o DIFERENTES
+// cada um tem seus pr√≥prios stats
 console.log(garen.nome);  // "Garen"
 console.log(lux.nome);    // "Lux"
 ```
 
-### Atributos = Stats da Inst‚ncia
+### Atributos = Stats da Inst√¢ncia
 
 ```javascript
 class Champion {
     constructor(nome, healthAtual, manaAtual, attackDamage) {
-        this.nome = nome;              // Identificador ˙nico
-        this.healthAtual = healthAtual;  // Health desta inst‚ncia
-        this.manaAtual = manaAtual;    // Mana desta inst‚ncia
+        this.nome = nome;              // Identificador √∫nico
+        this.healthAtual = healthAtual;  // Health desta inst√¢ncia
+        this.manaAtual = manaAtual;    // Mana desta inst√¢ncia
         this.attackDamage = attackDamage;  // AD (varia com itens)
         this.estaVivo = true;          // Flag: true/false
     }
@@ -247,11 +247,11 @@ console.log(garen.healthAtual);  // 590
 console.log(lux.healthAtual);    // 520 (diferente!)
 ```
 
-### Est·ticos = Buff Global do Jogo
+### Est√°ticos = Buff Global do Jogo
 
 ```javascript
 class Champion {
-    // Est·tico = Compartilhado por TODOS os campeıes
+    // Est√°tico = Compartilhado por TODOS os campe√µes
     static VELOCIDADE_MOVIMENTO_BASE = 330;
     static MANA_REGENERACAO_BASE = 5;
     static DANO_MINION_BASE = 5;
@@ -264,15 +264,15 @@ class Champion {
     }
     
     calcularDanoFinal() {
-        // Usa membro est·tico (igual para TODOS)
+        // Usa membro est√°tico (igual para TODOS)
         return this.attackDamage + Champion.DANO_MINION_BASE;
     }
 }
 
-// Acesso est·tico (n„o precisa de inst‚ncia)
+// Acesso est√°tico (n√£o precisa de inst√¢ncia)
 console.log(Champion.VELOCIDADE_MOVIMENTO_BASE);  // 330 (para todos)
 
-// Alterar est·tico = afeta TODO mundo
+// Alterar est√°tico = afeta TODO mundo
 Champion.DANO_MINION_BASE = 7;  // Patch que afeta TODOS
 
 const garen = new Champion("Garen", 590, 0, 80);
@@ -284,13 +284,13 @@ console.log(lux.calcularDanoFinal());    // 50 + 7 = 57 (novo buff)
 ```
 
 **Analogia:**
-- **Atributo:** Garen tem 590 HP, Lux tem 520 HP ? stats ˙nicos
-- **Est·tico:** Todos tÍm velocidade 330 ? È regra do jogo
+- **Atributo:** Garen tem 590 HP, Lux tem 520 HP ? stats √∫nicos
+- **Est√°tico:** Todos t√™m velocidade 330 ? √© regra do jogo
   - Mudar `DANO_MINION_BASE` de 5 pra 7 = patch que afeta TODO mundo simultaneamente
 
 ---
 
-## Combinando Operadores ? LÛgica Complexa em DOM
+## Combinando Operadores ? L√≥gica Complexa em DOM
 
 ```javascript
 function habilitarBotaoOS(formulario) {
@@ -299,7 +299,7 @@ function habilitarBotaoOS(formulario) {
     const kmRequisicao = parseInt(formulario.querySelector("#kmRequisicao").value);
     const statusSistema = formulario.dataset.status;
     
-    // ValidaÁıes em sÈrie (AND)
+    // Valida√ß√µes em s√©rie (AND)
     const veiculoValido = veiculoId && veiculoId > 0;
     const kmValido = kmRequisicao > 0 && kmRequisicao <= 50_000;
     const sistemaOK = statusSistema === "ONLINE";
@@ -309,7 +309,7 @@ function habilitarBotaoOS(formulario) {
     
     // Atualizar DOM
     const botao = formulario.querySelector("#btnExecutar");
-    botao.disabled = !podeExecutar;  // Desativa se N√O pode
+    botao.disabled = !podeExecutar;  // Desativa se N√ÉO pode
     
     if (podeExecutar) {
         botao.classList.add("btn-success");
@@ -330,21 +330,21 @@ document.getElementById("veiculoId").addEventListener("change", function() {
 
 ## Operadores Especiais em JavaScript
 
-### Nullish Coalescing (`??`) ? Valor Padr„o Seguro
+### Nullish Coalescing (`??`) ? Valor Padr√£o Seguro
 
 ```javascript
-// Diferente de ||, sÛ usa padr„o se null/undefined
+// Diferente de ||, s√≥ usa padr√£o se null/undefined
 let tempo = 0 ?? 30;
-//          ^ N√O È nulo, usa este valor
-console.log(tempo);  // 0 (n„o 30)
+//          ^ N√ÉO √© nulo, usa este valor
+console.log(tempo);  // 0 (n√£o 30)
 
 let tempo2 = null ?? 30;
-//           ^^^^ … nulo, usa padr„o
+//           ^^^^ √â nulo, usa padr√£o
 console.log(tempo2);  // 30
 
 // Vs || (evitar para valores "falsy")
-let valor1 = 0 || 100;      // 100 (0 È falsy, problema!)
-let valor2 = 0 ?? 100;      // 0 (0 n„o È null, seguro!)
+let valor1 = 0 || 100;      // 100 (0 √© falsy, problema!)
+let valor2 = 0 ?? 100;      // 0 (0 n√£o √© null, seguro!)
 ```
 
 ### Optional Chaining (`?.`) ? Acesso Seguro
@@ -355,7 +355,7 @@ const veiculo = { placa: "ABC1234", manutencao: { tipo: "Preventiva" } };
 // ? Risco: erro se manutencao for undefined
 const tipo1 = veiculo.manutencao.tipo;  // OK (existe)
 
-// ? Seguro: retorna undefined se n„o existir
+// ? Seguro: retorna undefined se n√£o existir
 const tipo2 = veiculo.manutencao?.tipo;  // "Preventiva"
 const tipo3 = veiculo.aro?.tamanho;      // undefined (sem erro)
 
@@ -363,12 +363,12 @@ const tipo3 = veiculo.aro?.tamanho;      // undefined (sem erro)
 const osAberta = osArray?.[0]?.status;  // Seguro mesmo se array for vazio
 ```
 
-### Tern·rio (`? :`) ? Quick Decision
+### Tern√°rio (`? :`) ? Quick Decision
 
 ```javascript
 const statusBotao = podeExecutar ? "btn-success" : "btn-disabled";
 //                  ^^^^^^^^^^^^   ^^^^^^^^^^^^   ^^^^^^^^^^^^^
-//                  CondiÁ„o       Se true        Se false
+//                  Condi√ß√£o       Se true        Se false
 
 const mensagem = kmRequisicao > 50_000 ? "KM demais" : "KM OK";
 ```
@@ -383,17 +383,17 @@ typeof 123           // "number"
 typeof true          // "boolean"
 typeof undefined     // "undefined"
 typeof {}            // "object"
-typeof []            // "object" ? Cuidado! Array È object
-typeof null          // "object" ? Bug histÛrico!
+typeof []            // "object" ? Cuidado! Array √© object
+typeof null          // "object" ? Bug hist√≥rico!
 
-// ValidaÁ„o segura
+// Valida√ß√£o segura
 function processarOS(os) {
     if (typeof os !== "object" || os === null) {
-        return false;  // N„o È um objeto v·lido
+        return false;  // N√£o √© um objeto v√°lido
     }
     
     if (typeof os.kmRequisicao !== "number") {
-        return false;  // KM deve ser n˙mero
+        return false;  // KM deve ser n√∫mero
     }
     
     return true;
@@ -402,7 +402,7 @@ function processarOS(os) {
 
 ---
 
-## Boas Pr·ticas ? CÛdigo Defensivo em JavaScript
+## Boas Pr√°ticas ? C√≥digo Defensivo em JavaScript
 
 ```javascript
 // ? Ruim: Assume que tudo existe
@@ -411,12 +411,12 @@ function obterKmVeiculo(veiculoId) {
     return veiculo.kmMilhao * 1_000_000 + veiculo.kmAtual;  // NPE risco!
 }
 
-// ? Bom: ValidaÁ„o + early return
+// ? Bom: Valida√ß√£o + early return
 function obterKmVeiculo(veiculoId) {
     const veiculo = buscarVeiculo(veiculoId);
     
     if (!veiculo) {
-        console.error(`VeÌculo ${veiculoId} n„o encontrado`);
+        console.error(`Ve√≠culo ${veiculoId} n√£o encontrado`);
         return 0;
     }
     
@@ -435,10 +435,10 @@ function salvarOS() {
     const veiculoId = document.getElementById("veiculoId").value;
     const kmRequisicao = parseInt(document.getElementById("kmRequisicao").value);
     
-    // Guard: validaÁıes ANTES de chamar servidor
+    // Guard: valida√ß√µes ANTES de chamar servidor
     if (!osId || !veiculoId || !kmRequisicao) {
         alert("Preencha todos os campos");
-        return;  // Rejeita r·pido
+        return;  // Rejeita r√°pido
     }
     
     if (kmRequisicao <= 0 || kmRequisicao > 50_000) {
@@ -460,7 +460,7 @@ function salvarOS() {
             }
         },
         error: function() {
-            alert("Erro na conex„o");
+            alert("Erro na conex√£o");
         }
     });
 }
@@ -468,10 +468,10 @@ function salvarOS() {
 
 ---
 
-## PrecedÍncia de Operadores ? Cuidado!
+## Preced√™ncia de Operadores ? Cuidado!
 
 ```javascript
-// Operador && tem precedÍncia sobre ||
+// Operador && tem preced√™ncia sobre ||
 const resultado = true || false && false;
 //                 ^^^^   ^^^^^ ^^ ^^^^^
 //                         Isso avalia PRIMEIRO
@@ -479,7 +479,7 @@ const resultado = true || false && false;
 // Equivalente a:
 const resultado = true || (false && false);  // true
 
-// Se quer outro comportamento, use parÍnteses:
+// Se quer outro comportamento, use par√™nteses:
 const outro = (true || false) && false;  // false
 ```
 
@@ -487,11 +487,11 @@ const outro = (true || false) && false;  // false
 
 ## Resumo: When to Use What
 
-| SituaÁ„o | Operador | Exemplo |
+| Situa√ß√£o | Operador | Exemplo |
 |----------|----------|---------|
-| ValidaÁ„o obrigatÛria | `&&` | `if (tem && valido && ativo)` |
-| Valor padr„o | `\|\|` ou `??` | `nome = input \|\| "Padr„o"` |
-| Inverter condiÁ„o | `!` | `if (!emManutencao)` |
+| Valida√ß√£o obrigat√≥ria | `&&` | `if (tem && valido && ativo)` |
+| Valor padr√£o | `\|\|` ou `??` | `nome = input \|\| "Padr√£o"` |
+| Inverter condi√ß√£o | `!` | `if (!emManutencao)` |
 | Teste de igualdade | `===` | `if (status === "ABERTA")` |
 | Teste de tipo | `typeof` | `if (typeof id === "number")` |
 | Acesso seguro | `?.` | `obj?.campo?.subcampo` |

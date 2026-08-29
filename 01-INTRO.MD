@@ -1,92 +1,92 @@
-# Checklist de Leitura de CÛdigo ? LoL Edition
+# Checklist de Leitura de C√≥digo ? LoL Edition
 
 ## 1. Antes de Ler
 
 **Mapeie o terreno:**
-- [ ] Qual È o objetivo? (validaÁ„o, transformaÁ„o, persistÍncia, integraÁ„o, efeito colateral)
-- [ ] Em que "lane" est·? (Controller ? BO ? DAO, JSP render, JavaScript event, SQL query, JasperReport)
-- [ ] Quem chamou isso? (quem È a "lane ally" que depende desse cÛdigo)
-- [ ] Quais s„o as entradas esperadas? (tipos, nulls, listas vazias)
-- [ ] Qual È a saÌda? (retorno, efeito colateral, estado alterado)
+- [ ] Qual √© o objetivo? (valida√ß√£o, transforma√ß√£o, persist√™ncia, integra√ß√£o, efeito colateral)
+- [ ] Em que "lane" est√°? (Controller ? BO ? DAO, JSP render, JavaScript event, SQL query, JasperReport)
+- [ ] Quem chamou isso? (quem √© a "lane ally" que depende desse c√≥digo)
+- [ ] Quais s√£o as entradas esperadas? (tipos, nulls, listas vazias)
+- [ ] Qual √© a sa√≠da? (retorno, efeito colateral, estado alterado)
 
 ---
 
 ## 2. Durante a Leitura
 
-**Siga a rotaÁ„o passo a passo:**
+**Siga a rota√ß√£o passo a passo:**
 
-### Fluxo e ExecuÁ„o
-- [ ] Onde comeÁa? (entry point ? Controller, listener, callback)
+### Fluxo e Execu√ß√£o
+- [ ] Onde come√ßa? (entry point ? Controller, listener, callback)
 - [ ] Em que ordem as coisas acontecem?
-- [ ] Tem bifurcaÁ„o? (if/else, switch, validaÁıes)
-- [ ] Loops criam overhead ou mudam lÛgica? (N+1 queries? IteraÁıes desnecess·rias)
+- [ ] Tem bifurca√ß√£o? (if/else, switch, valida√ß√µes)
+- [ ] Loops criam overhead ou mudam l√≥gica? (N+1 queries? Itera√ß√µes desnecess√°rias)
 - [ ] Tem async/promises/callbacks? (em qual ordem resolvem?)
 
 ### Estado e Dados
-- [ ] Que vari·veis existem antes do trecho?
-- [ ] Quais s„o alteradas? (mutaÁ„o local vs global)
-- [ ] VÍm de onde? (par‚metro, banco, cache, estado externo)
-- [ ] Depende de algo de fora? (timestamp, userId, config, estado da sess„o)
+- [ ] Que vari√°veis existem antes do trecho?
+- [ ] Quais s√£o alteradas? (muta√ß√£o local vs global)
+- [ ] V√™m de onde? (par√¢metro, banco, cache, estado externo)
+- [ ] Depende de algo de fora? (timestamp, userId, config, estado da sess√£o)
 
-### FunÁıes e DependÍncias
-- [ ] Que funÁıes s„o chamadas aqui?
+### Fun√ß√µes e Depend√™ncias
+- [ ] Que fun√ß√µes s√£o chamadas aqui?
 - [ ] Elas fazem o que prometem ou tem efeitos colaterais?
-- [ ] Qual È o contrato delas? (o que entra, o que sai)
+- [ ] Qual √© o contrato delas? (o que entra, o que sai)
 
 ### Red Flags ? Procure Sempre Por:
 - [ ] `null`/`undefined` sem guarda? ? NPE risk
-- [ ] Array/Collection vazio n„o È tratado? ? IndexOutOfBoundsException ou loop que n„o executa
-- [ ] MutaÁ„o direta do objeto recebido? ? side effect invisÌvel
-- [ ] String concatenaÁ„o em SQL? ? SQL Injection
-- [ ] Date/Time hardcoded ou assumindo timezone? ? Bug em produÁ„o
-- [ ] Query sem Ìndice ou JOIN pesado? ? Timeout
-- [ ] Exception n„o È logada ou re-lanÁada? ? Debug hell
-- [ ] DuplicaÁ„o de lÛgica similar? ? ViolaÁ„o de DRY, SM vai reparar
+- [ ] Array/Collection vazio n√£o √© tratado? ? IndexOutOfBoundsException ou loop que n√£o executa
+- [ ] Muta√ß√£o direta do objeto recebido? ? side effect invis√≠vel
+- [ ] String concatena√ß√£o em SQL? ? SQL Injection
+- [ ] Date/Time hardcoded ou assumindo timezone? ? Bug em produ√ß√£o
+- [ ] Query sem √≠ndice ou JOIN pesado? ? Timeout
+- [ ] Exception n√£o √© logada ou re-lan√ßada? ? Debug hell
+- [ ] Duplica√ß√£o de l√≥gica similar? ? Viola√ß√£o de DRY, SM vai reparar
 
 ---
 
 ## 3. Depois da Leitura
 
-**ValidaÁ„o final:**
+**Valida√ß√£o final:**
 
 - [ ] Consigo explicar em uma frase?
-- [ ] Consigo descrever a entrada, execuÁ„o e saÌda sem olhar?
-- [ ] O nome da funÁ„o/classe combina com o que ela faz?
+- [ ] Consigo descrever a entrada, execu√ß√£o e sa√≠da sem olhar?
+- [ ] O nome da fun√ß√£o/classe combina com o que ela faz?
 - [ ] Se algo der errado aqui, aonde procuro? (log, stack trace, database)
-- [ ] Existe forma mais simples? (menos vari·veis, menos bifurcaÁıes, menos dependÍncias)
-- [ ] Qual foi a decis„o mais importante? (por que `for` e n„o `foreach`? Por que `Optional.orElse()` e n„o `if null`?)
+- [ ] Existe forma mais simples? (menos vari√°veis, menos bifurca√ß√µes, menos depend√™ncias)
+- [ ] Qual foi a decis√£o mais importante? (por que `for` e n√£o `foreach`? Por que `Optional.orElse()` e n√£o `if null`?)
 - [ ] Se o SM perguntasse "por que assim?" eu tenho resposta sem balbuciar?
 
 ---
 
 ## Script Mental ? 7 Passos
 
-### 1. **"Qual È a lane?"**
-Descubra o papel do cÛdigo no sistema.
-- … Controller (recebe requisiÁ„o, chama BO)?
-- … BO (orquestra regras de negÛcio)?
-- … DAO (persiste ou busca dados)?
-- … helper/util (reutiliz·vel)?
-- … listener/interceptor (reage a algo)?
+### 1. **"Qual √© a lane?"**
+Descubra o papel do c√≥digo no sistema.
+- √â Controller (recebe requisi√ß√£o, chama BO)?
+- √â BO (orquestra regras de neg√≥cio)?
+- √â DAO (persiste ou busca dados)?
+- √â helper/util (reutiliz√°vel)?
+- √â listener/interceptor (reage a algo)?
 
-### 2. **"Quem È o inimigo?"**
+### 2. **"Quem √© o inimigo?"**
 Qual problema ele resolve?
-- ValidaÁ„o de entrada ? protege de lixo
-- C·lculo complexo ? evita erro manual
-- IntegraÁ„o com terceiro ? mantÈm contrato
+- Valida√ß√£o de entrada ? protege de lixo
+- C√°lculo complexo ? evita erro manual
+- Integra√ß√£o com terceiro ? mant√©m contrato
 - Query otimizada ? evita timeout
 
-### 3. **"Quem tem vis„o?"**
-Que dados o cÛdigo vÍ?
-- Par‚metros de entrada
+### 3. **"Quem tem vis√£o?"**
+Que dados o c√≥digo v√™?
+- Par√¢metros de entrada
 - Estado do objeto (this.campo)
 - Banco de dados
 - Config/properties
-- Estado de sess„o/thread-local
+- Estado de sess√£o/thread-local
 
-### 4. **"Qual È a rotaÁ„o?"**
+### 4. **"Qual √© a rota√ß√£o?"**
 Trace passo a passo.
-1. Entra requisiÁ„o X
+1. Entra requisi√ß√£o X
 2. Valida Y
 3. Busca Z do banco
 4. Calcula W
@@ -94,10 +94,10 @@ Trace passo a passo.
 
 Se travar em qualquer passo ? volte para red flags.
 
-### 5. **"Qual È a win condition?"**
+### 5. **"Qual √© a win condition?"**
 O que significa sucesso aqui?
-- InserÁ„o no banco com status correto?
-- Retorno com todos os campos obrigatÛrios?
+- Inser√ß√£o no banco com status correto?
+- Retorno com todos os campos obrigat√≥rios?
 - Cache atualizado?
 - Nenhuma NPE?
 
@@ -105,102 +105,102 @@ O que significa sucesso aqui?
 Procure por edge cases e bugs.
 - E se a lista vier vazia?
 - E se o timestamp for ano passado?
-- E se houver divis„o por zero?
-- E se a conex„o cair no meio?
+- E se houver divis√£o por zero?
+- E se a conex√£o cair no meio?
 - E se dois threads tentarem isso ao mesmo tempo?
 
 ### 7. **"Eu consigo shotcall isso?"**
-VocÍ consegue explicar para o time?
+Voc√™ consegue explicar para o time?
 Tente uma frase assim:
-> "Aqui a gente valida se o veÌculo tem preventivos pendentes **antes** de usar ele numa OS, porque se n„o validar, o usu·rio cria OS com pendÍncia, que viola a regra da Demanda tal."
+> "Aqui a gente valida se o ve√≠culo tem preventivos pendentes **antes** de usar ele numa OS, porque se n√£o validar, o usu√°rio cria OS com pend√™ncia, que viola a regra da Demanda tal."
 
-Se n„o conseguir falar isso sem tropeÁar, releia.
+Se n√£o conseguir falar isso sem trope√ßar, releia.
 
 ---
 
-## Analogias LoL ? CÛdigo
+## Analogias LoL ? C√≥digo
 
-| LoL | CÛdigo |
+| LoL | C√≥digo |
 |-----|--------|
-| **Vis„o de mapa** | Rastrear dados + dependÍncias + estado |
-| **Recurso** (ouro, vida, mana) | Vari·veis (inteiros, strings, objetos) |
-| **Campe„o/Habilidade** | FunÁ„o/Classe (tem papel, cooldown, range, impacto) |
-| **Cooldown** | ValidaÁ„o (se passou, pode executar; sen„o, erro) |
-| **CC (crowd control)** | Guard/throw (bloqueia execuÁ„o atÈ condiÁ„o ser verdadeira) |
-| **Itemize** | Refatore/otimize (mude a estratÈgia se vencer menos) |
-| **Replay review** | Debug (volta no exato momento, vÍ a stack trace, entende aonde quebrou) |
-| **Enemy jungle na lane** | SM vendo PR (se vocÍ n„o justifica, vocÍ perde confianÁa) |
-| **Base destruÌda** | Production down (validaÁ„o falhou, rollback urgente) |
+| **Vis√£o de mapa** | Rastrear dados + depend√™ncias + estado |
+| **Recurso** (ouro, vida, mana) | Vari√°veis (inteiros, strings, objetos) |
+| **Campe√£o/Habilidade** | Fun√ß√£o/Classe (tem papel, cooldown, range, impacto) |
+| **Cooldown** | Valida√ß√£o (se passou, pode executar; sen√£o, erro) |
+| **CC (crowd control)** | Guard/throw (bloqueia execu√ß√£o at√© condi√ß√£o ser verdadeira) |
+| **Itemize** | Refatore/otimize (mude a estrat√©gia se vencer menos) |
+| **Replay review** | Debug (volta no exato momento, v√™ a stack trace, entende aonde quebrou) |
+| **Enemy jungle na lane** | SM vendo PR (se voc√™ n√£o justifica, voc√™ perde confian√ßa) |
+| **Base destru√≠da** | Production down (valida√ß√£o falhou, rollback urgente) |
 
 ---
 
-## AplicaÁ„o Pr·tica ? Por Contexto
+## Aplica√ß√£o Pr√°tica ? Por Contexto
 
-### Lendo DAO (Query/PersistÍncia)
-- [ ] SQL est· correto? (JOINs s„o necess·rios? H· ambiguidade? Õndices ajudam?)
-- [ ] Par·metros est„o escapados? (n„o tem concatenaÁ„o?)
-- [ ] Resultado È mapeado certo? (tipos, nulls, encoding?)
-- [ ] H· N+1 queries? (loop chamando query dentro?)
-- [ ] Est· usando transaction? (quem faz commit?)
+### Lendo DAO (Query/Persist√™ncia)
+- [ ] SQL est√° correto? (JOINs s√£o necess√°rios? H√° ambiguidade? √çndices ajudam?)
+- [ ] Par√°metros est√£o escapados? (n√£o tem concatena√ß√£o?)
+- [ ] Resultado √© mapeado certo? (tipos, nulls, encoding?)
+- [ ] H√° N+1 queries? (loop chamando query dentro?)
+- [ ] Est√° usando transaction? (quem faz commit?)
 
-### Lendo BO (LÛgica)
-- [ ] ValidaÁıes vÍm antes ou depois da mutaÁ„o?
-- [ ] Chamadas a DAO est„o na ordem certa?
+### Lendo BO (L√≥gica)
+- [ ] Valida√ß√µes v√™m antes ou depois da muta√ß√£o?
+- [ ] Chamadas a DAO est√£o na ordem certa?
 - [ ] Se uma DAO falhar, o que acontece? (rollback, log, re-throw?)
-- [ ] Estado compartilhado È mut·vel? (thread-safe?)
-- [ ] H· duplicaÁ„o entre mÈtodos do BO? (merging opportunity?)
+- [ ] Estado compartilhado √© mut√°vel? (thread-safe?)
+- [ ] H√° duplica√ß√£o entre m√©todos do BO? (merging opportunity?)
 
 ### Lendo Controller
-- [ ] Entrada È validada antes de chamar BO?
-- [ ] Response est· com status HTTP certo? (200, 400, 404, 500)
-- [ ] ExceÁ„o È capturada e retorna JSON sensato?
-- [ ] CORS/auth est· configurado?
-- [ ] Qual BO È chamado e por quÍ?
+- [ ] Entrada √© validada antes de chamar BO?
+- [ ] Response est√° com status HTTP certo? (200, 400, 404, 500)
+- [ ] Exce√ß√£o √© capturada e retorna JSON sensato?
+- [ ] CORS/auth est√° configurado?
+- [ ] Qual BO √© chamado e por qu√™?
 
 ### Lendo JavaScript (cadastrar_*.js)
 - [ ] Evento dispara quando deveria? (onclick, onchange, onsubmit)
 - [ ] AJAX espera resposta antes de fazer next step?
-- [ ] Resposta È tratada? (sucesso, erro, timeout)
-- [ ] DOM È manipulado correto? (ID existe, seletor n„o È genÈrico)
-- [ ] H· validaÁ„o client-side antes de enviar?
-- [ ] H· atualizaÁ„o visual depois que servidor responde?
+- [ ] Resposta √© tratada? (sucesso, erro, timeout)
+- [ ] DOM √© manipulado correto? (ID existe, seletor n√£o √© gen√©rico)
+- [ ] H√° valida√ß√£o client-side antes de enviar?
+- [ ] H√° atualiza√ß√£o visual depois que servidor responde?
 
 ### Lendo JSP/HTML
 - [ ] Template tem dados do servidor? (como chegam, de que objeto?)
-- [ ] Loop itera corretamente? (forEach vs for, acesso a Ìndice)
-- [ ] H· XSS risk? (saÌda È escaped? `${fn:escapeXml(valor)}`)
-- [ ] Form tem hidden fields obrigatÛrios?
+- [ ] Loop itera corretamente? (forEach vs for, acesso a √≠ndice)
+- [ ] H√° XSS risk? (sa√≠da √© escaped? `${fn:escapeXml(valor)}`)
+- [ ] Form tem hidden fields obrigat√≥rios?
 - [ ] Button tem tipo certo? (submit vs button)
 
 ### Lendo JasperReport (.jrxml)
-- [ ] Encoding est· correto? (ISO-8859-1 for old systems)
-- [ ] Query est· dentro? (de onde vÍm dados? H· par‚metros?)
-- [ ] AcentuaÁ„o usa `chr()`? (portuguÍs funciona)
-- [ ] Tem vari·vel calculada? (e ela est· em escopo certo?)
-- [ ] Tipo de dado da coluna est· certo? (numeric, string, date)
+- [ ] Encoding est√° correto? (ISO-8859-1 for old systems)
+- [ ] Query est√° dentro? (de onde v√™m dados? H√° par√¢metros?)
+- [ ] Acentua√ß√£o usa `chr()`? (portugu√™s funciona)
+- [ ] Tem vari√°vel calculada? (e ela est√° em escopo certo?)
+- [ ] Tipo de dado da coluna est√° certo? (numeric, string, date)
 
 ---
 
 ## Sinais de Alerta ? Red Flags Comuns
 
 ```
-?? sem validaÁ„o antes de usar
-?? sem try/catch em integraÁ„o externa
+?? sem valida√ß√£o antes de usar
+?? sem try/catch em integra√ß√£o externa
 ?? sem log de erro
-?? query din‚mica com string concatenation
+?? query din√¢mica com string concatenation
 ?? loop infinito (while sem break claro)
-?? mutaÁ„o de list dentro de stream/lambda
+?? muta√ß√£o de list dentro de stream/lambda
 ?? ignore exception com catch vazio
 ?? NPE porque assumiu non-null sem checar
-?? duplicaÁ„o exata de lÛgica em 2+ lugares
+?? duplica√ß√£o exata de l√≥gica em 2+ lugares
 ?? sem handling de case vazio (empty list, null object)
 ?? hardcode de ID, nome, path, URL
 ?? sem timezone em java.util.Date
-?? sem Ìndice em query pesada
-?? sem ordenaÁ„o explÌcita (SQL sem ORDER BY)
+?? sem √≠ndice em query pesada
+?? sem ordena√ß√£o expl√≠cita (SQL sem ORDER BY)
 ?? callback hell em JavaScript
-?? promise n„o È await-ed
-?? DOM query que n„o garante elemento existe
+?? promise n√£o √© await-ed
+?? DOM query que n√£o garante elemento existe
 ```
 
 ---
@@ -210,54 +210,54 @@ Se n„o conseguir falar isso sem tropeÁar, releia.
 **Quando descobrir problema:**
 > "Aqui pode vir null/vazio; precisamos validar com `if (list != null && !list.isEmpty())`."
 
-**Quando encontrar duplicaÁ„o:**
-> "Essa lÛgica È idÍntica ‡ linha X; d· pra extrair num mÈtodo helper?"
+**Quando encontrar duplica√ß√£o:**
+> "Essa l√≥gica √© id√™ntica √† linha X; d√° pra extrair num m√©todo helper?"
 
 **Quando a ordem importar:**
-> "O BO chama DAO antes de validar; se validaÁ„o falhar, banco j· foi alterado."
+> "O BO chama DAO antes de validar; se valida√ß√£o falhar, banco j√° foi alterado."
 
-**Quando d˙vida sobre decis„o:**
-> "Por que usou for em vez de forEach aqui? Precisa do Ìndice ou break?"
+**Quando d√∫vida sobre decis√£o:**
+> "Por que usou for em vez de forEach aqui? Precisa do √≠ndice ou break?"
 
-**Quando coisa est· simples demais:**
-> "Se o usu·rio enviar lista vazia, o quÍ acontece?"
+**Quando coisa est√° simples demais:**
+> "Se o usu√°rio enviar lista vazia, o qu√™ acontece?"
 
 ---
 
-## Treino R·pido Di·rio ? 10 Minutos
+## Treino R√°pido Di√°rio ? 10 Minutos
 
 Pegue um trecho pequeno (5?15 linhas) e responda:
 
-1. **O quÍ?** ? Descreva em uma frase.
-   - ? "Valida se veÌculo tem km acima do limite antes de criar OS"
+1. **O qu√™?** ? Descreva em uma frase.
+   - ? "Valida se ve√≠culo tem km acima do limite antes de criar OS"
 
 2. **Como?** ? Passo a passo.
-   - ? Busca veÌculo por ID ? Calcula km total ? Compara com limite ? LanÁa exception ou continua
+   - ? Busca ve√≠culo por ID ? Calcula km total ? Compara com limite ? Lan√ßa exception ou continua
 
 3. **Onde quebra?** ? Aponte 1 risco.
-   - ? "Se `kmMilhao` for null, `NPE` na multiplicaÁ„o"
+   - ? "Se `kmMilhao` for null, `NPE` na multiplica√ß√£o"
 
 4. **Melhora?** ? Sugira refator.
-   - ? "Extrair c·lculo de km num mÈtodo `calcularKmTotal()` pra reusar"
+   - ? "Extrair c√°lculo de km num m√©todo `calcularKmTotal()` pra reusar"
 
 5. **Compare.** ? Releia, veja se acertou.
-   - ? "T·, eu vi certo? Mesmo que o banco retorne null, o null È checado aqui?"
+   - ? "T√°, eu vi certo? Mesmo que o banco retorne null, o null √© checado aqui?"
 
 ---
 
-## Quando VocÍ Trava
+## Quando Voc√™ Trava
 
-**Se travar em qualquer ponto, faÁa isso:**
+**Se travar em qualquer ponto, fa√ßa isso:**
 
-1. Volte ao contrato: entrada ? saÌda
+1. Volte ao contrato: entrada ? sa√≠da
 2. Procure o null/empty case
-3. Procure onde o estado È alterado
-4. Procure chamadas a funÁıes externas
+3. Procure onde o estado √© alterado
+4. Procure chamadas a fun√ß√µes externas
 5. Procure loops
 6. Procure if/else
 
-Um desses 6 est· causando confus„o. Garanto.
+Um desses 6 est√° causando confus√£o. Garanto.
 
 ---
 
-**Lembrete final:** Ler cÛdigo È como mapear em LoL ? n„o olhe detalhes isolados, olhe fluxo, ameaÁa, vis„o e decis„o. A win condition È entender por que aquele cÛdigo existe e o que quebra se ele virar lixo.
+**Lembrete final:** Ler c√≥digo √© como mapear em LoL ? n√£o olhe detalhes isolados, olhe fluxo, amea√ßa, vis√£o e decis√£o. A win condition √© entender por que aquele c√≥digo existe e o que quebra se ele virar lixo.

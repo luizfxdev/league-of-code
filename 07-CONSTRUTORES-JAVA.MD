@@ -1,19 +1,19 @@
 # Construtores, This, Sobrecarga e Encapsulamento em Java
 
-Aprofundamento em conceitos fundamentais de POO com analogias PokÈmon.
+Aprofundamento em conceitos fundamentais de POO com analogias Pok√©mon.
 
 ---
 
 ## 1. Construtores
 
-### O que È um Construtor?
+### O que √© um Construtor?
 
-MÈtodo especial que **executa automaticamente** quando vocÍ cria um novo objeto com `new`. Respons·vel por **inicializar o estado** do objeto.
+M√©todo especial que **executa automaticamente** quando voc√™ cria um novo objeto com `new`. Respons√°vel por **inicializar o estado** do objeto.
 
-**Analogia PokÈmon:**
-- Quando vocÍ captura um PokÈmon, ele n„o nasce vazio
+**Analogia Pok√©mon:**
+- Quando voc√™ captura um Pok√©mon, ele n√£o nasce vazio
 - Tem um nome, tipo, HP definidos no momento da captura
-- O construtor È esse processo de inicializaÁ„o
+- O construtor √© esse processo de inicializa√ß√£o
 
 ### Problema: Objetos Vazios
 
@@ -30,11 +30,11 @@ System.out.println(pikachu.nome);  // null
 System.out.println(pikachu.tipo);  // null
 System.out.println(pikachu.hp);    // 0
 
-// Problema: faz sentido um PokÈmon sem nome?
-// … inconsistente ter PokÈmon vazio em memÛria
+// Problema: faz sentido um Pok√©mon sem nome?
+// √â inconsistente ter Pok√©mon vazio em mem√≥ria
 ```
 
-### SoluÁ„o: Construtor Customizado
+### Solu√ß√£o: Construtor Customizado
 
 ```java
 // ? Com construtor
@@ -43,7 +43,7 @@ public class Pokemon {
     public String tipo;
     public int hp;
     
-    // Construtor: forÁa inicializar nome, tipo e hp
+    // Construtor: for√ßa inicializar nome, tipo e hp
     public Pokemon(String nome, String tipo, int hp) {
         this.nome = nome;
         this.tipo = tipo;
@@ -51,13 +51,13 @@ public class Pokemon {
     }
 }
 
-Pokemon pikachu = new Pokemon("Pikachu", "ElÈtrico", 35);
+Pokemon pikachu = new Pokemon("Pikachu", "El√©trico", 35);
 // Agora o objeto SEMPRE nasce consistente
 ```
 
-### Construtor Padr„o (Default)
+### Construtor Padr√£o (Default)
 
-Se vocÍ n„o cria um construtor customizado, Java fornece um vazio automaticamente:
+Se voc√™ n√£o cria um construtor customizado, Java fornece um vazio automaticamente:
 
 ```java
 public class Pokemon {
@@ -70,7 +70,7 @@ public class Pokemon {
 Pokemon p = new Pokemon();  // Funciona
 ```
 
-**Mas:** Se vocÍ criar um construtor customizado, o padr„o desaparece:
+**Mas:** Se voc√™ criar um construtor customizado, o padr√£o desaparece:
 
 ```java
 public class Pokemon {
@@ -80,20 +80,20 @@ public class Pokemon {
         this.nome = nome;
     }
     
-    // O construtor padr„o N√O existe mais!
+    // O construtor padr√£o N√ÉO existe mais!
 }
 
 Pokemon p1 = new Pokemon("Pikachu");  // ? Funciona
 Pokemon p2 = new Pokemon();           // ? ERRO!
 ```
 
-**SoluÁ„o:** ForneÁa o construtor padr„o explicitamente:
+**Solu√ß√£o:** Forne√ßa o construtor padr√£o explicitamente:
 
 ```java
 public class Pokemon {
     public String nome;
     
-    // Construtor padr„o
+    // Construtor padr√£o
     public Pokemon() {
     }
     
@@ -107,46 +107,46 @@ Pokemon p1 = new Pokemon();
 Pokemon p2 = new Pokemon("Pikachu");
 ```
 
-### Fluxo de ConstruÁ„o
+### Fluxo de Constru√ß√£o
 
 ```
-Pokemon pikachu = new Pokemon("Pikachu", "ElÈtrico", 35);
+Pokemon pikachu = new Pokemon("Pikachu", "El√©trico", 35);
 
-1. new Pokemon(...)  ? Aloca memÛria
+1. new Pokemon(...)  ? Aloca mem√≥ria
 2. Executa construtor ? Inicializa atributos
-3. Retorna referÍncia ? pikachu aponta para o objeto
+3. Retorna refer√™ncia ? pikachu aponta para o objeto
 ```
 
 ---
 
 ## 2. A Palavra `this`
 
-### O que È?
+### O que √©?
 
-ReferÍncia ao **prÛprio objeto**. ExplÌcita e diferencia atributos de vari·veis locais.
+Refer√™ncia ao **pr√≥prio objeto**. Expl√≠cita e diferencia atributos de vari√°veis locais.
 
-**Analogia PokÈmon:**
-- `this` = o prÛprio PokÈmon falando sobre si mesmo
+**Analogia Pok√©mon:**
+- `this` = o pr√≥prio Pok√©mon falando sobre si mesmo
 - "Meu nome" = `this.nome`
 - "Meu HP" = `this.hp`
 
-### Uso 1: Diferenciar Atributos de Par‚metros
+### Uso 1: Diferenciar Atributos de Par√¢metros
 
 ```java
 public class Pokemon {
     public String nome;
     public int hp;
     
-    // ? Confuso: qual È qual?
+    // ? Confuso: qual √© qual?
     public void inicializar1(String nome, int hp) {
-        nome = nome;  // Qual nome? O par‚metro ou o atributo?
+        nome = nome;  // Qual nome? O par√¢metro ou o atributo?
         hp = hp;      // Qual hp?
     }
     
     // ? Claro: this diferencia
     public void inicializar2(String nome, int hp) {
-        this.nome = nome;  // this.nome = par‚metro nome
-        this.hp = hp;      // this.hp = par‚metro hp
+        this.nome = nome;  // this.nome = par√¢metro nome
+        this.hp = hp;      // this.hp = par√¢metro hp
     }
 }
 ```
@@ -160,7 +160,7 @@ public class Pokemon {
     private int hp;
     
     public Pokemon(String nome, String tipo, int hp) {
-        this.nome = nome;  // Atributo recebe par‚metro
+        this.nome = nome;  // Atributo recebe par√¢metro
         this.tipo = tipo;
         this.hp = hp;
     }
@@ -168,7 +168,7 @@ public class Pokemon {
 
 // Stack                 Heap
 // nome ("Pikachu") ---> this.nome = "Pikachu"
-// tipo ("ElÈtrico")---> this.tipo = "ElÈtrico"
+// tipo ("El√©trico")---> this.tipo = "El√©trico"
 // hp (35)         ---> this.hp = 35
 ```
 
@@ -194,21 +194,21 @@ public class Pokemon {
         this(nome, tipo, 20, 1);  // Chama o outro construtor
     }
     
-    // Construtor padr„o
+    // Construtor padr√£o
     public Pokemon() {
-        this("PokÈmon", "Normal");  // Chama o construtor simplificado
+        this("Pok√©mon", "Normal");  // Chama o construtor simplificado
     }
 }
 
-Pokemon p1 = new Pokemon();                            // padr„o
-Pokemon p2 = new Pokemon("Pikachu", "ElÈtrico");      // simplificado
-Pokemon p3 = new Pokemon("Pikachu", "ElÈtrico", 35, 5); // completo
+Pokemon p1 = new Pokemon();                            // padr√£o
+Pokemon p2 = new Pokemon("Pikachu", "El√©trico");      // simplificado
+Pokemon p3 = new Pokemon("Pikachu", "El√©trico", 35, 5); // completo
 ```
 
-**Vantagem:** Evita repetiÁ„o de cÛdigo
+**Vantagem:** Evita repeti√ß√£o de c√≥digo
 
 ```java
-// ? RepetiÁ„o (errado)
+// ? Repeti√ß√£o (errado)
 public Pokemon(String nome, String tipo) {
     this.nome = nome;
     this.tipo = tipo;
@@ -217,13 +217,13 @@ public Pokemon(String nome, String tipo) {
 }
 
 public Pokemon() {
-    this.nome = "PokÈmon";
+    this.nome = "Pok√©mon";
     this.tipo = "Normal";
     this.hp = 20;
     this.nivel = 1;
 }
 
-// ? Sem repetiÁ„o (certo)
+// ? Sem repeti√ß√£o (certo)
 public Pokemon(String nome, String tipo, int hp, int nivel) {
     this.nome = nome;
     this.tipo = tipo;
@@ -236,7 +236,7 @@ public Pokemon(String nome, String tipo) {
 }
 
 public Pokemon() {
-    this("PokÈmon", "Normal");
+    this("Pok√©mon", "Normal");
 }
 ```
 
@@ -247,24 +247,24 @@ public class Batalha {
     private Pokemon pokemon1;
     private Pokemon pokemon2;
     
-    // A classe PokÈmon passa uma referÍncia a si mesma
+    // A classe Pok√©mon passa uma refer√™ncia a si mesma
     public Batalha(Pokemon pokemon1, Pokemon pokemon2) {
-        this.pokemon1 = pokemon1;  // Guarda a referÍncia
+        this.pokemon1 = pokemon1;  // Guarda a refer√™ncia
         this.pokemon2 = pokemon2;
     }
 }
 
-Pokemon pikachu = new Pokemon("Pikachu", "ElÈtrico", 35, 5);
+Pokemon pikachu = new Pokemon("Pikachu", "El√©trico", 35, 5);
 Pokemon charmander = new Pokemon("Charmander", "Fogo", 39, 5);
 Batalha batalha = new Batalha(pikachu, charmander);
-// Batalha tem acesso aos PokÈmon via referÍncia
+// Batalha tem acesso aos Pok√©mon via refer√™ncia
 ```
 
 ### Regra: Quando usar `this`?
 
 **Use `this` quando:**
-- H· ambiguidade entre atributo e par‚metro (OBRIGAT”RIO em construtores)
-- Quer passar o objeto para outro mÈtodo
+- H√° ambiguidade entre atributo e par√¢metro (OBRIGAT√ìRIO em construtores)
+- Quer passar o objeto para outro m√©todo
 - Quer chamar outro construtor da classe
 
 ```java
@@ -273,8 +273,8 @@ public class Pokemon {
     private int maxHp;
     
     public Pokemon(int hp) {
-        this.hp = hp;      // NECESS¡RIO (sem this, ambÌguo)
-        this.maxHp = hp;   // BOM (claro que È atributo)
+        this.hp = hp;      // NECESS√ÅRIO (sem this, amb√≠guo)
+        this.maxHp = hp;   // BOM (claro que √© atributo)
     }
     
     public void receber_dano(int dano) {
@@ -291,15 +291,15 @@ public class Pokemon {
 
 ## 3. Sobrecarga (Overloading)
 
-### O que È?
+### O que √©?
 
-M˙ltiplos mÈtodos/construtores com o **mesmo nome**, mas **listas de par‚metros diferentes**.
+M√∫ltiplos m√©todos/construtores com o **mesmo nome**, mas **listas de par√¢metros diferentes**.
 
-**Analogia PokÈmon:**
-- PokÈmon pode atacar de formas diferentes
-- `atacar()` - sem par‚metro, ataque padr„o
+**Analogia Pok√©mon:**
+- Pok√©mon pode atacar de formas diferentes
+- `atacar()` - sem par√¢metro, ataque padr√£o
 - `atacar(tipo)` - especifica o tipo de ataque
-- `atacar(adversario, tipo)` - especifica advers·rio e tipo
+- `atacar(adversario, tipo)` - especifica advers√°rio e tipo
 
 ### Sobrecarga de Construtores
 
@@ -310,15 +310,15 @@ public class Pokemon {
     private int hp;
     private int nivel;
     
-    // Construtor 1: sem par‚metros
+    // Construtor 1: sem par√¢metros
     public Pokemon() {
-        this.nome = "PokÈmon";
+        this.nome = "Pok√©mon";
         this.tipo = "Normal";
         this.hp = 20;
         this.nivel = 1;
     }
     
-    // Construtor 2: sÛ nome
+    // Construtor 2: s√≥ nome
     public Pokemon(String nome) {
         this.nome = nome;
         this.tipo = "Normal";
@@ -345,16 +345,16 @@ public class Pokemon {
 
 Pokemon p1 = new Pokemon();
 Pokemon p2 = new Pokemon("Pikachu");
-Pokemon p3 = new Pokemon("Pikachu", "ElÈtrico");
-Pokemon p4 = new Pokemon("Pikachu", "ElÈtrico", 35, 5);
+Pokemon p3 = new Pokemon("Pikachu", "El√©trico");
+Pokemon p4 = new Pokemon("Pikachu", "El√©trico", 35, 5);
 ```
 
-**Problema:** RepetiÁ„o de cÛdigo
+**Problema:** Repeti√ß√£o de c√≥digo
 
 ```java
-// ? Ruim: cÛdigo repetido
+// ? Ruim: c√≥digo repetido
 public Pokemon() {
-    this.nome = "PokÈmon";
+    this.nome = "Pok√©mon";
     this.tipo = "Normal";
     this.hp = 20;
     this.nivel = 1;
@@ -375,12 +375,12 @@ public Pokemon(String nome, String tipo) {
 }
 ```
 
-**SoluÁ„o:** Constructor Chaining com `this()`
+**Solu√ß√£o:** Constructor Chaining com `this()`
 
 ```java
 // ? Bom: chamadas encadeadas
 public Pokemon() {
-    this("PokÈmon", "Normal", 20, 1);
+    this("Pok√©mon", "Normal", 20, 1);
 }
 
 public Pokemon(String nome) {
@@ -399,30 +399,30 @@ public Pokemon(String nome, String tipo, int hp, int nivel) {
 }
 ```
 
-### Sobrecarga de MÈtodos
+### Sobrecarga de M√©todos
 
 ```java
 public class Pokemon {
     private int ataque;
     
-    // MÈtodo 1: ataque padr„o
+    // M√©todo 1: ataque padr√£o
     public void atacar() {
-        System.out.println("Ataque padr„o de " + this.ataque);
+        System.out.println("Ataque padr√£o de " + this.ataque);
     }
     
-    // MÈtodo 2: ataque com multiplicador
+    // M√©todo 2: ataque com multiplicador
     public void atacar(double multiplicador) {
         int dano = (int)(this.ataque * multiplicador);
         System.out.println("Ataque com " + dano + " de dano");
     }
     
-    // MÈtodo 3: ataque contra advers·rio
+    // M√©todo 3: ataque contra advers√°rio
     public void atacar(Pokemon adversario) {
         adversario.hp -= this.ataque;
         System.out.println("Atacou e causou dano!");
     }
     
-    // MÈtodo 4: ataque customizado
+    // M√©todo 4: ataque customizado
     public void atacar(Pokemon adversario, double multiplicador) {
         int dano = (int)(this.ataque * multiplicador);
         adversario.hp -= dano;
@@ -443,19 +443,19 @@ pikachu.atacar(charmander, 2.0);     // Tipo 4
 ### Regras da Sobrecarga
 
 **Deve variar:**
-- ? N˙mero de par‚metros
-- ? Tipo de par‚metros
-- ? Ordem de par‚metros
+- ? N√∫mero de par√¢metros
+- ? Tipo de par√¢metros
+- ? Ordem de par√¢metros
 
-**N„o basta:**
-- ? Tipo de retorno (n„o diferencia)
+**N√£o basta:**
+- ? Tipo de retorno (n√£o diferencia)
 
 ```java
-// ? ERRO: mesmo n˙mero e tipo de par‚metros
+// ? ERRO: mesmo n√∫mero e tipo de par√¢metros
 public void transferir(double valor) { }
-public double transferir(double valor) { }  // AmbÌguo!
+public double transferir(double valor) { }  // Amb√≠guo!
 
-// ? OK: n˙mero diferente
+// ? OK: n√∫mero diferente
 public void transferir(double valor) { }
 public void transferir(double valor, String descricao) { }
 
@@ -472,20 +472,20 @@ public void comparar(int idade, String nome) { }
 
 ## 4. Encapsulamento
 
-### O PrincÌpio
+### O Princ√≠pio
 
-**Esconder detalhes de implementaÁ„o**, expondo apenas operaÁıes seguras que mantÍm o objeto **consistente**.
+**Esconder detalhes de implementa√ß√£o**, expondo apenas opera√ß√µes seguras que mant√™m o objeto **consistente**.
 
-**Analogia PokÈmon:**
-- Um PokÈmon È um encapsulamento
-- VocÍ n„o pode mudar diretamente o DNA dele
-- VocÍ sÛ pode fazer operaÁıes seguras: atacar, defender, ganhar experiÍncia
-- O PokÈmon internamente controla sua consistÍncia
+**Analogia Pok√©mon:**
+- Um Pok√©mon √© um encapsulamento
+- Voc√™ n√£o pode mudar diretamente o DNA dele
+- Voc√™ s√≥ pode fazer opera√ß√µes seguras: atacar, defender, ganhar experi√™ncia
+- O Pok√©mon internamente controla sua consist√™ncia
 
-### O Problema do Acesso P˙blico
+### O Problema do Acesso P√∫blico
 
 ```java
-// ? Atributos p˙blicos (INSEGURO)
+// ? Atributos p√∫blicos (INSEGURO)
 public class ContaBancaria {
     public int numero;
     public String titular;
@@ -494,55 +494,55 @@ public class ContaBancaria {
 
 ContaBancaria conta = new ContaBancaria();
 conta.numero = 1234;
-conta.titular = "Jo„o";
+conta.titular = "Jo√£o";
 conta.saldo = 1000;
 
 // Qualquer um pode fazer isso:
 conta.saldo = -9999;  // ? INCONSISTENTE!
-conta.numero = 9999;  // ? Mudar n˙mero da conta?!
+conta.numero = 9999;  // ? Mudar n√∫mero da conta?!
 
-// Objeto em estado inv·lido
+// Objeto em estado inv√°lido
 ```
 
-### A SoluÁ„o: Getters e Setters
+### A Solu√ß√£o: Getters e Setters
 
 ```java
 // ? Atributos privados com controle
 public class ContaBancaria {
-    private int numero;      // private = sÛ acessa dentro da classe
+    private int numero;      // private = s√≥ acessa dentro da classe
     private String titular;
     private double saldo;
     
-    // Getter: ler com seguranÁa
+    // Getter: ler com seguran√ßa
     public int getNumero() {
         return this.numero;
     }
     
-    // Getter: ler com seguranÁa
+    // Getter: ler com seguran√ßa
     public String getTitular() {
         return this.titular;
     }
     
-    // Getter: ler com seguranÁa
+    // Getter: ler com seguran√ßa
     public double getSaldo() {
         return this.saldo;
     }
     
-    // Setter: escrever com validaÁ„o
+    // Setter: escrever com valida√ß√£o
     public void setTitular(String titular) {
         if (titular != null && !titular.isEmpty()) {
             this.titular = titular;
         }
     }
     
-    // Setter: n˙mero n„o pode mudar apÛs criaÁ„o
+    // Setter: n√∫mero n√£o pode mudar ap√≥s cria√ß√£o
     public void setNumero(int numero) {
-        if (this.numero == 0) {  // SÛ permite mudar se ainda È zero
+        if (this.numero == 0) {  // S√≥ permite mudar se ainda √© zero
             this.numero = numero;
         }
     }
     
-    // OperaÁıes seguras para modificar saldo
+    // Opera√ß√µes seguras para modificar saldo
     public void depositar(double valor) {
         if (valor > 0) {
             this.saldo += valor;
@@ -559,20 +559,20 @@ public class ContaBancaria {
 
 ContaBancaria conta = new ContaBancaria();
 conta.setNumero(1234);
-conta.setTitular("Jo„o");
+conta.setTitular("Jo√£o");
 conta.depositar(1000);
 
-// Agora È seguro
+// Agora √© seguro
 System.out.println(conta.getSaldo());  // 1000
 
-conta.setNumero(9999);  // N„o faz nada (n˙mero j· foi definido)
+conta.setNumero(9999);  // N√£o faz nada (n√∫mero j√° foi definido)
 conta.depositar(500);   // OK: 1500
 conta.sacar(100);       // OK: 1395 (1500 - 100 - 5 de taxa)
 ```
 
-### Padr„o JavaBeans
+### Padr√£o JavaBeans
 
-ConvenÁ„o de nomenclatura em Java:
+Conven√ß√£o de nomenclatura em Java:
 
 ```
 Atributo          Getter         Setter
@@ -616,13 +616,13 @@ public class Pokemon {
 }
 ```
 
-### Quando N„o Permitir Setter
+### Quando N√£o Permitir Setter
 
 ```java
 public class Pokemon {
     private String nome;
     private String tipo;
-    private int hpMaximo;  // N„o deve mudar apÛs criaÁ„o
+    private int hpMaximo;  // N√£o deve mudar ap√≥s cria√ß√£o
     
     public Pokemon(String nome, String tipo, int hpMaximo) {
         this.nome = nome;
@@ -642,18 +642,18 @@ public class Pokemon {
         return this.tipo;
     }
     
-    // ? Tipo n„o tem setter (imut·vel)
+    // ? Tipo n√£o tem setter (imut√°vel)
     
     public int getHpMaximo() {
         return this.hpMaximo;
     }
     
-    // ? HpMaximo n„o tem setter (imut·vel)
+    // ? HpMaximo n√£o tem setter (imut√°vel)
 }
 
-Pokemon p = new Pokemon("Pikachu", "ElÈtrico", 35);
+Pokemon p = new Pokemon("Pikachu", "El√©trico", 35);
 p.setNome("Pikachu Gigante");  // OK
-// p.setTipo("Fogo");          // MÈtodo n„o existe!
+// p.setTipo("Fogo");          // M√©todo n√£o existe!
 ```
 
 ---
@@ -663,7 +663,7 @@ p.setNome("Pikachu Gigante");  // OK
 ### Hierarquia de Visibilidade
 
 ```
-private  < (padr„o) < protected < public
+private  < (padr√£o) < protected < public
 Mais restritivo ..................... Menos restritivo
 ```
 
@@ -672,18 +672,18 @@ Mais restritivo ..................... Menos restritivo
 | Modificador | Mesma Classe | Mesmo Pacote | Subclasse (outro pacote) | Outro Pacote |
 |-----------|--------------|-------------|------------------------|------------|
 | `private` | ? | ? | ? | ? |
-| (padr„o) | ? | ? | ? | ? |
+| (padr√£o) | ? | ? | ? | ? |
 | `protected` | ? | ? | ? | ? |
 | `public` | ? | ? | ? | ? |
 
-### Private - M·xima ProteÁ„o
+### Private - M√°xima Prote√ß√£o
 
 ```java
 // entities/Pokemon.java
 package entities;
 
 public class Pokemon {
-    private String nome;        // SÛ Pokemon acessa
+    private String nome;        // S√≥ Pokemon acessa
     private int hp;
     
     public Pokemon(String nome, int hp) {
@@ -703,14 +703,14 @@ import entities.Pokemon;
 public class Program {
     public static void main(String[] args) {
         Pokemon p = new Pokemon("Pikachu", 35);
-        System.out.println(p.getNome());  // ? OK (getter p˙blico)
+        System.out.println(p.getNome());  // ? OK (getter p√∫blico)
         System.out.println(p.nome);       // ? ERRO (private)
         p.hp = 50;                        // ? ERRO (private)
     }
 }
 ```
 
-### Protected - HeranÁa
+### Protected - Heran√ßa
 
 ```java
 // entities/Criatura.java
@@ -750,7 +750,7 @@ public class Pokemon {
 
 ---
 
-## 6. Exemplo Pr·tico Completo: Conta Banc·ria
+## 6. Exemplo Pr√°tico Completo: Conta Banc√°ria
 
 ```java
 package entities;
@@ -762,17 +762,17 @@ public class ContaBancaria {
     
     private static final double TAXA_SAQUE = 5.0;
     
-    // Construtor: sem depÛsito inicial
+    // Construtor: sem dep√≥sito inicial
     public ContaBancaria() {
     }
     
-    // Construtor: com n˙mero e titular
+    // Construtor: com n√∫mero e titular
     public ContaBancaria(int numero, String titular) {
         this.numero = numero;
         this.titular = titular;
     }
     
-    // Construtor: com n˙mero, titular e depÛsito
+    // Construtor: com n√∫mero, titular e dep√≥sito
     public ContaBancaria(int numero, String titular, double depositoInicial) {
         this(numero, titular);
         if (depositoInicial > 0) {
@@ -793,14 +793,14 @@ public class ContaBancaria {
         return this.saldo;
     }
     
-    // Setters com validaÁ„o
+    // Setters com valida√ß√£o
     public void setTitular(String titular) {
         if (titular != null && !titular.isEmpty()) {
             this.titular = titular;
         }
     }
     
-    // OperaÁıes seguras
+    // Opera√ß√µes seguras
     public void depositar(double valor) {
         if (valor > 0) {
             this.saldo += valor;
@@ -879,7 +879,7 @@ public class Program {
     }
 }
 
-// ===== SAÕDA =====
+// ===== SA√çDA =====
 /*
 Enter account number: 8532
 Enter account holder: Alex Green
@@ -901,13 +901,13 @@ Account 8532, Holder: Alex Green, Balance: $ 395.00
 
 ---
 
-## 7. Exemplo com PokÈmon: Pokedex
+## 7. Exemplo com Pok√©mon: Pokedex
 
 ```java
 package entities;
 
 public class Pokemon {
-    private int id;           // Imut·vel: n„o tem setter
+    private int id;           // Imut√°vel: n√£o tem setter
     private String nome;
     private String tipo;
     private int hpMaximo;
@@ -962,14 +962,14 @@ public class Pokemon {
         return this.nivel;
     }
     
-    // Setters com validaÁ„o
+    // Setters com valida√ß√£o
     public void setNome(String nome) {
         if (nome != null && !nome.isEmpty()) {
             this.nome = nome;
         }
     }
     
-    // OperaÁıes seguras
+    // Opera√ß√µes seguras
     public void ganharExperiencia(int exp) {
         if (exp > 0) {
             this.nivel++;
@@ -998,7 +998,7 @@ public class Pokemon {
     @Override
     public String toString() {
         return String.format(
-            "#%d %s (%s) - NÌvel %d - HP: %d/%d - ATK: %d - DEF: %d",
+            "#%d %s (%s) - N√≠vel %d - HP: %d/%d - ATK: %d - DEF: %d",
             this.id, this.nome, this.tipo, this.nivel,
             this.hp, this.hpMaximo, this.ataque, this.defesa
         );
@@ -1012,14 +1012,14 @@ import entities.Pokemon;
 
 public class Pokedex {
     public static void main(String[] args) {
-        Pokemon pikachu = new Pokemon(25, "Pikachu", "ElÈtrico", 35, 55, 40);
+        Pokemon pikachu = new Pokemon(25, "Pikachu", "El√©trico", 35, 55, 40);
         Pokemon charmander = new Pokemon(4, "Charmander", "Fogo", 39, 52, 43);
         
         System.out.println("=== POKEDEX ===");
         System.out.println(pikachu);
         System.out.println(charmander);
         
-        System.out.println("\n=== GANHAR EXPERI NCIA ===");
+        System.out.println("\n=== GANHAR EXPERI√äNCIA ===");
         pikachu.ganharExperiencia(100);
         System.out.println(pikachu);
         
@@ -1046,164 +1046,164 @@ public class Pokedex {
 
 ---
 
-## 8. Checklist de Boas Pr·ticas
+## 8. Checklist de Boas Pr√°ticas
 
 ### Construtores
 - [ ] Sempre inicialize atributos no construtor
-- [ ] Use `this()` para evitar repetiÁ„o entre construtores
-- [ ] ForneÁa m˙ltiplas versıes (padr„o, simples, completa)
-- [ ] Valide par‚metros no construtor se necess·rio
+- [ ] Use `this()` para evitar repeti√ß√£o entre construtores
+- [ ] Forne√ßa m√∫ltiplas vers√µes (padr√£o, simples, completa)
+- [ ] Valide par√¢metros no construtor se necess√°rio
 
 ### Palavra `this`
-- [ ] Use `this` quando h· ambiguidade (especialmente em construtores)
+- [ ] Use `this` quando h√° ambiguidade (especialmente em construtores)
 - [ ] Use `this()` para chamar outro construtor
-- [ ] Deixe claro que È um atributo, n„o uma vari·vel local
+- [ ] Deixe claro que √© um atributo, n√£o uma vari√°vel local
 
 ### Sobrecarga
 - [ ] Nomes iguais devem ter significado semelhante
-- [ ] Varie n˙mero, tipo ou ordem de par‚metros
-- [ ] Use constructor chaining para evitar repetiÁ„o
+- [ ] Varie n√∫mero, tipo ou ordem de par√¢metros
+- [ ] Use constructor chaining para evitar repeti√ß√£o
 - [ ] Mantenha interface consistente
 
 ### Encapsulamento
 - [ ] Todos os atributos devem ser `private`
-- [ ] ForneÁa getters/setters p˙blicos quando necess·rio
+- [ ] Forne√ßa getters/setters p√∫blicos quando necess√°rio
 - [ ] Valide dados no setter
-- [ ] Exponha apenas operaÁıes seguras
-- [ ] Atributos imut·veis n„o tÍm setter
+- [ ] Exponha apenas opera√ß√µes seguras
+- [ ] Atributos imut√°veis n√£o t√™m setter
 
 ### Modificadores de Acesso
-- [ ] Use `private` por padr„o
-- [ ] Use `protected` apenas para heranÁa
+- [ ] Use `private` por padr√£o
+- [ ] Use `protected` apenas para heran√ßa
 - [ ] Use `public` para interface da classe
-- [ ] Documente a raz„o de cada modificador
+- [ ] Documente a raz√£o de cada modificador
 
 ---
 
-## 9. ExercÌcios Pr·ticos
+## 9. Exerc√≠cios Pr√°ticos
 
-### ExercÌcio 1: Classe LibroBank (Conta Banc·ria Simples)
+### Exerc√≠cio 1: Classe LibroBank (Conta Banc√°ria Simples)
 
 Implemente uma classe `ContaBancaria` com:
-- Atributos: numero (imut·vel), titular, saldo
-- Construtores: padr„o, com n˙mero+titular, com n˙mero+titular+deposito
+- Atributos: numero (imut√°vel), titular, saldo
+- Construtores: padr√£o, com n√∫mero+titular, com n√∫mero+titular+deposito
 - Getters para todos
-- Setter sÛ para titular
-- MÈtodos: `depositar(valor)`, `sacar(valor)` com taxa de 5
+- Setter s√≥ para titular
+- M√©todos: `depositar(valor)`, `sacar(valor)` com taxa de 5
 - toString() formatado
 
 ---
 
-### ExercÌcio 2: Classe Veiculo
+### Exerc√≠cio 2: Classe Veiculo
 
 Implemente uma classe `Veiculo` com:
 - Atributos: marca, modelo, ano, velocidadeMaxima, velocidadeAtual
 - Construtor completo com this()
 - Getters para todos
-- Setter: sÛ para velocidadeAtual (n„o pode exceder velocidadeMaxima)
-- MÈtodos: `acelerar(velocidade)`, `desacelerar()`, `parar()`
+- Setter: s√≥ para velocidadeAtual (n√£o pode exceder velocidadeMaxima)
+- M√©todos: `acelerar(velocidade)`, `desacelerar()`, `parar()`
 - toString() mostrand o estado
 
 ---
 
-### ExercÌcio 3: Classe Livro
+### Exerc√≠cio 3: Classe Livro
 
 Implemente uma classe `Livro` com:
-- Atributos: isbn (imut·vel), titulo, autor, anoPublicacao, totalPaginas, paginasLidas
-- Construtores: padr„o, completo
+- Atributos: isbn (imut√°vel), titulo, autor, anoPublicacao, totalPaginas, paginasLidas
+- Construtores: padr√£o, completo
 - Getters para todos
-- Setters: titulo, autor, paginasLidas (com validaÁ„o)
-- MÈtodos: `lerPaginas(n)`, `progresso()` retorna percentual
+- Setters: titulo, autor, paginasLidas (com valida√ß√£o)
+- M√©todos: `lerPaginas(n)`, `progresso()` retorna percentual
 - toString()
 
 ---
 
-### ExercÌcio 4: Sistema de Funcion·rio
+### Exerc√≠cio 4: Sistema de Funcion√°rio
 
 Implemente `Funcionario` com:
-- Atributos: matricula (imut·vel), nome, departamento, salarioBruto, imposto
-- Construtores: padr„o, completo
-- MÈtodo: `calcularSalarioLiquido()` = bruto - imposto
-- MÈtodo: `aumentarSalario(porcentagem)` - afeta apenas bruto
-- Getter/setter com validaÁ„o
-- toString() mostrando nome e lÌquido
+- Atributos: matricula (imut√°vel), nome, departamento, salarioBruto, imposto
+- Construtores: padr√£o, completo
+- M√©todo: `calcularSalarioLiquido()` = bruto - imposto
+- M√©todo: `aumentarSalario(porcentagem)` - afeta apenas bruto
+- Getter/setter com valida√ß√£o
+- toString() mostrando nome e l√≠quido
 
 ---
 
-### ExercÌcio 5: Classe PokemonCard (Card Game)
+### Exerc√≠cio 5: Classe PokemonCard (Card Game)
 
 Implemente `CartaPokemon` com:
-- Atributos: numero (imut·vel), nome, tipo, raridade, condicao (nova/boa/desgastada)
-- M˙ltiplos construtores (sem par‚metros, nome+tipo, completo)
+- Atributos: numero (imut√°vel), nome, tipo, raridade, condicao (nova/boa/desgastada)
+- M√∫ltiplos construtores (sem par√¢metros, nome+tipo, completo)
 - Getters para todos
-- Setters: nome, condicao (com validaÁ„o de raridade)
-- MÈtodo: `obterValorMercado()` - varia com raridade e condiÁ„o
+- Setters: nome, condicao (com valida√ß√£o de raridade)
+- M√©todo: `obterValorMercado()` - varia com raridade e condi√ß√£o
 - toString()
 
 ---
 
-### ExercÌcio 6: Classe Pessoa
+### Exerc√≠cio 6: Classe Pessoa
 
 Implemente `Pessoa` com:
-- Atributos: cpf (imut·vel), nome, dataNascimento, email
-- Construtores: padr„o, completo
+- Atributos: cpf (imut√°vel), nome, dataNascimento, email
+- Construtores: padr√£o, completo
 - Getters para todos
 - Setters: nome, email (validar formato)
-- MÈtodo: `calcularIdade()` baseado em data de nascimento
+- M√©todo: `calcularIdade()` baseado em data de nascimento
 - toString()
 
 ---
 
-### ExercÌcio 7: Classe Departamento
+### Exerc√≠cio 7: Classe Departamento
 
 Implemente `Departamento` com:
-- Atributos: codigo (imut·vel), nome, descricao, orcamento
+- Atributos: codigo (imut√°vel), nome, descricao, orcamento
 - Construtores
-- Getters/setters com validaÁ„o
-- MÈtodo: `reduzirOrcamento(valor)` - n„o deixa negativo
-- MÈtodo: `aumentarOrcamento(valor)`
+- Getters/setters com valida√ß√£o
+- M√©todo: `reduzirOrcamento(valor)` - n√£o deixa negativo
+- M√©todo: `aumentarOrcamento(valor)`
 - toString()
 
 ---
 
-### ExercÌcio 8: Classe Time de Esportes
+### Exerc√≠cio 8: Classe Time de Esportes
 
 Implemente `Time` com:
-- Atributos: codigo (imut·vel), nome, cidade, totalJogadores
+- Atributos: codigo (imut√°vel), nome, cidade, totalJogadores
 - Construtores
 - Getters/setters
-- MÈtodo: `adicionarJogador()` com limite
-- MÈtodo: `removerJogador()`
-- MÈtodo: `obterPorcentagemCadeiras()` = jogadores/limite * 100
+- M√©todo: `adicionarJogador()` com limite
+- M√©todo: `removerJogador()`
+- M√©todo: `obterPorcentagemCadeiras()` = jogadores/limite * 100
 - toString()
 
 ---
 
-### ExercÌcio 9: Classe Caixa (Caixa EletrÙnico)
+### Exerc√≠cio 9: Classe Caixa (Caixa Eletr√¥nico)
 
 Implemente `CaixaEletronico` com:
-- Atributos: codigo (imut·vel), banco, saldoDisponivel, limite
+- Atributos: codigo (imut√°vel), banco, saldoDisponivel, limite
 - Construtores
-- MÈtodo: `sacar(valor)` - verifica saldo + limite
-- MÈtodo: `depositar(valor)`
-- MÈtodo: `solicitarEmprestimo(valor)` - se tiver espaÁo no limite
+- M√©todo: `sacar(valor)` - verifica saldo + limite
+- M√©todo: `depositar(valor)`
+- M√©todo: `solicitarEmprestimo(valor)` - se tiver espa√ßo no limite
 - toString()
 
 ---
 
-### ExercÌcio 10: Batalha PokÈmon Completa
+### Exerc√≠cio 10: Batalha Pok√©mon Completa
 
 Implemente `Batalha` com:
 - Classe `Pokemon` com encapsulamento completo
 - Classe `Treinador` que tem um `Pokemon`
 - Classe `Batalha` que recebe dois `Treinador` no construtor
 - Simule turnos de batalha
-- Exiba status apÛs cada turno
-- Declare vencedor quando um PokÈmon cair
+- Exiba status ap√≥s cada turno
+- Declare vencedor quando um Pok√©mon cair
 
 ---
 
-## 10. ReferÍncias R·pidas
+## 10. Refer√™ncias R√°pidas
 
 ### Constructor Chaining
 
@@ -1229,14 +1229,14 @@ public class Exemplo {
 }
 ```
 
-### Padr„o JavaBeans
+### Padr√£o JavaBeans
 
 ```
-Atributo private ? getter p˙blico getNome() ? setter p˙blico setNome()
-Booleano private ? getter p˙blico isAtivo() ? setter p˙blico setAtivo()
+Atributo private ? getter p√∫blico getNome() ? setter p√∫blico setNome()
+Booleano private ? getter p√∫blico isAtivo() ? setter p√∫blico setAtivo()
 ```
 
-### ValidaÁ„o em Setter
+### Valida√ß√£o em Setter
 
 ```java
 public void setValor(int valor) {
@@ -1246,7 +1246,7 @@ public void setValor(int valor) {
 }
 ```
 
-### MÈtodo toString()
+### M√©todo toString()
 
 ```java
 @Override

@@ -1,19 +1,19 @@
 # Encapsulamento em Java
 
-## O que È Encapsulamento?
+## O que √© Encapsulamento?
 
-Encapsulamento È o primeiro pilar da ProgramaÁ„o Orientada a Objetos. … a pr·tica de esconder os detalhes internos de um objeto e expor apenas o necess·rio atravÈs de uma interface controlada. Pense em um PokÈmon: vocÍ n„o vÍ como o sistema interno dele processa um ataque ? vocÍ apenas chama o mÈtodo `atacar()` e ele executa.
+Encapsulamento √© o primeiro pilar da Programa√ß√£o Orientada a Objetos. √â a pr√°tica de esconder os detalhes internos de um objeto e expor apenas o necess√°rio atrav√©s de uma interface controlada. Pense em um Pok√©mon: voc√™ n√£o v√™ como o sistema interno dele processa um ataque ? voc√™ apenas chama o m√©todo `atacar()` e ele executa.
 
-Sem encapsulamento, qualquer classe poderia mexer diretamente nos atributos internos de um PokÈmon (reduzir HP fraudulentamente, mudar tipo, etc.). Com encapsulamento, vocÍ controla como esses dados s„o modificados.
+Sem encapsulamento, qualquer classe poderia mexer diretamente nos atributos internos de um Pok√©mon (reduzir HP fraudulentamente, mudar tipo, etc.). Com encapsulamento, voc√™ controla como esses dados s√£o modificados.
 
 ---
 
-## Por que Encapsulamento È CrÌtico
+## Por que Encapsulamento √© Cr√≠tico
 
-**Controle de estado**: Garante que um objeto nunca entre em estado inv·lido.  
-**Manutenibilidade**: MudanÁas internas n„o quebram cÛdigo externo.  
-**Reusabilidade**: Interfaces bem definidas facilitam reutilizaÁ„o.  
-**SeguranÁa lÛgica**: Previne operaÁıes ilÛgicas (ex: PokÈmon com HP negativo).
+**Controle de estado**: Garante que um objeto nunca entre em estado inv√°lido.  
+**Manutenibilidade**: Mudan√ßas internas n√£o quebram c√≥digo externo.  
+**Reusabilidade**: Interfaces bem definidas facilitam reutiliza√ß√£o.  
+**Seguran√ßa l√≥gica**: Previne opera√ß√µes il√≥gicas (ex: Pok√©mon com HP negativo).
 
 ### Problema sem Encapsulamento
 
@@ -24,43 +24,43 @@ public class Pokemon {
     public String tipo;
 }
 
-// CÛdigo externo pode fazer qualquer coisa:
+// C√≥digo externo pode fazer qualquer coisa:
 Pokemon pikachu = new Pokemon();
-pikachu.hp = -9999;  // ? Inv·lido, mas o Java n„o impede
-pikachu.ataque = Integer.MAX_VALUE;  // ? Quebra lÛgica
+pikachu.hp = -9999;  // ? Inv√°lido, mas o Java n√£o impede
+pikachu.ataque = Integer.MAX_VALUE;  // ? Quebra l√≥gica
 ```
 
-Resultado: sistema fr·gil, difÌcil de debugar, impossÌvel manter.
+Resultado: sistema fr√°gil, dif√≠cil de debugar, imposs√≠vel manter.
 
 ---
 
 ## Modificadores de Acesso
 
-Java oferece quatro nÌveis de encapsulamento:
+Java oferece quatro n√≠veis de encapsulamento:
 
 | Modificador | Mesma Classe | Mesmo Package | Subclass | Mundo | Uso |
 |---|---|---|---|---|---|
-| `private` | ? | ? | ? | ? | Dados sensÌveis, mÈtodos internos |
+| `private` | ? | ? | ? | ? | Dados sens√≠veis, m√©todos internos |
 | `package-private` (sem modificador) | ? | ? | ? | ? | Colaboradores no mesmo pacote |
-| `protected` | ? | ? | ? | ? | Dados/mÈtodos para subclasses |
+| `protected` | ? | ? | ? | ? | Dados/m√©todos para subclasses |
 | `public` | ? | ? | ? | ? | Interface oficial da classe |
 
-### Exemplo: PokÈmon com NÌveis de Acesso
+### Exemplo: Pok√©mon com N√≠veis de Acesso
 
 ```java
 public class Pokemon {
-    // Atributo privado ? sÛ a classe acessa
+    // Atributo privado ? s√≥ a classe acessa
     private int hp;
     private int ataque;
     private int defesa;
     
-    // VisÌvel apenas dentro do pacote
+    // Vis√≠vel apenas dentro do pacote
     int experienciaInterna;
     
     // Protegido ? subclasses (ex: PokemonLendario) acessam
     protected String habilidadeEspecial;
     
-    // P˙blico ? parte da API oficial
+    // P√∫blico ? parte da API oficial
     public String nome;
     public String tipo;
 }
@@ -70,7 +70,7 @@ public class Pokemon {
 
 ## Getters e Setters: A Barreira de Controle
 
-Getters e setters s„o os guardiıes do encapsulamento. Permitem acesso leitura/escrita com **validaÁ„o**.
+Getters e setters s√£o os guardi√µes do encapsulamento. Permitem acesso leitura/escrita com **valida√ß√£o**.
 
 ### Getters (Leitura Controlada)
 
@@ -84,24 +84,24 @@ public class Pokemon {
         return this.hp;
     }
     
-    // Getter com lÛgica
+    // Getter com l√≥gica
     public double getHpPercentual() {
         return (double) this.hp / this.hpMax * 100;
     }
     
     // Getter que mascara interno
     public String getStatusVida() {
-        if (this.hp > hpMax * 0.75) return "Saud·vel";
+        if (this.hp > hpMax * 0.75) return "Saud√°vel";
         if (this.hp > hpMax * 0.5) return "Levemente ferido";
-        if (this.hp > 0) return "CrÌtico";
+        if (this.hp > 0) return "Cr√≠tico";
         return "Desmaiado";
     }
 }
 ```
 
-**Por que n„o expor `hp` diretamente?**
-- Se vocÍ trocar a implementaÁ„o interna (ex: armazenar como percentual), cÛdigo externo quebra.
-- Com getter, vocÍ controla o que È retornado.
+**Por que n√£o expor `hp` diretamente?**
+- Se voc√™ trocar a implementa√ß√£o interna (ex: armazenar como percentual), c√≥digo externo quebra.
+- Com getter, voc√™ controla o que √© retornado.
 
 ### Setters (Escrita Validada)
 
@@ -111,87 +111,87 @@ public class Pokemon {
     private int hpMax;
     private int nivel;
     
-    // Setter com validaÁ„o
+    // Setter com valida√ß√£o
     public void setHp(int novoHp) {
         if (novoHp < 0) {
             this.hp = 0;  // Garante que HP nunca fica negativo
         } else if (novoHp > this.hpMax) {
-            this.hp = this.hpMax;  // N„o ultrapassa m·ximo
+            this.hp = this.hpMax;  // N√£o ultrapassa m√°ximo
         } else {
             this.hp = novoHp;
         }
     }
     
-    // Setter que aceita lÛgica de negÛcio
+    // Setter que aceita l√≥gica de neg√≥cio
     public void setNivel(int novoNivel) {
         if (novoNivel < 1 || novoNivel > 100) {
-            throw new IllegalArgumentException("NÌvel deve estar entre 1 e 100");
+            throw new IllegalArgumentException("N√≠vel deve estar entre 1 e 100");
         }
         this.nivel = novoNivel;
-        recalcularStats();  // Atualiza atributos quando nÌvel muda
+        recalcularStats();  // Atualiza atributos quando n√≠vel muda
     }
     
-    // Setter "somente leitura" ? n„o oferece setter
+    // Setter "somente leitura" ? n√£o oferece setter
     public String getNome() {
-        return nome;  // Sem setName() ? nome n„o pode mudar
+        return nome;  // Sem setName() ? nome n√£o pode mudar
     }
 }
 ```
 
 ---
 
-## Encapsulamento de Comportamento (MÈtodos Privados)
+## Encapsulamento de Comportamento (M√©todos Privados)
 
-Nem todo mÈtodo deve ser p˙blico. MÈtodos internos (auxiliares) ficam `private`.
+Nem todo m√©todo deve ser p√∫blico. M√©todos internos (auxiliares) ficam `private`.
 
-### Exemplo: Ataque PokÈmon
+### Exemplo: Ataque Pok√©mon
 
 ```java
 public class Pokemon {
     private int ataque;
     private int velocidade;
     
-    // MÈtodo p˙blico ? API oficial
+    // M√©todo p√∫blico ? API oficial
     public int executarAtaque() {
-        int dano = calcularDano();  // Chama mÈtodo privado
+        int dano = calcularDano();  // Chama m√©todo privado
         return dano;
     }
     
-    // MÈtodo privado ? detalhes internos
+    // M√©todo privado ? detalhes internos
     private int calcularDano() {
         int dano = ataque * 2;
         if (temVantagemTipo()) {
             dano = (int) (dano * 1.5);
         }
-        return dano + random(1, 10);  // VariaÁ„o aleatÛria
+        return dano + random(1, 10);  // Varia√ß√£o aleat√≥ria
     }
     
-    // MÈtodo privado ? lÛgica interna
+    // M√©todo privado ? l√≥gica interna
     private boolean temVantagemTipo() {
-        // LÛgica complexa de tipo do PokÈmon
+        // L√≥gica complexa de tipo do Pok√©mon
         return false;
     }
 }
 ```
 
-**Vantagem:** Se vocÍ precisar mudar como `calcularDano()` funciona, n„o quebra cÛdigo que chama `executarAtaque()`.
+**Vantagem:** Se voc√™ precisar mudar como `calcularDano()` funciona, n√£o quebra c√≥digo que chama `executarAtaque()`.
 
 ---
 
-## Imutabilidade: Encapsulamento ao M·ximo
+## Imutabilidade: Encapsulamento ao M√°ximo
 
-Objetos imut·veis n„o podem ser modificados apÛs criaÁ„o. Encapsulamento extremo.
+Objetos imut√°veis n√£o podem ser modificados ap√≥s cria√ß√£o. Encapsulamento extremo.
 
-### PokÈmon Imut·vel
+### Pok√©mon Imut√°vel
 
 ```java
-public final class PokemonStats {  // final = n„o pode ser herdado
+public final class PokemonStats {  // final = n√£o pode ser herdado
     private final int hp;
     private final int ataque;
     private final int defesa;
     private final String tipo;
     
-    // Construtor obrigatÛrio
+    // Construtor obrigat√≥rio
     public PokemonStats(int hp, int ataque, int defesa, String tipo) {
         this.hp = hp;
         this.ataque = ataque;
@@ -218,17 +218,17 @@ public final class PokemonStats {  // final = n„o pode ser herdado
 ```
 
 **Vantagens:**
-- Thread-safe (sem sincronizaÁ„o necess·ria)
+- Thread-safe (sem sincroniza√ß√£o necess√°ria)
 - Seguro usar como chave de HashMap
-- Predict·vel ? estado nunca muda
+- Predict√°vel ? estado nunca muda
 
-**Trade-off:** Menos flexÌvel, mais memÛria (cria novo objeto a cada mudanÁa).
+**Trade-off:** Menos flex√≠vel, mais mem√≥ria (cria novo objeto a cada mudan√ßa).
 
 ---
 
-## Encapsulamento de ColeÁıes
+## Encapsulamento de Cole√ß√µes
 
-ColeÁıes expostas diretamente s„o um furo de seguranÁa.
+Cole√ß√µes expostas diretamente s√£o um furo de seguran√ßa.
 
 ### ? Errado
 
@@ -238,21 +238,21 @@ public class Pokedex {
 }
 
 Pokedex pokedex = new Pokedex();
-pokedex.pokemons.clear();  // ? Qualquer um limpa toda a PokÈdex!
+pokedex.pokemons.clear();  // ? Qualquer um limpa toda a Pok√©dex!
 ```
 
-### ? Correto (OpÁ„o 1: Defensiva)
+### ? Correto (Op√ß√£o 1: Defensiva)
 
 ```java
 public class Pokedex {
     private List<Pokemon> pokemons = new ArrayList<>();
     
-    // Retorna cÛpia ? n„o expıe original
+    // Retorna c√≥pia ? n√£o exp√µe original
     public List<Pokemon> getPokemons() {
         return new ArrayList<>(this.pokemons);
     }
     
-    // MÈtodos controlados
+    // M√©todos controlados
     public void adicionarPokemon(Pokemon pokemon) {
         if (pokemon != null && !pokemons.contains(pokemon)) {
             pokemons.add(pokemon);
@@ -261,27 +261,27 @@ public class Pokedex {
 }
 ```
 
-### ? Correto (OpÁ„o 2: Imut·vel)
+### ? Correto (Op√ß√£o 2: Imut√°vel)
 
 ```java
 public class Pokedex {
     private List<Pokemon> pokemons = new ArrayList<>();
     
-    // Retorna lista imut·vel ? n„o pode modificar
+    // Retorna lista imut√°vel ? n√£o pode modificar
     public List<Pokemon> getPokemons() {
         return Collections.unmodifiableList(this.pokemons);
     }
 }
 
 Pokedex pokedex = new Pokedex();
-pokedex.getPokemons().clear();  // ? LanÁa UnsupportedOperationException
+pokedex.getPokemons().clear();  // ? Lan√ßa UnsupportedOperationException
 ```
 
 ---
 
-## Padr„o Builder com Encapsulamento
+## Padr√£o Builder com Encapsulamento
 
-Para objetos complexos com muitos atributos, Builder garante estado v·lido.
+Para objetos complexos com muitos atributos, Builder garante estado v√°lido.
 
 ```java
 public class Pokemon {
@@ -293,7 +293,7 @@ public class Pokemon {
     private final int velocidade;
     private final List<String> ataques;
     
-    // Construtor privado ? sÛ Builder cria
+    // Construtor privado ? s√≥ Builder cria
     private Pokemon(Builder builder) {
         this.nome = builder.nome;
         this.tipo = builder.tipo;
@@ -304,7 +304,7 @@ public class Pokemon {
         this.ataques = builder.ataques;
     }
     
-    // Builder p˙blico
+    // Builder p√∫blico
     public static class Builder {
         private String nome;
         private String tipo;
@@ -341,7 +341,7 @@ public class Pokemon {
         
         public Pokemon build() {
             if (nome == null || tipo == null) {
-                throw new IllegalStateException("Nome e tipo s„o obrigatÛrios");
+                throw new IllegalStateException("Nome e tipo s√£o obrigat√≥rios");
             }
             return new Pokemon(this);
         }
@@ -351,22 +351,22 @@ public class Pokemon {
 // Uso
 Pokemon pikachu = new Pokemon.Builder()
     .nome("Pikachu")
-    .tipo("ElÈtrico")
+    .tipo("El√©trico")
     .hp(35)
     .ataque(55)
     .defesa(40)
-    .adicionarAtaque("Choque do Trov„o")
-    .adicionarAtaque("CabeÁada")
+    .adicionarAtaque("Choque do Trov√£o")
+    .adicionarAtaque("Cabe√ßada")
     .build();
 ```
 
-**Vantagem:** ValidaÁ„o em cada setter, estado sempre v·lido ao construir.
+**Vantagem:** Valida√ß√£o em cada setter, estado sempre v√°lido ao construir.
 
 ---
 
-## Encapsulamento em Hierarquias (HeranÁa)
+## Encapsulamento em Hierarquias (Heran√ßa)
 
-Subclasses precisam de acesso a alguns atributos, mas n„o ao mundo.
+Subclasses precisam de acesso a alguns atributos, mas n√£o ao mundo.
 
 ```java
 // Classe base encapsulada
@@ -380,7 +380,7 @@ public class Pokemon {
         this.nivelEvoluido = 2;
     }
     
-    // MÈtodo protegido para subclasses fazerem override
+    // M√©todo protegido para subclasses fazerem override
     protected void calcularBonusEvoluido() {
         hp *= 1.2;
         mana *= 1.1;
@@ -391,18 +391,18 @@ public class Charizard extends Pokemon {
     @Override
     protected void calcularBonusEvoluido() {
         super.calcularBonusEvoluido();
-        // LÛgica adicional de Charizard
+        // L√≥gica adicional de Charizard
     }
 }
 ```
 
-**Regra de ouro:** Use `protected` com moderaÁ„o. Se muitas subclasses acessam, talvez o atributo deveria ser `private` com mÈtodos `protected`.
+**Regra de ouro:** Use `protected` com modera√ß√£o. Se muitas subclasses acessam, talvez o atributo deveria ser `private` com m√©todos `protected`.
 
 ---
 
 ## Record: Encapsulamento Moderno (Java 14+)
 
-Records s„o classes imut·veis de alto nÌvel, ideais para DTOs e value objects.
+Records s√£o classes imut√°veis de alto n√≠vel, ideais para DTOs e value objects.
 
 ```java
 // Record auto-gera getters, equals(), hashCode(), toString()
@@ -415,50 +415,50 @@ public record PokemonRecord(
 ) {}
 
 // Uso
-PokemonRecord pikachu = new PokemonRecord("Pikachu", "ElÈtrico", 35, 55, 40);
-System.out.println(pikachu.nome());  // Getter autom·tico
+PokemonRecord pikachu = new PokemonRecord("Pikachu", "El√©trico", 35, 55, 40);
+System.out.println(pikachu.nome());  // Getter autom√°tico
 ```
 
 **Vantagens:**
 - Menos boilerplate
-- Imut·vel por padr„o
+- Imut√°vel por padr√£o
 - Perfeito para encapsular dados puros
 
-**LimitaÁıes:**
-- Todos os campos s„o p˙blicos (via getters)
-- N„o permite mÈtodos sem lÛgica adicional f·cil
-- N„o compatÌvel com Java < 14
+**Limita√ß√µes:**
+- Todos os campos s√£o p√∫blicos (via getters)
+- N√£o permite m√©todos sem l√≥gica adicional f√°cil
+- N√£o compat√≠vel com Java < 14
 
 ---
 
-## Anti-padrıes: Erros Comuns de Encapsulamento
+## Anti-padr√µes: Erros Comuns de Encapsulamento
 
-### 1. Getters/Setters Triviais (Sem ValidaÁ„o)
+### 1. Getters/Setters Triviais (Sem Valida√ß√£o)
 
 ```java
-// ? Por que n„o apenas deixar p˙blico?
+// ? Por que n√£o apenas deixar p√∫blico?
 public class Pokemon {
     private int hp;
     
     public int getHp() {
-        return hp;  // Nenhuma lÛgica
+        return hp;  // Nenhuma l√≥gica
     }
     
     public void setHp(int hp) {
-        this.hp = hp;  // Nenhuma validaÁ„o
+        this.hp = hp;  // Nenhuma valida√ß√£o
     }
 }
 ```
 
-**SoluÁ„o:** Remova getter/setter trivial ou adicione lÛgica.
+**Solu√ß√£o:** Remova getter/setter trivial ou adicione l√≥gica.
 
-### 2. Expor ReferÍncias Mut·veis
+### 2. Expor Refer√™ncias Mut√°veis
 
 ```java
 // ? Errado
 private List<String> ataques;
 public List<String> getAtaques() {
-    return ataques;  // Retorna referÍncia direta!
+    return ataques;  // Retorna refer√™ncia direta!
 }
 
 // Externo pode fazer:
@@ -466,11 +466,11 @@ pokemon.getAtaques().clear();  // ?? Limpa tudo
 
 // ? Correto
 public List<String> getAtaques() {
-    return new ArrayList<>(ataques);  // CÛpia
+    return new ArrayList<>(ataques);  // C√≥pia
 }
 ```
 
-### 3. LÛgica de NegÛcio no Setter
+### 3. L√≥gica de Neg√≥cio no Setter
 
 ```java
 // ? Errado ? setters devem ser simples
@@ -481,13 +481,13 @@ public void setNivel(int nivel) {
     enviarNotificacao();
 }
 
-// ? Correto ? mÈtodo separado
+// ? Correto ? m√©todo separado
 public void subirNivel() {
     this.nivel++;
     recalcularStats();
 }
 
-// LÛgica externa trata persistÍncia
+// L√≥gica externa trata persist√™ncia
 ```
 
 ### 4. Bloat de Getters/Setters
@@ -496,7 +496,7 @@ public void subirNivel() {
 // ? Classe com 50 atributos = 50 getters + 50 setters
 // Sinal de que a classe faz muito
 
-// ? Refatore em m˙ltiplas classes
+// ? Refatore em m√∫ltiplas classes
 public class Pokemon {
     private Stats stats;  // Agrupa hp, ataque, etc
     private Inventario inventario;
@@ -507,39 +507,39 @@ public class Pokemon {
 
 ## Trade-offs: Quando Flexibilizar Encapsulamento
 
-| SituaÁ„o | SoluÁ„o | Motivo |
+| Situa√ß√£o | Solu√ß√£o | Motivo |
 |---|---|---|
-| Performance crÌtica (milhıes de objetos) | `public final` ao invÈs de getter | Acesso direto È mais r·pido |
-| Prototyping r·pido | Sem encapsulamento rigoroso | Ganha velocidade inicial |
+| Performance cr√≠tica (milh√µes de objetos) | `public final` ao inv√©s de getter | Acesso direto √© mais r√°pido |
+| Prototyping r√°pido | Sem encapsulamento rigoroso | Ganha velocidade inicial |
 | Framework (Hibernate, Jackson) | Aceitar acesso package-private | Framework precisa acessar |
-| Dados puramente imut·veis | Record ou final fields | Simplicidade |
-| API p˙blica de bilioteca | M·ximo encapsulamento | Compatibilidade de versıes |
+| Dados puramente imut√°veis | Record ou final fields | Simplicidade |
+| API p√∫blica de bilioteca | M√°ximo encapsulamento | Compatibilidade de vers√µes |
 
 ---
 
 ## Checklist: Encapsulamento Correto
 
-- [ ] Todos os atributos s„o `private`?
-- [ ] Apenas getters/setters necess·rios s„o p˙blicos?
+- [ ] Todos os atributos s√£o `private`?
+- [ ] Apenas getters/setters necess√°rios s√£o p√∫blicos?
 - [ ] Setters validam entrada?
-- [ ] ColeÁıes retornam cÛpias ou imut·veis?
-- [ ] MÈtodos auxiliares s„o `private`?
-- [ ] `protected` È usado apenas quando subclasses precisam?
-- [ ] Estado do objeto nunca fica inv·lido?
-- [ ] Documentei o contrato p˙blico (Javadoc)?
+- [ ] Cole√ß√µes retornam c√≥pias ou imut√°veis?
+- [ ] M√©todos auxiliares s√£o `private`?
+- [ ] `protected` √© usado apenas quando subclasses precisam?
+- [ ] Estado do objeto nunca fica inv√°lido?
+- [ ] Documentei o contrato p√∫blico (Javadoc)?
 
 ---
 
-## Resumo em AnalÛgia PokÈmon
+## Resumo em Anal√≥gia Pok√©mon
 
-Um PokÈmon È uma "caixa preta" com controles:
-- **Atributos privados**: HP, ataque, evoluÁ„o interna ? ninguÈm mexe
-- **Getters**: `getHp()` retorna estado, mas n„o deixa fraudar
-- **MÈtodos p˙blicos**: `atacar()`, `defender()`, `evoluir()` ? interface oficial
-- **ValidaÁ„o**: PokÈmon nunca entra em estado inv·lido
-- **MudanÁas internas**: Se trocar como `calcularDano()` funciona, API p˙blica n„o quebra
+Um Pok√©mon √© uma "caixa preta" com controles:
+- **Atributos privados**: HP, ataque, evolu√ß√£o interna ? ningu√©m mexe
+- **Getters**: `getHp()` retorna estado, mas n√£o deixa fraudar
+- **M√©todos p√∫blicos**: `atacar()`, `defender()`, `evoluir()` ? interface oficial
+- **Valida√ß√£o**: Pok√©mon nunca entra em estado inv√°lido
+- **Mudan√ßas internas**: Se trocar como `calcularDano()` funciona, API p√∫blica n√£o quebra
 
-Sem encapsulamento: alguÈm do lado de fora muda o HP para -9999, o tipo para "Sagrado" (n„o existe), e quebra tudo.
+Sem encapsulamento: algu√©m do lado de fora muda o HP para -9999, o tipo para "Sagrado" (n√£o existe), e quebra tudo.
 
 Com encapsulamento: tudo funciona como esperado.
 
@@ -548,6 +548,6 @@ Com encapsulamento: tudo funciona como esperado.
 ## Leitura Recomendada
 
 - **Effective Java** (Joshua Bloch) ? Item 15 (Minimize Mutability)
-- **Clean Code** (Robert Martin) ? CapÌtulo 6 (Objects and Data Structures)
+- **Clean Code** (Robert Martin) ? Cap√≠tulo 6 (Objects and Data Structures)
 - **Java Concurrency in Practice** ? Capitulo 3 (Visibility)
-- DocumentaÁ„o oficial: [Java Language Specification ß 6.6 (Access Control)](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html#jls-6.6)
+- Documenta√ß√£o oficial: [Java Language Specification ¬ß 6.6 (Access Control)](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html#jls-6.6)

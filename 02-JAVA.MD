@@ -1,32 +1,32 @@
 # Operadores em Java ? LoL Edition
 
-## Exemplo Pr·tico: ValidaÁ„o de Campe„o em Teamfight
+## Exemplo Pr√°tico: Valida√ß√£o de Campe√£o em Teamfight
 
 ```java
 public class Champion {
-    // Atributos de inst‚ncia = Stats do campe„o
+    // Atributos de inst√¢ncia = Stats do campe√£o
     private String nome;                // Garen, Lux, Ahri
     private double healthAtual;         // HP (varia durante o jogo)
     private double manaAtual;           // Mana (varia)
     private double attackDamage;        // AD (aumenta com itens)
-    private double armorResist;         // ResistÍncia fÌsica
+    private double armorResist;         // Resist√™ncia f√≠sica
     private boolean estaStunado;        // Estado: CC aplicado?
     private boolean ultimaAbilitadePronta;  // Ulti ready?
     private int nivel;                  // Level (1-18)
     private double ouro;                // Gold (para itens)
     
-    // Membro est·tico = Buff global (regra do jogo, todos herdam)
+    // Membro est√°tico = Buff global (regra do jogo, todos herdam)
     private static final double VELOCIDADE_MOVIMENTO_BASE = 330.0;
     private static final double DANO_MINION_BASE = 5.0;
     private static final int NIVEL_MAXIMO = 18;
     private static final double GOLD_KILL_BASE = 300.0;
     
     public boolean podeAtacar(Champion alvo) {
-        // ValidaÁ„o antes de soltar combo no teamfight
+        // Valida√ß√£o antes de soltar combo no teamfight
         
-        // Guard 1: est· stunado ou CC aplicado?
+        // Guard 1: est√° stunado ou CC aplicado?
         if (estaStunado) {
-            return false;  // Sem permiss„o para agir
+            return false;  // Sem permiss√£o para agir
         }
         
         // Guard 2: tem mana suficiente pra soltar habilidade?
@@ -34,12 +34,12 @@ public class Champion {
             return false;  // Broke de mana
         }
         
-        // Guard 3: alvo È v·lido (existe e n„o est· inimigo)?
+        // Guard 3: alvo √© v√°lido (existe e n√£o est√° inimigo)?
         if (alvo == null || alvo.estaVivo() == false) {
-            return false;  // Alvo morto ou n„o existe
+            return false;  // Alvo morto ou n√£o existe
         }
         
-        // Guard 4: alvo est· muito longe (fora do range)?
+        // Guard 4: alvo est√° muito longe (fora do range)?
         double distancia = calcularDistancia(alvo);
         if (distancia > 550.0) {
             return false;  // Fora do range de ataque
@@ -47,19 +47,19 @@ public class Champion {
         
         // Guard 5: cooldown da ulti venceu?
         if (ultimaAbilitadePronta && nivel < 6) {
-            return false;  // Ulti n„o destravou ainda
+            return false;  // Ulti n√£o destravou ainda
         }
         
-        // Passou em todas as validaÁıes = win condition
+        // Passou em todas as valida√ß√µes = win condition
         return true;
     }
     
     public double calcularDanoFinal(Champion alvo) {
-        // Usa membro est·tico (DANO_MINION_BASE È buff global)
+        // Usa membro est√°tico (DANO_MINION_BASE √© buff global)
         double danoBase = attackDamage + DANO_MINION_BASE;
         double armorInimigo = alvo.getArmorResist();
         
-        // ReduÁ„o por armor: quanto mais armor, menos dano
+        // Redu√ß√£o por armor: quanto mais armor, menos dano
         double reducaoArmor = armorInimigo / (100.0 + armorInimigo);
         double danofinal = danoBase * (1.0 - reducaoArmor);
         
@@ -94,10 +94,10 @@ public class Champion {
 | Operador | Significado | LoL | Exemplo |
 |----------|------------|-----|---------|
 | `==` | Igual a | Mesmo level | `if (nivel == 6)` ? ulti destravou |
-| `!=` | Diferente de | Campeıes diferentes | `if (!nome.equals("Garen"))` ? n„o È Garen |
-| `>` | Maior que | Mais HP | `if (healthAtual > 100)` ? tanke·vel |
+| `!=` | Diferente de | Campe√µes diferentes | `if (!nome.equals("Garen"))` ? n√£o √© Garen |
+| `>` | Maior que | Mais HP | `if (healthAtual > 100)` ? tanke√°vel |
 | `<` | Menor que | Menos ouro | `if (ouro < 1300)` ? broke de components |
-| `>=` | Maior ou igual | HP >= necess·rio | `if (manaAtual >= custoAbilidade)` ? pode cashar |
+| `>=` | Maior ou igual | HP >= necess√°rio | `if (manaAtual >= custoAbilidade)` ? pode cashar |
 | `<=` | Menor ou igual | Mana <= cap | `if (nivel <= 3)` ? early game |
 
 ### Exemplos:
@@ -115,54 +115,54 @@ if (ouro >= 1300) {
 }
 
 if (!garen.isEstaStunado()) {
-    System.out.println("Pode atacar");  // ? NegaÁ„o
+    System.out.println("Pode atacar");  // ? Nega√ß√£o
 }
 
 if (garen.estaVivo()) {
-    System.out.println("Ainda est· na luta");  // ?
+    System.out.println("Ainda est√° na luta");  // ?
 }
 ```
 
 ---
 
-## Operadores LÛgicos
+## Operadores L√≥gicos
 
 | Operador | Significado | LoL | Quando Usar |
 |----------|------------|-----|------------|
-| `&&` | E (AND) | **Ambos** tÍm que estar certos | ValidaÁıes em sÈrie |
-| `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas aceit·veis |
-| `!` | N√O (NOT) | Inverte condiÁ„o | Negar um estado |
+| `&&` | E (AND) | **Ambos** t√™m que estar certos | Valida√ß√µes em s√©rie |
+| `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas aceit√°veis |
+| `!` | N√ÉO (NOT) | Inverte condi√ß√£o | Negar um estado |
 
-### AND (`&&`) ? Decis„o no Teamfight
+### AND (`&&`) ? Decis√£o no Teamfight
 
 ```java
 boolean podeAtacar = temMana && estaVivo && !estaStunado && temAlvoVisivel;
 //                   ^^^^^^^^  ^^^^^^^^  ^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
-//                   Tudo tem que ser TRUE, sen„o false
+//                   Tudo tem que ser TRUE, sen√£o false
 
 if (podeAtacar) {
-    System.out.println("Go! Solte a combinaÁ„o!");  // SÛ executa se TUDO passar
+    System.out.println("Go! Solte a combina√ß√£o!");  // S√≥ executa se TUDO passar
 }
 ```
 
-**Analogia:** VocÍ precisa estar vivo **E** ter mana **E** n„o estar CC'd **E** ter alvo ‡ vista. Se um falhar, n„o entra no teamfight.
+**Analogia:** Voc√™ precisa estar vivo **E** ter mana **E** n√£o estar CC'd **E** ter alvo √† vista. Se um falhar, n√£o entra no teamfight.
 
-**Comportamento Short-circuit:** Para na primeira condiÁ„o false.
+**Comportamento Short-circuit:** Para na primeira condi√ß√£o false.
 ```java
 Champion lux = new Champion("Lux", 500, 400, 50, 30, false, true, 9, 2500);
 Champion inimigo = new Champion("Garen", 600, 100, 100, 50, true, false, 9, 3000);
 
 if (lux.estaVivo() && lux.getManaAtual() > 100 && !inimigo.estaStunado()) {  
     // TRUE && TRUE && FALSE = FALSE
-    System.out.println("Nunca vai rodar");  // ? Inimigo È stun
+    System.out.println("Nunca vai rodar");  // ? Inimigo √© stun
 }
 
 if (lux.estaVivo() && lux.getManaAtual() > 0) {  // TRUE && TRUE
-    System.out.println("Pode Q!");  // ? Passou nas validaÁıes
+    System.out.println("Pode Q!");  // ? Passou nas valida√ß√µes
 }
 ```
 
-### OR (`||`) ? EstratÈgia de Ganho
+### OR (`||`) ? Estrat√©gia de Ganho
 
 ```java
 boolean timeGanhou = destroiNexoInimigo || destroiTodasAsTorres || surrenderInimigo;
@@ -174,18 +174,18 @@ if (timeGanhou) {
 }
 ```
 
-**Analogia:** VocÍ ganha se destrÛi Nexo **OU** destrÛi todas towers **OU** inimigo surrender. SÛ precisa de um.
+**Analogia:** Voc√™ ganha se destr√≥i Nexo **OU** destr√≥i todas towers **OU** inimigo surrender. S√≥ precisa de um.
 
-**Comportamento Short-circuit:** Para na primeira condiÁ„o true.
+**Comportamento Short-circuit:** Para na primeira condi√ß√£o true.
 ```java
 boolean deveBanirChampion = banidoNoMeta || countraNoMeu || temPlayRate80Porcento;
 
 if (deveBanirChampion) {
-    System.out.println("Ban esse champion!");  // Executado se alguma condiÁ„o for true
+    System.out.println("Ban esse champion!");  // Executado se alguma condi√ß√£o for true
 }
 ```
 
-### NOT (`!`) ? NegaÁ„o de Estado
+### NOT (`!`) ? Nega√ß√£o de Estado
 
 ```java
 boolean podeRecuar = !estaEngajado;  // Inverte: se true ? false, se false ? true
@@ -195,35 +195,35 @@ if (!estaStunado) {
 }
 ```
 
-**Analogia:** … o oposto do estado. Se Stun est· ativo, `!stun` È false (vocÍ N√O pode se mexer). Se Stun È falso, `!stun` È true (VOC  PODE se mexer).
+**Analogia:** √â o oposto do estado. Se Stun est√° ativo, `!stun` √© false (voc√™ N√ÉO pode se mexer). Se Stun √© falso, `!stun` √© true (VOC√ä PODE se mexer).
 
 ---
 
-## Classes, Atributos e Est·ticos ? LoL Mindset
+## Classes, Atributos e Est√°ticos ? LoL Mindset
 
-### Classes = Campeıes ⁄nicos
+### Classes = Campe√µes √önicos
 
 ```java
 public class Champion {
-    // Cada inst‚ncia È um campe„o diferente (como um summoner diferente)
+    // Cada inst√¢ncia √© um campe√£o diferente (como um summoner diferente)
     private String nome;           // Garen, Lux, Ahri (SummonerName)
-    private double healthAtual;    // HP desta inst‚ncia
+    private double healthAtual;    // HP desta inst√¢ncia
     private double attackDamage;   // AD deste champ
 }
 
 Champion garen = new Champion("Garen", 590, 80);
 Champion lux = new Champion("Lux", 520, 50);
 
-// garen e lux s„o campeıes DIFERENTES
-// cada um tem seus prÛprios stats mesmo sendo ambos Champion
+// garen e lux s√£o campe√µes DIFERENTES
+// cada um tem seus pr√≥prios stats mesmo sendo ambos Champion
 ```
 
-### Atributos = Stats da Inst‚ncia
+### Atributos = Stats da Inst√¢ncia
 
 ```java
 public class Champion {
-    private String nome;              // Identificador ˙nico
-    private double healthAtual;       // Health desta inst‚ncia
+    private String nome;              // Identificador √∫nico
+    private double healthAtual;       // Health desta inst√¢ncia
     private double attackDamage;      // AD (aumenta com itens)
     private boolean estaStunado;      // Flag: true/false
 }
@@ -235,27 +235,27 @@ lux.healthAtual = 520;        // Lux tem Y HP (diferente!)
 // garen != lux, mesmo que sejam ambos Champion
 ```
 
-### Membros Est·ticos = Buff Global do Jogo
+### Membros Est√°ticos = Buff Global do Jogo
 
 ```java
 public class Champion {
-    // Constante est·tica = Imut·vel, compartilhado por TODO mundo
+    // Constante est√°tica = Imut√°vel, compartilhado por TODO mundo
     private static final double VELOCIDADE_MOVIMENTO_BASE = 330.0;
     //                          ^^^^^^^^^^^^^^^^^^^^^^^
-    //                          Todos os campeıes tÍm essa velocidade base
+    //                          Todos os campe√µes t√™m essa velocidade base
     
-    // Vari·vel est·tica = Pode mudar, mas afeta TODO mundo
+    // Vari√°vel est√°tica = Pode mudar, mas afeta TODO mundo
     private static double DANO_MINION_BASE = 5.0;
-    //     ^^^^^^ Buff din‚mico (muda para TODOS)
+    //     ^^^^^^ Buff din√¢mico (muda para TODOS)
     
     public double calcularDanoFinal(Champion alvo) {
         return attackDamage + DANO_MINION_BASE;
         //                    ^^^^^^^^^^^^^^^^
-        //                    Mesmo valor para TODO campe„o
+        //                    Mesmo valor para TODO campe√£o
     }
 }
 
-// Acesso est·tico (n„o precisa instanciar)
+// Acesso est√°tico (n√£o precisa instanciar)
 double velocidade = Champion.VELOCIDADE_MOVIMENTO_BASE;  // 330.0 para TODOS
 Champion.DANO_MINION_BASE = 7.0;  // Alterou o buff global
 
@@ -263,13 +263,13 @@ Champion.DANO_MINION_BASE = 7.0;  // Alterou o buff global
 ```
 
 **Analogia:**
-- **Atributo:** Garen tem 590 HP, Lux tem 520 HP ? stats ˙nicos de cada champ
-- **Est·tico:** Todos tÍm velocidade 330 ? È regra do jogo, n„o do champ
+- **Atributo:** Garen tem 590 HP, Lux tem 520 HP ? stats √∫nicos de cada champ
+- **Est√°tico:** Todos t√™m velocidade 330 ? √© regra do jogo, n√£o do champ
   - Mudar `DANO_MINION_BASE` de 5 para 7 = patch que afeta TODO mundo simultaneamente
 
 ---
 
-## Combinando Operadores ? Decis„o no Teamfight
+## Combinando Operadores ? Decis√£o no Teamfight
 
 ```java
 public boolean podeJuntarNoTeamfight(Champion eu, Champion aliado1, Champion aliado2) {
@@ -289,9 +289,9 @@ public boolean podeJuntarNoTeamfight(Champion eu, Champion aliado1, Champion ali
         (aliado1.estaVivo() && aliado1.getManaAtual() > 0) ||  // Aliado 1 pronto
         (aliado2.estaVivo() && aliado2.getManaAtual() > 0);    // Aliado 2 pronto
     
-    // Decis„o final: entrar no teamfight?
+    // Decis√£o final: entrar no teamfight?
     boolean podeEntraNoFight = 
-        !temRiscoAlto &&              // Sem riscos crÌticos E
+        !temRiscoAlto &&              // Sem riscos cr√≠ticos E
         temSuporteAliados &&          // Tem aliado vivo E pronto E
         eu.getNivel() >= 6;           // Tem ulti destravada
     
@@ -299,7 +299,7 @@ public boolean podeJuntarNoTeamfight(Champion eu, Champion aliado1, Champion ali
 }
 ```
 
-**Trace com valores (cen·rio de game):**
+**Trace com valores (cen√°rio de game):**
 ```java
 podeJuntarNoTeamfight(
     eu(Lux, alive=true, mana=350, stun=false),
@@ -308,12 +308,12 @@ podeJuntarNoTeamfight(
 )
 
 temRiscoAlto = false || false || false = FALSE     ? Sem risco
-temSuporteAliados = (true && true) || (false && true) = TRUE || FALSE = TRUE  ? Leona t· pronto
+temSuporteAliados = (true && true) || (false && true) = TRUE || FALSE = TRUE  ? Leona t√° pronto
 podeEntraNoFight = !FALSE && TRUE && TRUE = TRUE  ?
 ? Resultado: true (ENTRAR NO FIGHT!)
 ```
 
-**Outro cen·rio:**
+**Outro cen√°rio:**
 ```java
 podeJuntarNoTeamfight(
     eu(Lux, alive=true, mana=50, stun=false),     // Mana baixa!
@@ -322,38 +322,38 @@ podeJuntarNoTeamfight(
 )
 
 temRiscoAlto = false || true || false = TRUE      ? Sem mana!
-? Resultado: false (N√O ENTRA) ? short-circuit, n„o precisou checar o resto
+? Resultado: false (N√ÉO ENTRA) ? short-circuit, n√£o precisou checar o resto
 ```
 
 ---
 
 ## Operadores Especiais em Java
 
-### Tern·rio (`? :`) ? Quick Decision
+### Tern√°rio (`? :`) ? Quick Decision
 
 ```java
-String status = emManutencao ? "IndisponÌvel" : "DisponÌvel";
+String status = emManutencao ? "Indispon√≠vel" : "Dispon√≠vel";
 //               ^^^^^^^^^^^^   ^^^^^^^^^^^^^^   ^^^^^^^^^^^
-//               CondiÁ„o       Se true          Se false
+//               Condi√ß√£o       Se true          Se false
 
 int custoFinal = isPrioritario ? (valor * 2) : valor;
 ```
 
-**Analogia:** Se tem ulti ready ? ataca; sen„o, recua.
+**Analogia:** Se tem ulti ready ? ataca; sen√£o, recua.
 
 ### instanceof ? Verifica Tipo
 
 ```java
 if (veiculo instanceof VeiculoFrota) {
     VeiculoFrota frota = (VeiculoFrota) veiculo;
-    System.out.println("… frota: " + frota.getFrotaId());
+    System.out.println("√â frota: " + frota.getFrotaId());
 }
-// Verificou se È "da classe VeiculoFrota"
+// Verificou se √© "da classe VeiculoFrota"
 ```
 
 ---
 
-## Boas Pr·ticas ? Guard Clauses no Engajamento
+## Boas Pr√°ticas ? Guard Clauses no Engajamento
 
 ```java
 // ? Ruim: Aninhamento profundo (nested hell)
@@ -364,7 +364,7 @@ public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantag
                 if (inimigo.estaVivo()) {
                     if (temVantagem) {
                         if (eu.getManaAtual() > 100) {
-                            // 6 nÌveis deep ? difÌcil de ler
+                            // 6 n√≠veis deep ? dif√≠cil de ler
                             atacarInimigo(eu, inimigo);
                         }
                     }
@@ -374,17 +374,17 @@ public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantag
     }
 }
 
-// ? Bom: Guard clauses (rejeiÁ„o r·pida = early escape)
+// ? Bom: Guard clauses (rejei√ß√£o r√°pida = early escape)
 public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantagem) {
-    // Rejeita r·pido se alguma condiÁ„o crÌtica falhar
+    // Rejeita r√°pido se alguma condi√ß√£o cr√≠tica falhar
     if (eu == null || !eu.estaVivo()) return;       // Guard 1
     if (inimigo == null || !inimigo.estaVivo()) return;  // Guard 2
     if (!temVantagem) return;                       // Guard 3
     if (eu.getManaAtual() <= 100) return;           // Guard 4
     
-    // Aqui È 100% seguro ? todas as validaÁıes passaram
+    // Aqui √© 100% seguro ? todas as valida√ß√µes passaram
     atacarInimigo(eu, inimigo);
 }
 ```
 
-**Analogia:** Guard clause È como recuar da lane se n„o tem vis„o. N„o engaja atÈ ter seguranÁa total. Se algo t· errado, sai f·cil e r·pido (`return`).
+**Analogia:** Guard clause √© como recuar da lane se n√£o tem vis√£o. N√£o engaja at√© ter seguran√ßa total. Se algo t√° errado, sai f√°cil e r√°pido (`return`).
