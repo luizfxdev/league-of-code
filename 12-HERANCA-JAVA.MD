@@ -1,69 +1,66 @@
-# Herança em Java - LoL Edition
+# Herança em Java
 
-Um dos pilares da POO. Permite que classes herdem atributos e métodos de outras, promovendo reuso de código.
+Um dos pilares da POO. Permite que uma classe herde atributos e métodos de outra, evitando repetição de código.
 
 ---
 
-## 1. Conceito: Hierarquia de Classes
-
-### O Problema Sem Herança
+## 1. O Problema Sem Herança
 
 ```java
 // ❌ Código repetido
-public class CampeaoTank {
-    private String nome;
-    private int hp;
-    private int nivel;
+public class Caminhao {
+    private String placa;
+    private double capacidadeCarga;
     
-    public void atacar() { }
-    public void ganharExp() { }
+    public void ligar() { }
+    public void registrarViagem() { }
 }
 
-public class CampeaoMago {
-    private String nome;
-    private int hp;
-    private int nivel;
+public class Moto {
+    private String placa;
+    private double capacidadeCarga;
     
-    public void atacar() { }
-    public void ganharExp() { }
+    public void ligar() { }
+    public void registrarViagem() { }
 }
 
-// REPETIÇÃO! Mesmos atributos e métodos
+// Mesmos atributos e métodos duplicados em cada classe
 ```
 
-### A Solução: Herança
+---
+
+## 2. A Solução: Herança
 
 ```java
 // Classe PAI (superclasse)
-public class Campeao {
-    private String nome;
-    private int hp;
-    private int nivel;
+public class Veiculo {
+    protected String placa;
+    protected double capacidadeCarga;
     
-    public void atacar() {
-        System.out.println(nome + " atacou!");
+    public void ligar() {
+        System.out.println(placa + " ligado.");
     }
     
-    public void ganharExp() {
-        nivel++;
-    }
-}
-
-// Classe FILHA (subclasse) - herda de Campeao
-public class CampeaoTank extends Campeao {
-    private int resistencia;
-    
-    public void escudarAliado() {
-        System.out.println("Protegendo aliado!");
+    public void registrarViagem() {
+        System.out.println("Viagem registrada para " + placa);
     }
 }
 
-// Classe FILHA - herda de Campeao
-public class CampeaoMago extends Campeao {
-    private int manaAtual;
+// Classe FILHA (subclasse) - herda de Veiculo
+public class Caminhao extends Veiculo {
+    private double alturaMaxima;
     
-    public void lançarFeitiço() {
-        System.out.println("Lançando feitiço!");
+    public void carregar(double peso) {
+        System.out.println("Carregando " + peso + "kg");
+    }
+}
+
+// Classe FILHA - herda de Veiculo
+public class Moto extends Veiculo {
+    private boolean temBau;
+    
+    public void entregarDocumento() {
+        System.out.println("Entrega rápida de documento");
     }
 }
 ```
@@ -71,540 +68,342 @@ public class CampeaoMago extends Campeao {
 **Visualização:**
 
 ```
-        Campeao (Superclasse)
-        /         |        \
-       /          |         \
-  CampeaoTank  CampeaoMago  CampeaoADC
-  (Subclasse) (Subclasse)  (Subclasse)
+        Veiculo (Superclasse)
+        /                    \
+       /                      \
+  Caminhao                    Moto
+  (Subclasse)               (Subclasse)
 ```
 
 ---
 
-## 2. Usando Herança
-
-### Instanciando Subclasses
+## 3. Usando a Herança
 
 ```java
-// Criar um Tank
-CampeaoTank garen = new CampeaoTank();
-garen.atacar();           // Herdado ✓
-garen.ganharExp();        // Herdado ✓
-garen.escudarAliado();    // Próprio do Tank ✓
+Caminhao caminhao = new Caminhao();
+caminhao.ligar();              // Herdado ✓
+caminhao.registrarViagem();    // Herdado ✓
+caminhao.carregar(5000);       // Próprio do Caminhao ✓
 
-// Criar um Mago
-CampeaoMago lux = new CampeaoMago();
-lux.atacar();             // Herdado ✓
-lux.ganharExp();          // Herdado ✓
-lux.lançarFeitiço();      // Próprio do Mago ✓
+Moto moto = new Moto();
+moto.ligar();                  // Herdado ✓
+moto.registrarViagem();        // Herdado ✓
+moto.entregarDocumento();      // Próprio da Moto ✓
 ```
 
-### Construtor em Herança
+---
+
+## 4. Construtor em Herança
+
+A subclasse deve inicializar os atributos herdados chamando o construtor da superclasse com `super(...)`.
 
 ```java
-public class Campeao {
-    protected String nome;
-    protected int hp;
+public class Veiculo {
+    protected String placa;
+    protected double capacidadeCarga;
     
-    // Construtor
-    public Campeao(String nome, int hp) {
-        this.nome = nome;
-        this.hp = hp;
+    public Veiculo(String placa, double capacidadeCarga) {
+        this.placa = placa;
+        this.capacidadeCarga = capacidadeCarga;
     }
 }
 
-public class CampeaoTank extends Campeao {
-    private int resistencia;
+public class Caminhao extends Veiculo {
+    private double alturaMaxima;
     
-    // Construtor do Tank (chama construtor do pai)
-    public CampeaoTank(String nome, int hp, int resistencia) {
-        super(nome, hp);  // Chama construtor do Campeao
-        this.resistencia = resistencia;
+    public Caminhao(String placa, double capacidadeCarga, double alturaMaxima) {
+        super(placa, capacidadeCarga);  // Chama construtor de Veiculo
+        this.alturaMaxima = alturaMaxima;
     }
 }
-
-// Usando:
-CampeaoTank garen = new CampeaoTank("Garen", 650, 100);
 ```
 
-### Super: Referência à Superclasse
+Uso:
 
 ```java
-public class Campeao {
-    protected String nome;
+Caminhao caminhao = new Caminhao("ABC1234", 8000, 4.2);
+```
+
+---
+
+## 5. Super: Referência à Superclasse
+
+`super` permite chamar métodos ou o construtor da classe pai a partir da subclasse.
+
+```java
+public class Veiculo {
+    protected String placa;
     
     public void apresentar() {
-        System.out.println("Sou um campeão!");
+        System.out.println("Veículo de placa " + placa);
     }
 }
 
-public class CampeaoTank extends Campeao {
+public class Caminhao extends Veiculo {
+    @Override
     public void apresentar() {
-        super.apresentar();  // Chama método do pai
-        System.out.println("E sou um Tank!");
+        super.apresentar();  // Chama o método do pai
+        System.out.println("É um caminhão de carga.");
     }
 }
+```
 
-// Usando:
-CampeaoTank garen = new CampeaoTank();
-garen.apresentar();
+Uso:
+
+```java
+Caminhao caminhao = new Caminhao();
+caminhao.apresentar();
 
 // Output:
-// Sou um campeão!
-// E sou um Tank!
+// Veículo de placa ABC1234
+// É um caminhão de carga.
 ```
 
 ---
 
-## 3. Override (Sobrescrita)
+## 6. Modificadores de Acesso em Herança
 
-### Problema: Comportamentos Diferentes
-
-```java
-public class Campeao {
-    public void atacar() {
-        System.out.println("Ataque genérico!");
-    }
-}
-
-public class CampeaoTank extends Campeao {
-    // Tank ataca de forma diferente
-    public void atacar() {
-        System.out.println("Investida poderosa!");
-    }
-}
-
-public class CampeaoMago extends Campeao {
-    // Mago ataca de forma diferente
-    public void atacar() {
-        System.out.println("Lança um feitiço!");
-    }
-}
-
-// Usando:
-Campeao tank = new CampeaoTank();
-Campeao mago = new CampeaoMago();
-
-tank.atacar();  // "Investida poderosa!"
-mago.atacar();  // "Lança um feitiço!"
-```
-
-### Override vs. Overload
+| Modificador | A subclasse herda? |
+|-------------|---------------------|
+| `private` | Não |
+| `protected` | Sim |
+| `public` | Sim |
 
 ```java
-public class Campeao {
-    // Método original
-    public void atacar() {
-        System.out.println("Ataque básico!");
-    }
-}
-
-public class CampeaoTank extends Campeao {
-    // OVERRIDE: mesmo nome, assinatura, comportamento diferente
-    @Override  // Anotação (opcional mas recomendada)
-    public void atacar() {
-        System.out.println("Investida!");
-    }
+public class Veiculo {
+    private double custoManutencao;  // Não é herdado
+    protected double velocidadeMaxima; // É herdado
     
-    // OVERLOAD: mesmo nome, parâmetros diferentes
-    public void atacar(Campeao alvo) {
-        System.out.println("Atacando " + alvo.getNome());
-    }
-    
-    public void atacar(int dano) {
-        System.out.println("Ataque com " + dano + " de dano!");
+    protected void revisar() {
+        System.out.println("Revisão realizada");
     }
 }
 
-// Usando:
-CampeaoTank garen = new CampeaoTank();
-garen.atacar();              // Override: "Investida!"
-garen.atacar(new CampeaoMago());  // Overload: "Atacando ..."
-garen.atacar(150);           // Overload: "Ataque com 150 de dano!"
-```
-
----
-
-## 4. Polimorfismo: O Poder da Herança
-
-### O Conceito
-
-A mesma referência pode apontar para objetos de **tipos diferentes**:
-
-```java
-// Campeao é a superclasse
-Campeao campeao1 = new CampeaoTank();   // ✓ Permitido
-Campeao campeao2 = new CampeaoMago();   // ✓ Permitido
-Campeao campeao3 = new CampeaoADC();    // ✓ Permitido
-
-// MAS ao contrário, NÃO é permitido
-CampeaoTank tank = new Campeao();       // ❌ Erro!
-```
-
-### Aplicação Prática
-
-```java
-public class Time {
-    private Campeao[] integrantes;
-    
-    public Time(Campeao[] integrantes) {
-        this.integrantes = integrantes;
-    }
-    
-    // Método que funciona com QUALQUER subclasse
-    public void listarCampeoes() {
-        for (Campeao campeao : integrantes) {
-            System.out.println(campeao.getNome());
-        }
-    }
-    
-    // Todos atacam (mas de formas diferentes)
-    public void atacarTodos(Campeao alvo) {
-        for (Campeao campeao : integrantes) {
-            campeao.atacar(alvo);  // Polimorfismo!
-        }
-    }
-}
-
-// Usando:
-Campeao[] time = {
-    new CampeaoTank("Garen", 650),
-    new CampeaoMago("Lux", 450),
-    new CampeaoADC("Ashe", 500)
-};
-
-Time timeBlue = new Time(time);
-timeBlue.listarCampeoes();   // Funciona com todas subclasses
-timeBlue.atacarTodos(inimigo);  // Cada uma ataca à sua maneira
-```
-
-### Por Que é Poderoso?
-
-```java
-// Sem polimorfismo:
-if (campeao instanceof CampeaoTank) {
-    ((CampeaoTank) campeao).atacar();
-} else if (campeao instanceof CampeaoMago) {
-    ((CampeaoMago) campeao).atacar();
-} else if (campeao instanceof CampeaoADC) {
-    ((CampeaoADC) campeao).atacar();
-}
-// Horrível! Muito código repetido
-
-// Com polimorfismo (muito melhor):
-campeao.atacar();  // Funciona para qualquer subclasse
-```
-
----
-
-## 5. Modificadores de Acesso em Herança
-
-### Private: Não Herda
-
-```java
-public class Campeao {
-    private int segredo;  // PRIVADO
-    protected int hp;     // PROTEGIDO
-}
-
-public class CampeaoTank extends Campeao {
-    public void testar() {
-        // ❌ Não consegue acessar segredo
-        System.out.println(segredo);  // Erro!
+public class Caminhao extends Veiculo {
+    public void verificar() {
+        System.out.println(velocidadeMaxima); // ✓ Acessa protected
+        revisar();                            // ✓ Chama método protected
         
-        // ✓ Consegue acessar hp (protected)
-        System.out.println(hp);       // OK
-    }
-}
-```
-
-### Protected: Herda
-
-```java
-public class Campeao {
-    protected String nome;    // Subclasses acessam
-    private int hpSecreto;    // Subclasses NÃO acessam
-    
-    protected void metodoInterno() {
-        System.out.println("Método protegido");
-    }
-}
-
-public class CampeaoTank extends Campeao {
-    public void apresentar() {
-        System.out.println(nome);  // ✓ Pode acessar protected
-        metodoInterno();           // ✓ Pode chamar protected
+        // System.out.println(custoManutencao); // ❌ Erro: é private
     }
 }
 ```
 
 ---
 
-## 6. Cadeia de Herança (Hierarquia Profunda)
+## 7. Cadeia de Herança (Multi-nível)
 
-### Herança Multi-nível
+Uma classe pode herdar de outra que já herda de uma terceira.
 
 ```java
-// Nível 1: Classe base
-public class SerVivo {
-    protected int hp;
+// Nível 1
+public class Veiculo {
+    protected String placa;
     
-    public void morrer() {
-        hp = 0;
+    public void ligar() {
+        System.out.println(placa + " ligado.");
     }
 }
 
-// Nível 2: Herda de SerVivo
-public class Campeao extends SerVivo {
-    protected String nome;
+// Nível 2: herda de Veiculo
+public class VeiculoDeCarga extends Veiculo {
+    protected double capacidadeCarga;
     
-    public void atacar() {
-        System.out.println(nome + " ataca!");
+    public void carregar(double peso) {
+        System.out.println("Carregando " + peso + "kg");
     }
 }
 
-// Nível 3: Herda de Campeao
-public class CampeaoTank extends Campeao {
-    protected int resistencia;
+// Nível 3: herda de VeiculoDeCarga
+public class CaminhaoRefrigerado extends VeiculoDeCarga {
+    private double temperaturaMinima;
     
-    public void escudar() {
-        System.out.println("Escudando!");
+    public void resfriar() {
+        System.out.println("Resfriando até " + temperaturaMinima + "°C");
     }
 }
-
-// Usando:
-CampeaoTank garen = new CampeaoTank();
-garen.atacar();    // De Campeao ✓
-garen.escudar();   // De CampeaoTank ✓
-garen.morrer();    // De SerVivo ✓
 ```
 
-**Visualização:**
+Uso:
+
+```java
+CaminhaoRefrigerado caminhao = new CaminhaoRefrigerado();
+caminhao.ligar();      // De Veiculo
+caminhao.carregar(2000); // De VeiculoDeCarga
+caminhao.resfriar();   // Próprio
+```
 
 ```
-SerVivo (hp)
+Veiculo (placa, ligar())
   |
-  +-- Campeao (nome, atacar())
+  +-- VeiculoDeCarga (capacidadeCarga, carregar())
         |
-        +-- CampeaoTank (resistencia, escudar())
+        +-- CaminhaoRefrigerado (temperaturaMinima, resfriar())
 ```
 
 ---
 
-## 7. Problema: Herança Múltipla
-
-### Java NÃO Suporta Herança Múltipla
+## 8. Java Não Suporta Herança Múltipla
 
 ```java
-// ❌ ERRO: Não é permitido herdar de 2 classes
-public class CampeaoEspecial extends Campeao, Objeto {
-    // Erro!
+// ❌ Erro: não é possível herdar de duas classes
+public class VeiculoEspecial extends Veiculo, Equipamento {
+    // Erro de compilação!
 }
 ```
 
-**Por quê?** Cria ambiguidade (qual método usar se ambas as classes têm?).
-
-### Solução: Interfaces (veremos no próximo arquivo)
+Isso evita ambiguidade caso as duas classes tenham métodos com o mesmo nome. Para reaproveitar comportamento de mais de uma fonte, Java usa **interfaces**:
 
 ```java
 // ✓ Uma classe pode implementar múltiplas interfaces
-public class CampeaoEspecial extends Campeao implements Atacavel, Curavel {
+public class VeiculoEspecial extends Veiculo implements Rastreavel, Segurado {
     // OK!
 }
 ```
 
 ---
 
-## 8. Padrão Prático: Hierarquia Completa
+## 9. Exemplo Completo: Frota de Veículos
 
 ```java
-// Base
-public class Campeao {
-    protected String nome;
-    protected int hp;
-    protected int mana;
+public class Veiculo {
+    protected String placa;
+    protected double capacidadeCarga;
+    protected boolean disponivel;
     
-    public Campeao(String nome, int hp, int mana) {
-        this.nome = nome;
-        this.hp = hp;
-        this.mana = mana;
+    public Veiculo(String placa, double capacidadeCarga) {
+        this.placa = placa;
+        this.capacidadeCarga = capacidadeCarga;
+        this.disponivel = true;
     }
     
-    public void levarDano(int dano) {
-        this.hp -= dano;
+    public void ligar() {
+        System.out.println(placa + " ligado.");
     }
     
-    public void atacar() {
-        System.out.println(nome + " ataca!");
-    }
-    
-    public String getNome() { return nome; }
-    public int getHp() { return hp; }
-}
-
-// Tank: Muita resistência, pouca mobilidade
-public class CampeaoTank extends Campeao {
-    private int resistencia;
-    
-    public CampeaoTank(String nome, int hp, int mana, int resistencia) {
-        super(nome, hp, mana);
-        this.resistencia = resistencia;
-    }
-    
-    @Override
-    public void levarDano(int dano) {
-        int danoReduzido = (int) (dano * 0.7);  // 30% redução
-        super.levarDano(danoReduzido);
-    }
-    
-    public void escudarAliado(Campeao aliado) {
-        System.out.println(nome + " protege " + aliado.getNome());
+    public String getPlaca() {
+        return placa;
     }
 }
 
-// Mago: Pouca resistência, muito dano mágico
-public class CampeaoMago extends Campeao {
-    private int poderelecao;
+public class Caminhao extends Veiculo {
+    private double alturaMaxima;
     
-    public CampeaoMago(String nome, int hp, int mana, int poderelecao) {
-        super(nome, hp, mana);
-        this.poderelecao = poderelecao;
+    public Caminhao(String placa, double capacidadeCarga, double alturaMaxima) {
+        super(placa, capacidadeCarga);
+        this.alturaMaxima = alturaMaxima;
     }
     
-    @Override
-    public void atacar() {
-        System.out.println(nome + " lança um feitiço!");
-    }
-    
-    public void lancarExplosao(Campeao alvo) {
-        System.out.println(nome + " lança explosão em " + alvo.getNome());
-        alvo.levarDano(poderelecao);
-    }
-}
-
-// ADC: Mobilidade média, dano físico alto
-public class CampeaoADC extends Campeao {
-    private int danofisico;
-    
-    public CampeaoADC(String nome, int hp, int mana, int danofisico) {
-        super(nome, hp, mana);
-        this.danofisico = danofisico;
-    }
-    
-    @Override
-    public void atacar() {
-        System.out.println(nome + " dispara uma flecha!");
-    }
-    
-    public void disparoMultiplo(Campeao[] alvos) {
-        for (Campeao alvo : alvos) {
-            alvo.levarDano(danofisico);
+    public void carregar(double peso) {
+        if (peso <= capacidadeCarga) {
+            System.out.println("Caminhão " + placa + " carregado com " + peso + "kg");
         }
-        System.out.println(nome + " disparou em " + alvos.length + " alvos!");
     }
 }
 
-// Usando tudo junto:
-public class Partida {
+public class Moto extends Veiculo {
+    private boolean temBau;
+    
+    public Moto(String placa, boolean temBau) {
+        super(placa, 15.0); // capacidade fixa de motos
+        this.temBau = temBau;
+    }
+    
+    public void entregarDocumento() {
+        System.out.println("Moto " + placa + " entregando documento");
+    }
+}
+
+public class Van extends Veiculo {
+    private int quantidadePacotes;
+    
+    public Van(String placa, double capacidadeCarga) {
+        super(placa, capacidadeCarga);
+    }
+    
+    public void entregarPacotes(int quantidade) {
+        this.quantidadePacotes = quantidade;
+        System.out.println("Van " + placa + " entregando " + quantidade + " pacotes");
+    }
+}
+```
+
+Uso prático:
+
+```java
+public class GerenciadorFrota {
     public static void main(String[] args) {
-        Campeao[] timeBlue = {
-            new CampeaoTank("Garen", 650, 100, 50),
-            new CampeaoMago("Lux", 450, 400, 200),
-            new CampeaoADC("Ashe", 500, 200, 150)
-        };
+        Caminhao caminhao = new Caminhao("ABC1234", 8000, 4.2);
+        Moto moto = new Moto("XYZ5678", true);
+        Van van = new Van("DEF9012", 1200);
         
-        Campeao[] timeRed = {
-            new CampeaoADC("Jinx", 480, 180, 160),
-            new CampeaoTank("Malphite", 700, 80, 60),
-            new CampeaoMago("Ahri", 470, 420, 190)
-        };
+        caminhao.ligar();           // Herdado de Veiculo
+        caminhao.carregar(5000);    // Próprio
         
-        System.out.println("=== Batalha Iniciada ===\n");
+        moto.ligar();                // Herdado de Veiculo
+        moto.entregarDocumento();    // Próprio
         
-        // Todos atacam (polimorfismo!)
-        for (Campeao c : timeBlue) {
-            c.atacar();
-        }
-        
-        System.out.println();
-        
-        for (Campeao c : timeRed) {
-            c.atacar();
-        }
+        van.ligar();                 // Herdado de Veiculo
+        van.entregarPacotes(20);     // Próprio
     }
 }
-
-// Output:
-// === Batalha Iniciada ===
-//
-// Garen ataca!
-// Lux lança um feitiço!
-// Ashe dispara uma flecha!
-//
-// Jinx dispara uma flecha!
-// Malphite ataca!
-// Ahri lança um feitiço!
 ```
 
 ---
 
-## 9. Erros Comuns
+## 10. Erros Comuns
 
-### Esquecer Super no Construtor
+### Esquecer o `super()` no construtor
 
 ```java
-public class CampeaoTank extends Campeao {
-    private int resistencia;
+public class Caminhao extends Veiculo {
+    private double alturaMaxima;
     
-    // ❌ Erro: não inicializa atributos do pai
-    public CampeaoTank(String nome, int resistencia) {
-        this.resistencia = resistencia;
-        // nome não foi inicializado!
+    // ❌ Erro: atributos do pai não são inicializados
+    public Caminhao(String placa, double alturaMaxima) {
+        this.alturaMaxima = alturaMaxima;
+        // placa nunca foi definida!
     }
     
     // ✓ Correto
-    public CampeaoTank(String nome, int resistencia) {
-        super(nome);  // Inicializa atributos do pai
-        this.resistencia = resistencia;
+    public Caminhao(String placa, double alturaMaxima) {
+        super(placa, 0);
+        this.alturaMaxima = alturaMaxima;
     }
 }
 ```
 
-### Confundir Override com Overload
+### Tentar acessar atributo `private` do pai
 
 ```java
-public class Campeao {
-    public void atacar() {
-        System.out.println("Ataque");
-    }
+public class Veiculo {
+    private double custoManutencao;
 }
 
-public class CampeaoTank extends Campeao {
-    // ✓ Override: mesmo nome, mesma assinatura
-    @Override
-    public void atacar() {
-        System.out.println("Investida");
-    }
-    
-    // ✓ Overload: mesmo nome, assinatura diferente
-    public void atacar(Campeao alvo) {
-        System.out.println("Ataque em " + alvo.getNome());
+public class Caminhao extends Veiculo {
+    public void verificar() {
+        System.out.println(custoManutencao); // ❌ Erro: não herdado
     }
 }
 ```
 
-### Type Casting Perigoso
+**Solução:** usar `protected` no atributo, ou expor um getter público na superclasse.
+
+---
+
+## 11. Herança x Polimorfismo — Qual a Diferença?
+
+Herança e polimorfismo são conceitos complementares, mas não são a mesma coisa:
+
+- **Herança** é a relação estrutural: define que uma classe (`Caminhao`) reaproveita atributos e métodos de outra (`Veiculo`).
+- **Polimorfismo** é o comportamento que a herança viabiliza: uma variável do tipo `Veiculo` pode referenciar um `Caminhao`, uma `Moto` ou uma `Van`, e cada um executa sua própria versão de um método (com `@Override`).
 
 ```java
-Campeao campeao = new CampeaoTank();
-
-// ❌ ClassCastException se não for realmente um ADC
-CampeaoADC adc = (CampeaoADC) campeao;  // Erro em runtime!
-
-// ✓ Verificar antes
-if (campeao instanceof CampeaoADC) {
-    CampeaoADC adc = (CampeaoADC) campeao;  // Seguro
-}
+Veiculo v = new Caminhao("ABC1234", 8000, 4.2); // polimorfismo em ação
+v.ligar(); // usa o método herdado ou sobrescrito, dependendo do objeto real
 ```
+
+Em resumo: sem herança não existe polimorfismo de subtipo em Java — a herança monta a hierarquia, e o polimorfismo é o que se ganha ao usá-la.
 
 ---
 
@@ -612,20 +411,18 @@ if (campeao instanceof CampeaoADC) {
 
 | Conceito | Significado | Exemplo |
 |----------|-------------|---------|
-| **Herança** | Subclasse herda de superclasse | `class Tank extends Campeao` |
-| **Super** | Referência ao pai | `super.atacar()` |
-| **Override** | Mesmo método, comportamento diferente | `@Override public void atacar()` |
-| **Polimorfismo** | Mesma referência, tipos diferentes | `Campeao c = new Tank()` |
-| **Protected** | Acessível em subclasses | `protected int hp` |
+| **Herança** | Subclasse herda de superclasse | `class Caminhao extends Veiculo` |
+| **Super** | Referência ao construtor/método do pai | `super(placa, capacidade)` |
+| **Protected** | Acessível em subclasses | `protected double capacidadeCarga` |
+| **Herança múltipla** | Não suportada em Java | Usar interfaces no lugar |
+| **Cadeia de herança** | Subclasse de subclasse | `Veiculo → VeiculoDeCarga → CaminhaoRefrigerado` |
 
 ---
 
 ## Dicas Finais
 
-✓ Use herança para **relações "é um"** (Tank é um Campeao)  
-✓ Sempre use `super()` no construtor da subclasse  
-✓ Use `@Override` para clareza  
-✓ Prefira **composição** quando não há relação clara (veremos depois)  
-✓ Mantenha hierarquias **rasas** (não muito profundas)  
-
-Domina herança e você domina POO! 🎮
+✓ Use herança para relações **"é um"** (Caminhão é um Veículo)  
+✓ Sempre chame `super(...)` no construtor da subclasse  
+✓ Use `protected` nos atributos que as subclasses precisam acessar  
+✓ Mantenha hierarquias **rasas** (evite muitos níveis de herança)  
+✓ Se não há uma relação "é um" clara, considere composição em vez de herança
