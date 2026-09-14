@@ -312,7 +312,45 @@ Esse exemplo mostra na prática: múltiplos catches, cada um pra um tipo de erro
 
 ---
 
-## 11. Resumo rápido
+## 11. try-catch vs if/else
+
+A diferença central: **quem detecta o problema**.
+
+- **if/else** → você mesmo verifica a condição *antes* de agir. Precisa prever e checar cada caso manualmente.
+- **try/catch** → você tenta executar, e só reage *se* algo lançar uma exceção. Não precisa prever tudo antecipadamente — o erro "avisa sozinho".
+
+```java
+// if/else — você precisa lembrar de checar tudo, sempre
+if (indice >= 0 && indice < frota.length) {
+    System.out.println(frota[indice]);
+} else {
+    System.out.println("Veículo não encontrado");
+}
+```
+
+```java
+// try/catch — você tenta, a JVM avisa se der ruim
+try {
+    System.out.println(frota[indice]);
+}
+catch (ArrayIndexOutOfBoundsException e) {
+    System.out.println("Veículo não encontrado");
+}
+```
+
+| | if/else | try/catch |
+|---|---|---|
+| Uso ideal | Regras de negócio previsíveis (ex: `if (peso > capacidade)`) | Erros inesperados/externos (ex: arquivo não existe, índice inválido, falha de rede) |
+| Quem "lança" o problema | Você mesmo, via condição | A JVM ou código de terceiros |
+| Custo em performance | Baixo, sempre executa | Baixo no caminho normal, mas lançar exceção tem custo maior |
+| Múltiplas causas de erro | Vira `if/else if` aninhado, fica poluído | Um `catch` por tipo, mais organizado |
+| Interrompe o fluxo? | Não, você controla manualmente | Sim, automaticamente pula pro catch |
+
+**Regra prática:** use `if` para validar coisas que você **controla e prevê** (peso, saldo, formato de dado). Use `try/catch` para coisas que **fogem do seu controle** ou vêm de operações arriscadas (parsing, I/O, acesso a índice, chamadas externas).
+
+---
+
+## 12. Resumo rápido
 
 | Situação | O que fazer |
 |---|---|
