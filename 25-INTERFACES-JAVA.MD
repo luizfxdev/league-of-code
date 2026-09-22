@@ -700,7 +700,7 @@ Herança múltipla de **classes** pode gerar **ambiguidade** quando o mesmo mét
           ColetorEtiquetadora          → qual processar() herdar?
 ```
 
-Por isso, **Java não permite herdar de mais de uma classe**.
+Por isso, **Java não permite herdar mais de uma classe**.
 
 ### A saída: implementar várias interfaces
 
