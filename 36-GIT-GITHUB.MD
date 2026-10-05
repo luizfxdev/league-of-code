@@ -1,4 +1,4 @@
-# Git e GitHub — Conteúdo de Reforço
+# Git e GitHub — Guia Completo para Devs Java
 
 ---
 
@@ -271,38 +271,136 @@ Isso restaura o arquivo do estado do branch remoto sem afetar o restante do work
 
 ---
 
-## 15. Operações avançadas — Limpeza de branch poluído
+## 15. Cherry-pick — Reaplicar commits seletivamente
 
-Situação real no `gweb`: você abre um PR e percebe que o branch contém commits de outros devs junto com os seus.
+`git cherry-pick` pega um commit específico de qualquer lugar do histórico e o aplica no branch atual. É a ferramenta principal para limpar branches poluídos no `gweb`.
 
-### Fluxo de limpeza via cherry-pick
+### O que é cherry-pick, visualmente
 
-```bash
-# 1. Identifique seus commits
-git log --oneline
-# Anote os hashes dos seus commits, na ordem cronológica
-# Ex: a1b2c3d, e4f5g6h
-
-# 2. Atualize a referência do remoto
-git fetch origin fix
-
-# 3. Resete o branch local para o estado oficial do remoto
-git reset --hard origin/fix
-
-# 4. Reaplicar apenas seus commits, em ordem
-git cherry-pick a1b2c3d
-git cherry-pick e4f5g6h
-
-# 5. Subir o branch limpo (requer force-push)
-git push -f origin feature/6874
+```
+branch-base:   A → B → C → D
+                         ↑
+minha-branch:  A → B → C → X (commit seu) → Y (commit de outro dev)
+                                 cherry-pick X
+                                 ↓
+branch-limpo:  A → B → C → D → X'
 ```
 
-> **Por que `git reset --hard origin/fix` e não `origin/main`?** Porque seu PR aponta para `fix`, não para `main`. O branch base é quem define o "limpo".
+`X'` é seu commit reaplicado sobre a base atualizada.
+
+---
+
+### Fluxo completo — reset + cherry-pick
+
+Este é o fluxo real usado no `gweb` para limpar um PR poluído com commits de outros devs.
+
+#### 0. Faça backup antes de tudo
+
+```bash
+git checkout minha-branch
+git branch backup-minha-branch
+```
+
+Se algo der errado: `git checkout backup-minha-branch`
+
+#### 1. Atualizar a base
+
+```bash
+git checkout fix
+git fetch origin
+git reset --hard origin/fix
+```
+
+> `origin/fix` é o remoto atualizado. Seus colegas podem ter feito force-push — sempre `fetch` antes do `reset`.
+
+#### 2. Ir para o branch do PR
+
+```bash
+git checkout minha-branch
+git branch -v
+```
+
+#### 3. Resetar o branch do PR para a base limpa
+
+```bash
+git reset --hard fix
+```
+
+O branch agora está igual à base. Seus commits ainda existem no `backup-minha-branch`.
+
+#### 4. Identificar seus commits
+
+```bash
+# Ver só os commits que existem no backup mas não na base
+git log --oneline fix..backup-minha-branch
+```
+
+Saída exemplo:
+```
+c3c4c5c feat: adiciona filtro por local_estoque_id
+a7a8a9a fix: corrige encoding Disponível via chr(237)
+e1e2e3e raw: adiciona script SQL de migração cst_ibs_cbs
+```
+
+> **Atenção:** o `git log` lista do mais novo ao mais antigo. O cherry-pick deve ser feito do **mais antigo para o mais novo** — ou seja, de baixo para cima nessa listagem.
+
+#### 5. Reaplicar com cherry-pick
+
+**Um único commit:**
+```bash
+git cherry-pick abc1234
+```
+
+**Vários commits consecutivos (mais eficiente):**
+```bash
+# Sintaxe: <hash-mais-antigo>^..<hash-mais-novo>
+git cherry-pick e1e2e3e^..c3c4c5c
+```
+
+**Commits não consecutivos — um por um, do mais antigo ao mais novo:**
+```bash
+git cherry-pick e1e2e3e
+git cherry-pick a7a8a9a
+git cherry-pick c3c4c5c
+```
+
+#### 6. Resolver conflitos (se houver)
+
+```bash
+# 1. Edite os arquivos com conflito
+# 2. Marque como resolvido
+git add .
+# 3. Continue
+git cherry-pick --continue
+```
+
+Para desistir e desfazer tudo:
+```bash
+git cherry-pick --abort
+```
+
+#### 7. Conferir histórico
+
+```bash
+git log --oneline --decorate -7
+```
+
+Resultado esperado: seus commits no topo, commits da base abaixo.
+
+#### 8. Subir o branch
+
+```bash
+git push --force-with-lease
+```
+
+> Use `--force-with-lease` em vez de `-f`. Ele faz force-push, mas **aborta** se alguém subiu algo no branch desde o seu último `fetch` — evita sobrescrever commits de outros sem querer.
+
+---
 
 ### Por que `--author=` nem sempre funciona para filtrar
 
 ```bash
-# Isso pode não retornar todos os seus commits:
+# Pode não retornar todos os seus commits:
 git log --oneline --author="Luiz"
 
 # Porque seus commits existem sob dois formatos:
@@ -310,7 +408,7 @@ git log --oneline --author="Luiz"
 # - "Luiz Felipe de Oliveira" (config atual)
 ```
 
-A solução segura é olhar o `git log --oneline` e anotar manualmente os hashes dos seus commits.
+Use `git log --oneline fix..backup-minha-branch` — filtra por diferença de histórico, não por autor.
 
 ---
 
