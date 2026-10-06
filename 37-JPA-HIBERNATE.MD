@@ -1,12 +1,11 @@
 # JPA / Hibernate — Mapeamento Objeto-Relacional
 
-> Baseado no material do Prof. Nelio Alves + exemplos do seu contexto.
 
 ---
 
 ## 1. O Problema
 
-No seu dia a dia no GWEB, você lida com isso o tempo todo:
+No seu dia a dia, você lida com isso o tempo todo:
 
 ```java
 // DAO puro — você escreve isso à mão
