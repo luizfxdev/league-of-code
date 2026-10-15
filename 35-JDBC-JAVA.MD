@@ -1,6 +1,5 @@
 # JDBC em Java
 
-
 ---
 
 ## Sumário
@@ -20,9 +19,10 @@
 13. [Connection pooling (HikariCP)](#13-connection-pooling-hikaricp)
 14. [Metadados: `DatabaseMetaData` e `ResultSetMetaData`](#14-metadados-databasemetadata-e-resultsetmetadata)
 15. [Exceções JDBC (`SQLException`)](#15-exceções-jdbc-sqlexception)
-16. [Exercício resolvido](#16-exercício-resolvido)
-17. [Armadilhas e boas práticas](#17-armadilhas-e-boas-práticas)
-18. [Cheat sheet](#18-cheat-sheet)
+16. [Padrão DAO com JDBC](#16-padrão-dao-com-jdbc)
+17. [Exercício resolvido](#17-exercício-resolvido)
+18. [Armadilhas e boas práticas](#18-armadilhas-e-boas-práticas)
+19. [Cheat sheet](#19-cheat-sheet)
 
 ---
 
@@ -91,6 +91,8 @@ Connection conexao = DriverManager.getConnection(url, usuario, senha);
 //   <version>42.7.3</version>
 // </dependency>
 ```
+
+**Pacotes:** `java.sql` (API principal) e `javax.sql` (API suplementar para servidores: `DataSource`, pooling, transações distribuídas).
 
 | Camada | Exemplo |
 |---|---|
@@ -170,6 +172,78 @@ try (Connection con = ConexaoFactory.obterConexao()) {
 ```
 
 > **Credenciais nunca devem ficar hardcoded no código-fonte.** Use variáveis de ambiente, arquivos de configuração fora do controle de versão, ou um gerenciador de segredos (Vault, AWS Secrets Manager etc.).
+
+### Estrutura básica de projeto: `db.properties` + classe utilitária `DB`
+
+Uma estrutura comum em projetos didáticos (sem pool) é externalizar os dados de conexão em um arquivo `db.properties` na raiz do projeto e centralizar abrir/fechar recursos em uma classe `DB` com métodos estáticos.
+
+```properties
+# db.properties  (adicione ao .gitignore — contém credenciais)
+user=developer
+password=1234567
+dburl=jdbc:mysql://localhost:3306/coursejdbc
+useSSL=false
+```
+
+```java
+// Exceção personalizada (unchecked) para falhas de acesso a dados
+public class DbException extends RuntimeException {
+    public DbException(String msg) { super(msg); }
+}
+```
+
+```java
+public class DB {
+    private static Connection conn = null;
+
+    public static Connection getConnection() {
+        if (conn == null) {
+            try {
+                Properties props = loadProperties();
+                String url = props.getProperty("dburl");
+                conn = DriverManager.getConnection(url, props);   // repassa user, password, useSSL
+            } catch (SQLException e) {
+                throw new DbException(e.getMessage());
+            }
+        }
+        return conn;
+    }
+
+    public static void closeConnection() {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                throw new DbException(e.getMessage());
+            }
+        }
+    }
+
+    public static void closeStatement(Statement st) {
+        if (st != null) {
+            try { st.close(); } catch (SQLException e) { throw new DbException(e.getMessage()); }
+        }
+    }
+
+    public static void closeResultSet(ResultSet rs) {
+        if (rs != null) {
+            try { rs.close(); } catch (SQLException e) { throw new DbException(e.getMessage()); }
+        }
+    }
+
+    private static Properties loadProperties() {
+        try (FileInputStream fs = new FileInputStream("db.properties")) {
+            Properties props = new Properties();
+            props.load(fs);
+            return props;
+        } catch (IOException e) {
+            throw new DbException(e.getMessage());
+        }
+    }
+}
+```
+
+> Essa abordagem mantém **uma única conexão estática** — simples para estudo, mas não é adequada para aplicações concorrentes. Em produção, use `DataSource` com pool (seção 13). Os métodos `closeStatement`/`closeResultSet` existem porque, antes do `try-with-resources`, o fechamento era feito manualmente em um bloco `finally`.
 
 ---
 
@@ -316,6 +390,19 @@ try (ResultSet rs = stmt.executeQuery()) {
 }
 ```
 
+### Navegação no cursor
+
+O `ResultSet` guarda os dados em forma de **tabela**, com um cursor que começa na posição **0** (antes da primeira linha); os dados reais começam na posição **1**.
+
+| Método | Efeito |
+|---|---|
+| `next()` | Move para a próxima linha; retorna `false` se não houver mais |
+| `first()` | Move para a posição 1, se houver |
+| `beforeFirst()` | Move para a posição 0 (antes da primeira linha) |
+| `absolute(int)` | Move para a posição informada (lembrando que a primeira linha é 1) |
+
+> `first()`, `beforeFirst()` e `absolute()` exigem um `ResultSet` **scrollable** (`TYPE_SCROLL_INSENSITIVE`/`TYPE_SCROLL_SENSITIVE`); o padrão é `TYPE_FORWARD_ONLY`, que só permite `next()`.
+
 > `rs.next()` **precisa** ser chamado antes de ler qualquer coluna — ele posiciona o cursor na primeira linha (ou confirma que não há linhas). Esquecer isso é um erro comum para quem está começando com JDBC.
 
 ---
@@ -398,6 +485,52 @@ public class EntregaDao {
 | `executeUpdate()` | `INSERT`, `UPDATE`, `DELETE` | `int` (número de linhas afetadas) |
 | `execute()` | SQL genérico (quando não se sabe o tipo em tempo de compilação) | `boolean` (indica se o resultado é um `ResultSet`) |
 
+### Recuperando a chave gerada (`RETURN_GENERATED_KEYS`)
+
+Quando o `id` é gerado pelo banco (auto-incremento), use `Statement.RETURN_GENERATED_KEYS` para obter o valor após o `INSERT`:
+
+```java
+String sql = "INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId) VALUES (?, ?, ?, ?, ?)";
+
+try (PreparedStatement st = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    st.setString(1, "Carl Purple");
+    st.setString(2, "carl@gmail.com");
+    st.setDate(3, new java.sql.Date(sdf.parse("22/04/1985").getTime()));
+    st.setDouble(4, 3000.0);
+    st.setInt(5, 4);
+
+    int linhasAfetadas = st.executeUpdate();
+
+    if (linhasAfetadas > 0) {
+        try (ResultSet rs = st.getGeneratedKeys()) {
+            while (rs.next()) {
+                int id = rs.getInt(1);   // primeira coluna = chave gerada
+                System.out.println("Pronto! Id = " + id);
+            }
+        }
+    } else {
+        System.out.println("Nenhuma linha afetada!");
+    }
+}
+```
+
+### Integridade referencial no `DELETE`
+
+Remover um registro referenciado por outra tabela (chave estrangeira) lança `SQLException`. Uma boa prática é traduzi-la para uma exceção própria:
+
+```java
+public class DbIntegrityException extends RuntimeException {
+    public DbIntegrityException(String msg) { super(msg); }
+}
+
+try (PreparedStatement st = con.prepareStatement("DELETE FROM department WHERE Id = ?")) {
+    st.setInt(1, 2);
+    st.executeUpdate();
+} catch (SQLException e) {
+    throw new DbIntegrityException(e.getMessage());   // ex.: departamento ainda tem vendedores
+}
+```
+
 > `executeUpdate()` retornando `0` é um sinal útil: significa que o `WHERE` não encontrou nenhuma linha — frequentemente indica um `UPDATE`/`DELETE` para um código inexistente.
 
 ---
@@ -464,6 +597,15 @@ public void cancelarEDevolverEstoque(String codigoEntrega, String produto, int q
     }
 }
 ```
+
+**Propriedades ACID** que uma transação garante:
+
+| Propriedade | Significado |
+|---|---|
+| **A**tomicidade | Todas as operações são aplicadas ou nenhuma é |
+| **C**onsistência | O banco sai de um estado válido para outro estado válido |
+| **I**solamento | Transações concorrentes não enxergam estados intermediários umas das outras |
+| **D**urabilidade | Depois do `commit`, a alteração persiste mesmo após falhas |
 
 > Sem a transação, se a primeira `UPDATE` tiver sucesso e a segunda falhar, o sistema fica com a entrega cancelada **sem** o estoque devolvido — um estado inconsistente que a transação evita.
 
@@ -655,7 +797,149 @@ try {
 
 ---
 
-## 16. Exercício resolvido
+## 16. Padrão DAO com JDBC
+
+**DAO (Data Access Object)**: para cada entidade existe um objeto responsável pelo acesso a dados daquela entidade (`ClienteDao`, `ProdutoDao`, `PedidoDao`...). Cada DAO é definido por uma **interface**, e a implementação concreta (JDBC, JPA, em memória) fica escondida atrás dela. A injeção da implementação pode ser feita por uma **Factory**.
+
+```java
+// Interface: contrato independente de tecnologia
+public interface SellerDao {
+    void insert(Seller obj);
+    void update(Seller obj);
+    void deleteById(Integer id);
+    Seller findById(Integer id);
+    List<Seller> findAll();
+    List<Seller> findByDepartment(Department department);
+}
+```
+
+```java
+// Factory: o programa não conhece a classe concreta
+public class DaoFactory {
+    public static SellerDao createSellerDao() {
+        return new SellerDaoJDBC(DB.getConnection());
+    }
+}
+
+// Uso
+SellerDao sellerDao = DaoFactory.createSellerDao();
+Seller seller = sellerDao.findById(3);
+```
+
+### Entidades
+
+Checklist de uma classe de entidade: atributos, construtores, getters/setters, `hashCode` e `equals`, `toString` e `implements Serializable`. No exemplo, `Seller` possui um `Department` (associação).
+
+### Implementação JDBC com `JOIN`
+
+```java
+public class SellerDaoJDBC implements SellerDao {
+    private final Connection conn;
+
+    public SellerDaoJDBC(Connection conn) {
+        this.conn = conn;
+    }
+
+    @Override
+    public Seller findById(Integer id) {
+        String sql = "SELECT seller.*, department.Name as DepName "
+                   + "FROM seller INNER JOIN department "
+                   + "ON seller.DepartmentId = department.Id "
+                   + "WHERE seller.Id = ?";
+
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, id);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    Department dep = instantiateDepartment(rs);
+                    return instantiateSeller(rs, dep);
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }
+    }
+
+    // Reaproveitamento de instanciação (propaga SQLException para o método chamador tratar)
+    private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+        Seller obj = new Seller();
+        obj.setId(rs.getInt("Id"));
+        obj.setName(rs.getString("Name"));
+        obj.setEmail(rs.getString("Email"));
+        obj.setBaseSalary(rs.getDouble("BaseSalary"));
+        obj.setBirthDate(rs.getDate("BirthDate"));
+        obj.setDepartment(dep);
+        return obj;
+    }
+
+    private Department instantiateDepartment(ResultSet rs) throws SQLException {
+        Department dep = new Department();
+        dep.setId(rs.getInt("DepartmentId"));
+        dep.setName(rs.getString("DepName"));
+        return dep;
+    }
+}
+```
+
+### `findByDepartment`: um único objeto `Department` compartilhado
+
+Em uma consulta que retorna vários vendedores do mesmo departamento, **não** crie um `Department` novo a cada linha — todos os vendedores devem apontar para a **mesma instância**. Use um `Map` para controlar os departamentos já instanciados:
+
+```java
+String sql = "SELECT seller.*, department.Name as DepName "
+           + "FROM seller INNER JOIN department "
+           + "ON seller.DepartmentId = department.Id "
+           + "WHERE DepartmentId = ? "
+           + "ORDER BY Name";
+
+try (PreparedStatement st = conn.prepareStatement(sql)) {
+    st.setInt(1, department.getId());
+
+    try (ResultSet rs = st.executeQuery()) {
+        List<Seller> list = new ArrayList<>();
+        Map<Integer, Department> map = new HashMap<>();
+
+        while (rs.next()) {
+            Department dep = map.get(rs.getInt("DepartmentId"));
+            if (dep == null) {                       // só instancia na primeira vez
+                dep = instantiateDepartment(rs);
+                map.put(rs.getInt("DepartmentId"), dep);
+            }
+            list.add(instantiateSeller(rs, dep));
+        }
+        return list;
+    }
+} catch (SQLException e) {
+    throw new DbException(e.getMessage());
+}
+```
+
+| Abordagem | Resultado |
+|---|---|
+| ❌ Instanciar `Department` a cada linha | Vários objetos `Department` duplicados para o mesmo departamento |
+| ✅ `Map<Integer, Department>` | Uma única instância de `Department`, compartilhada pelos vendedores |
+
+O `findAll()` segue a mesma lógica, sem o `WHERE`, com `ORDER BY Name`.
+
+### SQL de `insert`, `update` e `delete`
+
+```sql
+INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId)
+VALUES (?, ?, ?, ?, ?);
+
+UPDATE seller
+SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ?
+WHERE Id = ?;
+
+DELETE FROM seller WHERE Id = ?;
+```
+
+> No `insert`, use `RETURN_GENERATED_KEYS` para atribuir o `id` gerado ao objeto (seção 8). Repita o padrão para `DepartmentDaoJDBC` e registre-o na `DaoFactory`.
+
+---
+
+## 17. Exercício resolvido
 
 **Problema:** implementar um DAO completo de entregas com conexão via pool, tratamento de violação de chave única no `insert`, e uma operação transacional de cancelamento com devolução de estoque.
 
@@ -775,7 +1059,7 @@ Cancelamento e devolução de estoque confirmados em uma única transação.
 
 ---
 
-## 17. Armadilhas e boas práticas
+## 18. Armadilhas e boas práticas
 
 | Armadilha | Explicação | Solução |
 |---|---|---|
@@ -799,7 +1083,7 @@ Cancelamento e devolução de estoque confirmados em uma única transação.
 
 ---
 
-## 18. Cheat sheet
+## 19. Cheat sheet
 
 ```java
 // Conexão via pool
@@ -852,5 +1136,7 @@ stmt.executeBatch();
 ### Referências
 
 - Docs Java: [`java.sql`](https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/package-summary.html), [`PreparedStatement`](https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html), [`DataSource`](https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/DataSource.html)
+- Curso: Programação Orientada a Objetos com Java — Prof. Dr. Nelio Alves (Educandoweb/Udemy); código-fonte: [github.com/acenelio/demo-dao-jdbc](https://github.com/acenelio/demo-dao-jdbc)
+- Padrão DAO: [Oracle — Data Access Object](https://www.oracle.com/technetwork/java/dataaccessobject-138824.html)
 - HikariCP: [github.com/brettwooldridge/HikariCP](https://github.com/brettwooldridge/HikariCP)
 - Ver também: [[34-CRUD-JAVA]] (CRUD construído sobre JDBC), [[32-IDEMPOTENCIA-JAVA]] (constraint única como garantia distribuída)
