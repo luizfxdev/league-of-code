@@ -104,6 +104,6 @@ flowchart LR
 
 <div align="center">
 
-Feito com ☕ e muitos teamfights por [**luizfxdev**](https://github.com/luizfxdev)
+Desenvolvido por[**luizfxdev**](https://www.linkedin.com/in/luizfxdev/)
 
 </div>
