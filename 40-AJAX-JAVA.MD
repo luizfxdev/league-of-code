@@ -14,7 +14,7 @@
 8. [Enviando dados: query string, form e JSON](#8-enviando-dados-query-string-form-e-json)
 9. [Recebendo e manipulando JSON (Gson)](#9-recebendo-e-manipulando-json-gson)
 10. [Tratamento de erros e status HTTP](#10-tratamento-de-erros-e-status-http)
-11. [Padrões reais do GWeb](#11-padrões-reais-do-gweb)
+11. [Padrões comuns em sistemas legados](#11-padrões-comuns-em-sistemas-legados)
 12. [Sessão expirada, loading e debounce](#12-sessão-expirada-loading-e-debounce)
 13. [Segurança: CSRF, XSS e validação](#13-segurança-csrf-xss-e-validação)
 14. [Debugando AJAX](#14-debugando-ajax)
@@ -73,7 +73,7 @@ Toda chamada AJAX, em qualquer biblioteca, tem os mesmos elementos:
 
 | Elemento | Pergunta que responde | Exemplo |
 |---|---|---|
-| **URL** | Para onde vou? | `ImpressoraControlador` |
+| **URL** | Para onde vou? | `EntregaControlador` |
 | **Método** | O que quero fazer? | `GET`, `POST` |
 | **Parâmetros/corpo** | O que envio? | `acao=carregar&id=7` |
 | **Tipo de resposta** | Como interpreto o retorno? | `json`, `text` |
@@ -106,7 +106,7 @@ console.log(resultado); // undefined! a resposta ainda não chegou
 
 ## 4. Lado servidor: Servlet respondendo texto e JSON
 
-O GWeb usa o padrão **Controlador com parâmetro `acao`**: um único Servlet atende várias operações, e o `acao` seleciona qual.
+Muitos sistemas legados usam o padrão **Controlador com parâmetro `acao`**: um único Servlet atende várias operações, e o `acao` seleciona qual.
 
 ### Servlet de exemplo (didático, domínio de logística)
 
@@ -179,17 +179,17 @@ public class EntregaControlador extends HttpServlet {
 
 1. **Não fazer `forward`/`redirect` para JSP** em ação AJAX: o `fetch` receberia o HTML da página, não os dados.
 2. **Definir o `Content-Type`** correto: `application/json` para JSON, `text/plain` para mensagens.
-3. **Definir o `charset`** explicitamente. Atenção: o GWeb legado usa **ISO-8859-1**; um erro de charset gera "acentuação quebrada" (`Ã§Ã£o`).
+3. **Definir o `charset`** explicitamente. Atenção: sistemas legados costumam usar **ISO-8859-1**; um erro de charset gera "acentuação quebrada" (`Ã§Ã£o`).
 4. **Usar status HTTP corretos** para erro (ver [seção 10](#10-tratamento-de-erros-e-status-http)).
 5. **Camadas preservadas**: Controlador → BO → DAO. O Controlador só traduz HTTP.
 
-> 📌 No GWeb, `javax.servlet` é usado porque o projeto roda em Tomcat 9. A partir do Tomcat 10 / Jakarta EE 9, o pacote passa a ser `jakarta.servlet`.
+> 📌 `javax.servlet` é usado em projetos que rodam até o Tomcat 9. A partir do Tomcat 10 / Jakarta EE 9, o pacote passa a ser `jakarta.servlet`.
 
 ---
 
 ## 5. `XMLHttpRequest`: a base de tudo
 
-É a API original (anos 2000). Ainda aparece em código legado e em bibliotecas (o `download.js` do GWeb a usa internamente).
+É a API original (anos 2000). Ainda aparece em código legado e em bibliotecas de terceiros.
 
 ```javascript
 const xhr = new XMLHttpRequest();
@@ -221,9 +221,9 @@ xhr.send();
 | 3 | `LOADING` | Corpo sendo recebido |
 | 4 | `DONE` | Operação concluída |
 
-### Exemplo real: download como `blob`
+### Exemplo: download como `blob`
 
-No `download.js` do GWeb (biblioteca de terceiros), o `XMLHttpRequest` baixa um arquivo binário:
+O `XMLHttpRequest` também baixa um arquivo binário:
 
 ```javascript
 var ajax = new XMLHttpRequest();
@@ -282,22 +282,16 @@ async function carregarEntrega(id) {
 | Servidor respondeu `500` | ❌ não dispara | ✅ `response.ok === false` |
 | Servidor respondeu `200` com mensagem de erro no corpo | ❌ não dispara | ✅ depende do seu contrato |
 
-### Exemplo real: `validaSession` do GWeb
-
-Arquivo `web/script/sessao.js`:
+### Exemplo: `validaSession` como *guard*
 
 ```javascript
-async function validaSession(metodo, isModulo) {
-    if (isModulo === undefined) {
-        isModulo = false;
-    }
-
-    let responseAjax = await fetch((isModulo ? '.' : '') + './UsuarioControlador?acao=validaSession');
-    let response = await responseAjax.text();
+async function validaSession(metodo) {
+    const responseAjax = await fetch('./UsuarioControlador?acao=validaSession');
+    const response = await responseAjax.text();
 
     if (response === '0') {
-        window.open((isModulo ? "." : "") + "./UsuarioControlador?acao=iniciarLogarNovamente",
-                    "loginNovamente", "height=220, width=250, scrollbars=no,resizable=no");
+        window.open('./UsuarioControlador?acao=iniciarLogarNovamente',
+                    'loginNovamente', 'height=220, width=250, scrollbars=no,resizable=no');
     } else {
         metodo();
     }
@@ -312,7 +306,7 @@ async function validaSession(metodo, isModulo) {
 4. Se vier `"0"` → sessão expirada → abre popup de login.
 5. Caso contrário → executa `metodo()`.
 
-E o lado Java correspondente (`UsuarioControlador`):
+E o lado Java correspondente:
 
 ```java
 private void validaSession(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws IOException {
@@ -321,7 +315,7 @@ private void validaSession(HttpServletRequest request, HttpServletResponse respo
     if (request.getSession().getAttribute("autenticado") == null) {
         out.println("0");
     } else {
-        // valida/renova token SAAS ...
+        out.println("1");
     }
 }
 ```
@@ -332,7 +326,7 @@ private void validaSession(HttpServletRequest request, HttpServletResponse respo
 
 ## 7. jQuery: `$.ajax`, `$.get` e `$.post`
 
-Muito presente em sistemas legados (como o GWeb, que usa jQuery 1.x e 3.x convivendo). Abstrai diferenças entre navegadores.
+Muito presente em sistemas legados (onde é comum encontrar versões 1.x e 3.x convivendo). Abstrai diferenças entre navegadores.
 
 ### `$.get` / `$.post`
 
@@ -379,7 +373,7 @@ $.ajax({
 | Sempre executar | `complete:` | `.finally()` |
 | Resposta JSON | `dataType:'json'` | `response.json()` |
 
-> ⚠️ No GWeb, o código usa `$` e `jQuery` de forma intercambiável. Quando há outras bibliotecas (como `prototype.js`) na mesma página, `$` pode ser sobrescrito — por isso muitos arquivos usam `jQuery.ajax` explicitamente (modo `noConflict`).
+> ⚠️ Em sistemas legados, o código usa `$` e `jQuery` de forma intercambiável. Quando há outras bibliotecas (como `prototype.js`) na mesma página, `$` pode ser sobrescrito — por isso muitos arquivos usam `jQuery.ajax` explicitamente (modo `noConflict`).
 
 ---
 
@@ -405,27 +399,27 @@ $.post('EntregaControlador', { acao: 'cadastrar', destino: 'Curitiba', pesoKg: 1
 
 Lado Java: continua `request.getParameter("destino")`.
 
-### 8.3 JSON dentro de um parâmetro (padrão GWeb)
+### 8.3 JSON dentro de um parâmetro (padrão legado)
 
-O GWeb serializa o formulário inteiro em JSON e o envia **em um único parâmetro `form`**:
+Em sistemas legados é comum serializar o formulário inteiro em JSON e enviá-lo **em um único parâmetro `form`**:
 
 ```javascript
-var formulario = jQuery('#formSenha').gwFormToJson();
+var formulario = formToJson('#formEntrega');   // função utilitária que converte o form em JSON
 
-$.post(homePath + '/UsuarioControlador', {
-    'acao': 'renovarSenhaLogin',
+$.post('EntregaControlador', {
+    'acao': 'cadastrar',
     'form': formulario
 }, function (data) { /* ... */ }, 'json');
 ```
 
-Lado Java (`ImpressoraControlador.doImpressora`):
+Lado Java:
 
 ```java
 String form = request.getParameter("form");
 JsonObject jsonObject = JsonParser.parseString(form).getAsJsonObject();
 
-impressora.setId(jsonObject.getAsJsonPrimitive("id").getAsInt());
-impressora.setDescricao(jsonObject.getAsJsonPrimitive("descricao").getAsString());
+entrega.setCodigo(jsonObject.getAsJsonPrimitive("codigo").getAsString());
+entrega.setDestino(jsonObject.getAsJsonPrimitive("destino").getAsString());
 ```
 
 ### 8.4 Corpo JSON puro (`application/json`)
@@ -451,7 +445,7 @@ Entrega entrega = new Gson().fromJson(corpo, Entrega.class);
 |---|---|---|---|
 | Query string | — | `getParameter` | Filtros, IDs, `GET` |
 | Form urlencoded | `application/x-www-form-urlencoded` | `getParameter` | Formulários simples |
-| JSON em parâmetro | `application/x-www-form-urlencoded` | `getParameter` + `JsonParser` | Padrão legado GWeb |
+| JSON em parâmetro | `application/x-www-form-urlencoded` | `getParameter` + `JsonParser` | Padrão legado comum |
 | JSON no corpo | `application/json` | `req.getReader()` + Gson | APIs REST modernas |
 
 ---
@@ -462,7 +456,7 @@ Entrega entrega = new Gson().fromJson(corpo, Entrega.class);
 
 ```java
 Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
-response.getWriter().print(gson.toJson(impressora));
+response.getWriter().print(gson.toJson(entrega));
 ```
 
 O `setDateFormat` evita que o `Date` vire um texto ambíguo no JSON — o front recebe a data já no formato brasileiro.
@@ -474,13 +468,13 @@ const obj = JSON.parse(texto);     // texto -> objeto
 const texto2 = JSON.stringify(obj); // objeto -> texto
 ```
 
-### Padrão de preenchimento de formulário (GWeb)
+### Padrão de preenchimento de formulário
 
-Em `cadastro-impressora-matriciais.js`, o JSON devolvido tem chaves iguais aos `id`s dos campos, então um laço preenche tudo:
+O JSON devolvido tem chaves iguais aos `id`s dos campos, então um laço preenche tudo:
 
 ```javascript
 $.ajax({
-    url: 'ImpressoraControlador',
+    url: 'EntregaControlador',
     async: true,
     dataType: 'text',
     data: {
@@ -491,7 +485,7 @@ $.ajax({
         var obj = JSON.parse(jqXHR.responseText);
         Object.keys(obj).forEach(function (chave) {
             var valor = obj[chave];
-            $("#" + chave).val(valor);       // campo #descricao recebe obj.descricao
+            $("#" + chave).val(valor);       // campo #destino recebe obj.destino
         });
         // ...
     }
@@ -500,7 +494,7 @@ $.ajax({
 
 **Leitura:**
 
-1. Pede a impressora pelo `id`.
+1. Pede a entrega pelo `id`.
 2. `dataType: 'text'` → o jQuery **não** converte; a conversão é manual (`JSON.parse`).
 3. Para cada chave do JSON, procura `#chave` na tela e preenche o valor.
 
@@ -509,7 +503,7 @@ $.ajax({
 ### Objetos aninhados
 
 ```javascript
-obj['criadoPor']['nome']    // Impressora.criadoPor.nome (objeto Usuario)
+obj['criadoPor']['nome']    // Entrega.criadoPor.nome (objeto Usuario)
 ```
 
 Se `criadoPor` vier `null` do servidor, `obj['criadoPor']['nome']` lança `TypeError`. Prefira:
@@ -572,12 +566,12 @@ async function excluirEntrega(id) {
 }
 ```
 
-### Padrão GWeb para erro de negócio
+### Padrão legado para erro de negócio
 
-O GWeb frequentemente responde **`200 OK` com um campo `erro` no JSON** (ver `alterarSenha.js`):
+Muitos sistemas legados respondem **`200 OK` com um campo `erro` no JSON**:
 
 ```javascript
-$.post(homePath + '/UsuarioControlador', { 'acao': 'renovarSenhaLogin', 'form': formulario },
+$.post('UsuarioControlador', { 'acao': 'renovarSenha', 'form': formulario },
     function (data) {
         if (data) {
             if (data['erro']) {
@@ -593,32 +587,32 @@ $.post(homePath + '/UsuarioControlador', { 'acao': 'renovarSenhaLogin', 'form': 
 
 | Abordagem | Vantagem | Desvantagem |
 |---|---|---|
-| `200` + `{erro: "..."}` (GWeb) | Simples, o `success` sempre roda | Esconde falhas de monitoramento; status não reflete o resultado |
+| `200` + `{erro: "..."}` (legado) | Simples, o `success` sempre roda | Esconde falhas de monitoramento; status não reflete o resultado |
 | Status `4xx/5xx` + mensagem | Semântico, ferramentas de monitoramento enxergam | Exige tratar `error`/`!ok` no cliente |
 
 > Em código **novo**, prefira status HTTP corretos ([[33-API-JAVA]], seção 6). Em código **legado**, siga o padrão da tela para não quebrar o contrato existente.
 
 ---
 
-## 11. Padrões reais do GWeb
+## 11. Padrões comuns em sistemas legados
 
-Resumo dos padrões encontrados no repositório `gweb`, do mais antigo ao mais novo:
+Resumo dos padrões que aparecem com frequência em sistemas Java web legados, do mais antigo ao mais novo:
 
-| # | Padrão | Arquivo de exemplo | Tecnologia |
-|---|---|---|---|
-| 1 | Carregar registro e preencher o form | `gwTrans/cadastros/js/cadastro-impressora-matriciais.js` | `$.ajax` + `dataType:'text'` + `JSON.parse` |
-| 2 | Excluir e recarregar | `gwTrans/consultas/js/consulta-pallets-avulso.js` | `jQuery.ajax` com `success` |
-| 3 | Enviar formulário como JSON em parâmetro | `assets/js/pops/alterarSenha.js` | `$.post` + `'json'` |
-| 4 | Validar sessão antes de executar | `script/sessao.js` | `fetch` + `async/await` |
-| 5 | Carregar componente Vue sob demanda | `gwFrota/classificacao_fornecedores/js/listarClassificacoes.js` | `fetch` + `vue3-sfc-loader` |
-| 6 | Download de binário | `gwTrans/cadastros/js/download.js` | `XMLHttpRequest` + `blob` |
+| # | Padrão | Tecnologia |
+|---|---|---|
+| 1 | Carregar registro e preencher o form | `$.ajax` + `dataType:'text'` + `JSON.parse` |
+| 2 | Excluir e recarregar | `jQuery.ajax` com `success` |
+| 3 | Enviar formulário como JSON em parâmetro | `$.post` + `'json'` |
+| 4 | Validar sessão antes de executar | `fetch` + `async/await` |
+| 5 | Carregar componente sob demanda | `fetch` + loader de componentes |
+| 6 | Download de binário | `XMLHttpRequest` + `blob` |
 
 ### Padrão 2: excluir com confirmação
 
 ```javascript
-function aceitouExcluirSolicitacao(ids) {
+function aceitouExcluirEntrega(ids) {
     jQuery.ajax({
-        url: 'PalletControlador?acao=excluirAjax&ids=' + ids,
+        url: 'EntregaControlador?acao=excluirAjax&ids=' + ids,
         success: function (data, textStatus, jqXHR) {
             chamarAlert(data, reload);
         }
@@ -643,12 +637,12 @@ getFile(url) {
 },
 ```
 
-- `?v=` + `Date.now()` gera uma URL diferente a cada chamada → o navegador **não usa cache** do arquivo `.vue`.
+- `?v=` + `Date.now()` gera uma URL diferente a cada chamada → o navegador **não usa cache** do arquivo.
 - `response.ok ? ... : Promise.reject(response)` é o jeito correto de transformar erro HTTP em rejeição da Promise.
 
 ### Convenção de Controlador
 
-Todos os exemplos seguem o mesmo contrato:
+Os exemplos seguem o mesmo contrato:
 
 ```
 URL:        <Nome>Controlador
@@ -668,7 +662,7 @@ Problema clássico: a sessão expira, o usuário clica em um botão que dispara 
 
 Soluções:
 
-- Validar a sessão antes (como o `validaSession` do GWeb).
+- Validar a sessão antes (como o `validaSession` da seção 6).
 - Responder `401` em chamadas AJAX e tratar no cliente:
 
 ```javascript
@@ -688,14 +682,14 @@ validaSession(function () {
 
 ### 12.2 Indicador de carregamento (loading)
 
-No GWeb, as telas de cadastro mostram um bloqueio durante a requisição:
+Telas de cadastro costumam mostrar um bloqueio durante a requisição:
 
 ```javascript
 $('.bloqueio-tela').show();
 $('.gif-bloq-tela').show();
 
 $.ajax({
-    url: 'ImpressoraControlador',
+    url: 'EntregaControlador',
     data: { acao: 'carregar', id: qs['id'] },
     dataType: 'text',
     complete: function (jqXHR) {
@@ -719,7 +713,7 @@ try {
 
 ### 12.3 Debounce: não disparar AJAX a cada tecla
 
-O GWeb usa `setTimeout` para salvar preferências do usuário só depois de **4 segundos sem alteração**:
+Um exemplo clássico é salvar preferências do usuário só depois de **4 segundos sem alteração**:
 
 ```javascript
 var saveTimeOut;
@@ -807,7 +801,7 @@ Para cada chamada, confira:
 
 ### Lado servidor
 
-- Breakpoint no método do Controlador (`carregarCadastro`) e inspecionar `request.getParameterMap()`.
+- Breakpoint no método do Controlador (`carregar`) e inspecionar `request.getParameterMap()`.
 - Logar a ação recebida:
 
 ```java
@@ -818,7 +812,7 @@ LOG.debug("acao={} id={}", req.getParameter("acao"), req.getParameter("id"));
 
 ```javascript
 $.ajax({
-    url: 'ImpressoraControlador',
+    url: 'EntregaControlador',
     data: { acao: 'carregar', id: 7 },
     dataType: 'text',
     complete: function (jqXHR, textStatus) {
@@ -1064,7 +1058,7 @@ public class EntregaControlador extends HttpServlet {
 
 - O código no JavaScript **não recarrega** a página em nenhum momento.
 - `finally` garante que o loading some em qualquer cenário.
-- Erro de negócio usa **status HTTP** (`404`, `409`), diferente do padrão `200 + erro` do GWeb legado: ambos funcionam, mas este é mais semântico.
+- Erro de negócio usa **status HTTP** (`404`, `409`), diferente do padrão legado `200 + erro`: ambos funcionam, mas este é mais semântico.
 - Dados do servidor entram na tela via `textContent`.
 - A operação que altera dados usa `POST`.
 
@@ -1085,7 +1079,7 @@ public class EntregaControlador extends HttpServlet {
 | Esperar que `fetch` rejeite em `404/500` | Só falhas de rede rejeitam | Checar `response.ok` |
 | Só tratar `success`/`complete`, sem `error` | Falha silenciosa: tela fica travada ou vazia | Sempre tratar o erro e esconder o loading |
 | `JSON.parse` em resposta que pode ser HTML | Sessão expirada devolve a página de login | Validar sessão/status antes; `try/catch` no parse |
-| Alterar dados via `GET` (`excluirAjax`) | Quebra semântica HTTP; risco de CSRF e de prefetch acidental | Usar `POST`/`DELETE` |
+| Alterar dados via `GET` (ex.: `acao=excluirAjax`) | Quebra semântica HTTP; risco de CSRF e de prefetch acidental | Usar `POST`/`DELETE` |
 | Chave do JSON = `id` do campo (acoplamento implícito) | Renomear campo no Java ou HTML quebra a tela sem aviso | Documentar o contrato ou mapear explicitamente |
 | Acessar objeto aninhado sem checar `null` | `Cannot read properties of null` | Optional chaining `?.` |
 | `.html()`/`innerHTML` com dado do servidor | XSS | `.text()`/`textContent` |
@@ -1161,16 +1155,6 @@ String corpo = req.getReader().lines()                   // corpo JSON
 | Evitar cache | `Cache-Control: no-cache` / `?v=Date.now()` |
 | Evitar XSS | `textContent` / `.text()` |
 
-### Mapa dos padrões do GWeb
-
-| Quero... | Olhar |
-|---|---|
-| Carregar registro no cadastro | `cadastro-impressora-matriciais.js` → `ImpressoraControlador#carregarCadastro` |
-| Excluir com confirmação | `consulta-pallets-avulso.js` → `aceitouExcluirSolicitacao` |
-| Enviar form como JSON | `alterarSenha.js` → `UsuarioControlador#renovarSenhaLogin` |
-| Validar sessão | `sessao.js` → `UsuarioControlador#validaSession` |
-| Cache-busting de componente | `listarClassificacoes.js` → `getFile` |
-
 ### Referências
 
 - MDN: [Using the Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
@@ -1185,6 +1169,6 @@ String corpo = req.getReader().lines()                   // corpo JSON
 
 AJAX é, no fundo, **uma conversa HTTP comum com um cliente que decide o que fazer com a resposta**. Para o desenvolvedor Java, o Servlet continua sendo um Servlet: muda o contrato (JSON/texto em vez de JSP) e a responsabilidade de tratar os três destinos de toda chamada: **sucesso, erro e fim**.
 
-O código legado do GWeb mostra a evolução completa: `XMLHttpRequest` → `jQuery.ajax/$.post` → `fetch` + `async/await` → componentes Vue carregados sob demanda. Saber ler os três estilos é o que permite manter o sistema atual e escrever o novo com segurança.
+O código legado de sistemas Java web mostra a evolução completa: `XMLHttpRequest` → `jQuery.ajax/$.post` → `fetch` + `async/await` → componentes carregados sob demanda. Saber ler os três estilos é o que permite manter um sistema atual e escrever o novo com segurança.
 
 **Regra de ouro:** se a tela não reagiu como esperado, abra a aba **Network**: ela diz, em segundos, se o problema está no cliente, no servidor ou no contrato entre eles.

@@ -87,7 +87,7 @@ flowchart LR
 | 🌐 **APIs e Banco de Dados** | [34-CRUD-JAVA](34-CRUD-JAVA.MD) | 🛠️ Repository, soft delete, transações, REST, *optimistic locking* |
 | 🌐 **APIs e Banco de Dados** | [35-JDBC-JAVA](35-JDBC-JAVA.MD) | 🔌 `PreparedStatement`, SQL Injection, transações, batch, HikariCP, padrão DAO |
 | 🌐 **APIs e Banco de Dados** | [37-JPA-HIBERNATE](37-JPA-HIBERNATE.MD) | 🗄️ Mapeamento ORM, anotações, herança, ciclo de vida, JPQL, lazy/eager, cascade |
-| 🌐 **APIs e Banco de Dados** | [40-AJAX-JAVA](40-AJAX-JAVA.MD) | ⚡ `XMLHttpRequest`, `fetch`, `$.ajax`, Servlet + Gson, erros, sessão, debounce e padrões reais do GWeb |
+| 🌐 **APIs e Banco de Dados** | [40-AJAX-JAVA](40-AJAX-JAVA.MD) | ⚡ `XMLHttpRequest`, `fetch`, `$.ajax`, Servlet + Gson, erros, sessão, debounce e padrões comuns em sistemas legados |
 | 🚀 **Ferramentas e Java Moderno** | [36-GIT-GITHUB](36-GIT-GITHUB.MD) | 🌿 SSH, `checkout`, `.gitignore`, cherry-pick, commits semânticos, fluxo até o PR |
 | 🚀 **Ferramentas e Java Moderno** | [38-JAVA-17](38-JAVA-17.MD) | ✨ Java 8 → 17: records, text blocks, mudanças de API/JVM e refatoração de legado |
 | 🚀 **Ferramentas e Java Moderno** | [39-DEBUGANDO-JAVA](39-DEBUGANDO-JAVA.md) | 🐞 Debug remoto, breakpoints, stack traces, logger vs `System.out`, streams, profiling |
