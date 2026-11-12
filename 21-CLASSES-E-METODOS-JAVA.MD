@@ -1,10 +1,10 @@
-# Classes e MÈtodos em Java ? Guia Pr·tico para Sistemas de LogÌstica
+# Classes e M√©todos em Java ‚Äî Guia Pr√°tico para Sistemas de Log√≠stica
 
-## 1. O que È uma Classe?
+## 1. O que √© uma Classe?
 
-Uma classe È um molde (blueprint) que define como criar objetos. Ela agrupa dados (atributos) e comportamentos (mÈtodos) relacionados.
+Uma classe √© um molde (blueprint) que define como criar objetos. Ela agrupa dados (atributos) e comportamentos (m√©todos) relacionados.
 
-### Sintaxe B·sica
+### Sintaxe B√°sica
 
 ```java
 public class Veiculo {
@@ -29,13 +29,13 @@ public class Veiculo {
 
 ### Componentes de uma Classe
 
-| Componente | O que È | Exemplo |
+| Componente | O que √© | Exemplo |
 |-----------|---------|---------|
 | **Atributos** | Dados que a classe armazena | `private String placa` |
 | **Construtor** | Inicializa um objeto quando criado | `public Veiculo(...)` |
 | **Getters** | Retornam valores dos atributos | `public String getPlaca()` |
 | **Setters** | Modificam valores dos atributos | `public void setPlaca(String p)` |
-| **MÈtodos** | Definem comportamentos | `public void acelerar()` |
+| **M√©todos** | Definem comportamentos | `public void acelerar()` |
 
 ---
 
@@ -45,22 +45,22 @@ Controla quem pode acessar cada parte da classe.
 
 ```java
 public class Entrega {
-    public String id;              // AcessÌvel de qualquer lugar
+    public String id;              // Acess√≠vel de qualquer lugar
     private String endereco;        // Apenas dentro desta classe
     protected String motorista;     // Esta classe + subclasses + mesmo pacote
 }
 ```
 
-### Boas Pr·ticas em LogÌstica
+### Boas Pr√°ticas em Log√≠stica
 
 ```java
 public class Pedido {
-    // Dados sensÌveis ficam private
+    // Dados sens√≠veis ficam private
     private double valorTotal;
     private LocalDateTime dataCriacao;
     private StatusPedido status;
     
-    // Acesso controlado via mÈtodos
+    // Acesso controlado via m√©todos
     public double getValorTotal() {
         return valorTotal;
     }
@@ -72,66 +72,375 @@ public class Pedido {
     }
     
     private boolean podeAlterarStatus(StatusPedido novo) {
-        // LÛgica de validaÁ„o encapsulada
+        // L√≥gica de valida√ß√£o encapsulada
         return status != StatusPedido.ENTREGUE;
     }
 }
 ```
 
-**BenefÌcio:** O estado interno n„o È corrompido por acessos inadequados.
+**Benef√≠cio:** O estado interno n√£o √© corrompido por acessos inadequados.
 
 ---
 
 ## 3. Construtores
 
-Inicializam o objeto com valores iniciais. Uma classe pode ter v·rios construtores (sobrecarga).
+M√©todo especial que **executa automaticamente** quando voc√™ cria um novo objeto com `new`. Respons√°vel por **inicializar o estado** do objeto de forma consistente.
 
-### Exemplo Pr·tico
+### O Problema: Objetos Vazios e Inconsistentes
+
+```java
+// ‚ùå Sem construtor customizado
+public class Transportadora {
+    private String cnpj;
+    private String nome;
+    private double raioOperacao;
+}
+
+Transportadora t = new Transportadora();  // Objeto vazio
+System.out.println(t.cnpj);          // null
+System.out.println(t.nome);          // null
+System.out.println(t.raioOperacao);  // 0.0
+
+// Problema: uma transportadora sem CNPJ ou nome √© inconsistente!
+// Pode gerar erros no sistema
+```
+
+### A Solu√ß√£o: Construtor Customizado
+
+```java
+// ‚úÖ Com construtor - for√ßa inicializar dados obrigat√≥rios
+public class Transportadora {
+    private String cnpj;
+    private String nome;
+    private double raioOperacao;
+    
+    // Construtor obriga a fornecer os dados essenciais
+    public Transportadora(String cnpj, String nome, double raioOperacao) {
+        this.cnpj = cnpj;      // this diferencia atributo de par√¢metro
+        this.nome = nome;
+        this.raioOperacao = raioOperacao;
+    }
+}
+
+// Agora √© imposs√≠vel criar uma Transportadora sem dados
+Transportadora t = new Transportadora("12345678000100", "Loggi", 500.0);
+// Objeto sempre nasce COMPLETO e CONSISTENTE
+```
+
+### Construtor Padr√£o vs Customizado
+
+```java
+// Se voc√™ N√ÉO criar construtor, Java fornece um vazio automaticamente
+public class Entrega {
+    private String id;
+}
+
+// Java fornece implicitamente:
+// public Entrega() { }
+
+Entrega e = new Entrega();  // Funciona
+
+// ---
+
+// Mas se voc√™ criar um construtor customizado...
+public class Entrega {
+    private String id;
+    
+    public Entrega(String id) {
+        this.id = id;
+    }
+    
+    // O construtor padr√£o DESAPARECE!
+}
+
+Entrega e1 = new Entrega("ENT001");  // ‚úÖ OK
+Entrega e2 = new Entrega();          // ‚ùå ERRO!
+```
+
+**Solu√ß√£o:** Forne√ßa o construtor padr√£o explicitamente se necess√°rio:
+
+```java
+public class Entrega {
+    private String id;
+    
+    // Construtor padr√£o (sem par√¢metros)
+    public Entrega() {
+        this.id = gerarId();
+    }
+    
+    // Construtor customizado
+    public Entrega(String id) {
+        this.id = id;
+    }
+    
+    private String gerarId() {
+        return "ENT-" + System.currentTimeMillis();
+    }
+}
+
+Entrega e1 = new Entrega();
+Entrega e2 = new Entrega("ENT001");
+```
+
+### Fluxo de Constru√ß√£o
+
+```
+Transportadora t = new Transportadora("12345678000100", "Loggi", 500.0);
+
+1. new Transportadora(...)    ‚Üí Aloca mem√≥ria na heap
+2. Executa construtor         ‚Üí Inicializa cnpj, nome, raioOperacao
+3. Retorna refer√™ncia         ‚Üí t aponta para o objeto criado
+```
+
+### A Palavra `this` em Construtores
+
+`this` √© uma refer√™ncia ao **pr√≥prio objeto**. Diferencia atributos de par√¢metros.
+
+```java
+public class Motorista {
+    private String nome;
+    private String cnh;
+    
+    // ‚ùå Confuso: qual nome? O par√¢metro ou o atributo?
+    public void inicializar1(String nome) {
+        nome = nome;  // Erro l√≥gico!
+    }
+    
+    // ‚úÖ Claro: this diferencia
+    public Motorista(String nome, String cnh) {
+        this.nome = nome;  // this.nome (atributo) = nome (par√¢metro)
+        this.cnh = cnh;    // this.cnh (atributo) = cnh (par√¢metro)
+    }
+}
+```
+
+**Stack vs Heap:**
+```
+Stack (Par√¢metros)     Heap (Objeto)
+nome ("Jo√£o")      ‚Üí   this.nome = "Jo√£o"
+cnh ("1234567890") ‚Üí   this.cnh = "1234567890"
+```
+
+### Constructor Chaining: Evitando Repeti√ß√£o
+
+M√∫ltiplos construtores podem chamar um ao outro com `this()`.
 
 ```java
 public class Transportadora {
     private String cnpj;
     private String nome;
     private double raioOperacao;
+    private boolean ativa;
     
-    // Construtor completo
+    // Construtor completo (faz o trabalho real)
     public Transportadora(String cnpj, String nome, double raioOperacao) {
         this.cnpj = cnpj;
         this.nome = nome;
         this.raioOperacao = raioOperacao;
+        this.ativa = true;
     }
     
-    // Construtor alternativo (sobrecarga)
+    // Construtor simplificado chama o completo com this()
     public Transportadora(String cnpj, String nome) {
-        this(cnpj, nome, 100.0); // Raio padr„o
+        this(cnpj, nome, 100.0);  // Raio padr√£o
     }
     
-    // Construtor mÌnimo
+    // Construtor m√≠nimo
     public Transportadora(String cnpj) {
-        this(cnpj, "Sem Nome", 100.0);
+        this(cnpj, "Sem Nome");  // Chama o outro construtor
     }
+    
+    // Construtor padr√£o
+    public Transportadora() {
+        this("00000000000000");  // Chama o construtor m√≠nimo
+    }
+}
+
+// Uso - cada construtor oferece uma op√ß√£o
+Transportadora t1 = new Transportadora();
+Transportadora t2 = new Transportadora("12345678000100");
+Transportadora t3 = new Transportadora("12345678000100", "Loggi");
+Transportadora t4 = new Transportadora("12345678000100", "Loggi", 500.0);
+
+// Vantagem: c√≥digo n√£o repetido
+// Desvantagem: nenhuma (sem this(), teria repeti√ß√£o)
+```
+
+**Compara√ß√£o: Com vs Sem Constructor Chaining**
+
+```java
+// ‚ùå Ruim: c√≥digo repetido
+public Transportadora(String cnpj, String nome) {
+    this.cnpj = cnpj;
+    this.nome = nome;
+    this.raioOperacao = 100.0;
+    this.ativa = true;
+}
+
+public Transportadora() {
+    this.cnpj = "00000000000000";
+    this.nome = "Sem Nome";
+    this.raioOperacao = 100.0;
+    this.ativa = true;
+}
+
+// ‚úÖ Bom: encadeamento
+public Transportadora(String cnpj, String nome) {
+    this(cnpj, nome, 100.0);
+}
+
+public Transportadora() {
+    this("00000000000000", "Sem Nome");
+}
+
+public Transportadora(String cnpj, String nome, double raio) {
+    this.cnpj = cnpj;
+    this.nome = nome;
+    this.raioOperacao = raio;
+    this.ativa = true;
 }
 ```
 
-### Uso
+### Sobrecarga de Construtores
+
+Uma classe pode ter **m√∫ltiplos construtores** com listas de par√¢metros diferentes.
 
 ```java
-Transportadora t1 = new Transportadora("12345678000100", "Loggi", 500.0);
-Transportadora t2 = new Transportadora("87654321000199", "Sedex");
-Transportadora t3 = new Transportadora("11111111000111");
+public class Entrega {
+    private String id;
+    private String endereco;
+    private double peso;
+    private LocalDateTime data;
+    
+    // Construtor 1: m√≠nimo
+    public Entrega(String endereco) {
+        this(endereco, 1.0);
+    }
+    
+    // Construtor 2: sem data
+    public Entrega(String endereco, double peso) {
+        this(endereco, peso, LocalDateTime.now());
+    }
+    
+    // Construtor 3: completo
+    public Entrega(String endereco, double peso, LocalDateTime data) {
+        this.id = "ENT-" + System.currentTimeMillis();
+        this.endereco = endereco;
+        this.peso = peso;
+        this.data = data;
+    }
+}
+
+// Cada construtor oferece uma interface diferente
+Entrega e1 = new Entrega("Rua A, 100");
+Entrega e2 = new Entrega("Rua B, 200", 5.5);
+Entrega e3 = new Entrega("Rua C, 300", 10.0, LocalDateTime.now());
 ```
+
+**Regras para Sobrecarga:**
+- ‚úì N√∫mero diferente de par√¢metros
+- ‚úì Tipo diferente de par√¢metros
+- ‚úì Ordem diferente de par√¢metros
+- ‚úó Apenas tipo de retorno diferente (n√£o funciona)
+
+### Valida√ß√£o no Construtor
+
+Garante que o objeto nasce num estado v√°lido.
+
+```java
+public class Veiculo {
+    private String placa;
+    private double capacidade;
+    
+    public Veiculo(String placa, double capacidade) {
+        // Validar placa
+        if (placa == null || placa.isBlank()) {
+            throw new IllegalArgumentException("Placa n√£o pode ser vazia");
+        }
+        
+        // Validar capacidade
+        if (capacidade <= 0) {
+            throw new IllegalArgumentException("Capacidade deve ser positiva");
+        }
+        
+        this.placa = placa;
+        this.capacidade = capacidade;
+    }
+}
+
+// Uso
+Veiculo v1 = new Veiculo("ABC1234", 1000);  // OK
+Veiculo v2 = new Veiculo("", 500);          // ERRO!
+Veiculo v3 = new Veiculo("XYZ9999", -100);  // ERRO!
+```
+
+### Exemplo Pr√°tico Completo
+
+```java
+public class Pedido {
+    private String id;
+    private String cliente;
+    private double valor;
+    private StatusPedido status;
+    private LocalDateTime dataCriacao;
+    
+    // Construtor com valida√ß√£o e inicializa√ß√£o completa
+    public Pedido(String cliente, double valor) {
+        // Validar
+        if (cliente == null || cliente.isBlank()) {
+            throw new IllegalArgumentException("Cliente obrigat√≥rio");
+        }
+        if (valor <= 0) {
+            throw new IllegalArgumentException("Valor deve ser positivo");
+        }
+        
+        // Inicializar
+        this.id = "PED-" + System.currentTimeMillis();
+        this.cliente = cliente;
+        this.valor = valor;
+        this.status = StatusPedido.PENDENTE;  // Sempre come√ßa como PENDENTE
+        this.dataCriacao = LocalDateTime.now();
+        
+        System.out.println("‚úì Pedido criado: " + this.id);
+    }
+    
+    // Getters
+    public String getId() { return id; }
+    public String getCliente() { return cliente; }
+    public double getValor() { return valor; }
+    public StatusPedido getStatus() { return status; }
+}
+
+// Uso
+Pedido p1 = new Pedido("Empresa XYZ", 1500.00);
+// Sa√≠da: ‚úì Pedido criado: PED-1699876543210
+
+Pedido p2 = new Pedido("", 1000);  // ERRO lan√ßado!
+// Exception in thread: Cliente obrigat√≥rio
+```
+
+### Checklist: Boas Pr√°ticas em Construtores
+
+- [ ] Sempre inicialize **todos os atributos** no construtor
+- [ ] Use `this` quando h√° ambiguidade (OBRIGAT√ìRIO)
+- [ ] Use `this()` para evitar repeti√ß√£o de c√≥digo
+- [ ] Ofere√ßa m√∫ltiplos construtores para flexibilidade
+- [ ] Valide par√¢metros antes de usar
+- [ ] Lance exce√ß√µes em dados inv√°lidos
+- [ ] Deixe o objeto sempre num estado **consistente**
+- [ ] Forne√ßa construtor padr√£o se necess√°rio
 
 ---
 
-## 4. MÈtodos: DefiniÁ„o e Comportamento
+## 4. M√©todos: Defini√ß√£o e Comportamento
 
-Um mÈtodo È um bloco de cÛdigo que realiza uma aÁ„o especÌfica.
+Um m√©todo √© um bloco de c√≥digo que realiza uma a√ß√£o espec√≠fica.
 
 ### Estrutura Completa
 
 ```java
-[modificador] [tipo_retorno] [nome_metodo] ([par‚metros]) {
-    // corpo do mÈtodo
+[modificador] [tipo_retorno] [nome_metodo] ([par√¢metros]) {
+    // corpo do m√©todo
 }
 ```
 
@@ -143,22 +452,22 @@ public class Motorista {
     private String cnh;
     private boolean ativo;
     
-    // Sem par‚metros, com retorno
+    // Sem par√¢metros, com retorno
     public String obterNome() {
         return nome;
     }
     
-    // Com par‚metro, sem retorno
+    // Com par√¢metro, sem retorno
     public void ativar() {
         this.ativo = true;
     }
     
-    // Com par‚metro e retorno
+    // Com par√¢metro e retorno
     public boolean validarCNH(String cnh) {
         return cnh != null && cnh.length() == 11;
     }
     
-    // M˙ltiplos par‚metros
+    // M√∫ltiplos par√¢metros
     public void registrarViagem(String origem, String destino, double km) {
         System.out.println(nome + " viajou " + km + "km");
     }
@@ -191,15 +500,15 @@ public double calcularFrete(double distancia, double peso) {
 ```java
 public Veiculo encontrarVeiculoDisponivel(double capacidadeNecessaria) {
     for (Veiculo v : frota) {
-        if (v.getCapacidade() >= capacidadeNecessaria && v.est·Disponivel()) {
+        if (v.getCapacidade() >= capacidadeNecessaria && v.est√°Disponivel()) {
             return v;
         }
     }
-    return null; // Nenhum disponÌvel
+    return null; // Nenhum dispon√≠vel
 }
 ```
 
-### Retorna lista ou coleÁ„o
+### Retorna lista ou cole√ß√£o
 
 ```java
 public List<Entrega> obterEntregasPendentes(String motorista) {
@@ -209,13 +518,13 @@ public List<Entrega> obterEntregasPendentes(String motorista) {
 
 ---
 
-## 6. Par‚metros e Argumentos
+## 6. Par√¢metros e Argumentos
 
-**Par‚metros** = definiÁ„o (na assinatura)  
+**Par√¢metros** = defini√ß√£o (na assinatura)  
 **Argumentos** = valores passados (na chamada)
 
 ```java
-// DefiniÁ„o (par‚metros)
+// Defini√ß√£o (par√¢metros)
 public void atualizarLocalizacao(double latitude, double longitude) {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -225,7 +534,7 @@ public void atualizarLocalizacao(double latitude, double longitude) {
 veiculo.atualizarLocalizacao(-8.0028, -34.8813); // Recife
 ```
 
-### Par‚metros Vari·veis (varargs)
+### Par√¢metros Vari√°veis (varargs)
 
 ```java
 public void adicionarParagensRota(String... localidades) {
@@ -235,12 +544,12 @@ public void adicionarParagensRota(String... localidades) {
 }
 
 // Uso
-veiculo.adicionarParagensRota("Olinda", "Jaboat„o", "Paulista", "Igarassu");
+veiculo.adicionarParagensRota("Olinda", "Jaboat√£o", "Paulista", "Igarassu");
 ```
 
 ---
 
-## 7. MÈtodos Getters e Setters
+## 7. M√©todos Getters e Setters
 
 Fornecem acesso controlado aos atributos.
 
@@ -255,7 +564,7 @@ public class Entrega {
         return id;
     }
     
-    // Setter com validaÁ„o
+    // Setter com valida√ß√£o
     public void setPeso(double peso) {
         if (peso > 0) {
             this.peso = peso;
@@ -264,12 +573,12 @@ public class Entrega {
         }
     }
     
-    // Getter com lÛgica
-    public boolean est·Atrasada() {
+    // Getter com l√≥gica
+    public boolean est√°Atrasada() {
         return LocalDateTime.now().isAfter(dataPrevista);
     }
     
-    // Setter que dispara aÁ„o
+    // Setter que dispara a√ß√£o
     public void setDataPrevista(LocalDateTime data) {
         this.dataPrevista = data;
         notificarAlteracaoDataAoCliente();
@@ -279,30 +588,30 @@ public class Entrega {
 
 ---
 
-## 8. MÈtodos Est·ticos
+## 8. M√©todos Est√°ticos
 
-Pertencem ‡ classe, n„o a inst‚ncias especÌficas.
+Pertencem √† classe, n√£o a inst√¢ncias espec√≠ficas.
 
 ```java
 public class CalculadoraFrete {
     private static final double TAXA_BASE = 5.0;
     
-    // MÈtodo est·tico
+    // M√©todo est√°tico
     public static double calcularFrete(double km) {
         return TAXA_BASE + (km * 0.50);
     }
     
-    // MÈtodo est·tico que cria inst‚ncias
+    // M√©todo est√°tico que cria inst√¢ncias
     public static CalculadoraFrete criar() {
         return new CalculadoraFrete();
     }
 }
 
-// Chamada ? n„o precisa criar objeto
+// Chamada ‚Äî n√£o precisa criar objeto
 double frete = CalculadoraFrete.calcularFrete(100);
 ```
 
-### Uso Pr·tico em LogÌstica
+### Uso Pr√°tico em Log√≠stica
 
 ```java
 public class StatusEntrega {
@@ -324,20 +633,20 @@ if (StatusEntrega.estaFinalizado(pedido.getStatus())) {
 
 ---
 
-## 9. MÈtodos com Objetos como Par‚metros
+## 9. M√©todos com Objetos como Par√¢metros
 
 ```java
 public class Rota {
     private List<Entrega> entregas = new ArrayList<>();
     
-    // Recebe um objeto como par‚metro
+    // Recebe um objeto como par√¢metro
     public void adicionarEntrega(Entrega entrega) {
         if (entrega.getPeso() <= capacidadeMaxima) {
             entregas.add(entrega);
         }
     }
     
-    // Recebe m˙ltiplos objetos
+    // Recebe m√∫ltiplos objetos
     public void otimizarRota(Motorista motorista, List<Entrega> entregas) {
         validarMotorista(motorista);
         ordenarPorProximidade(entregas);
@@ -357,7 +666,7 @@ public class Rota {
 
 ## 10. This e Super
 
-### This: ReferÍncia ao Objeto Atual
+### This: Refer√™ncia ao Objeto Atual
 
 ```java
 public class Veiculo {
@@ -365,17 +674,17 @@ public class Veiculo {
     private String modelo;
     
     public Veiculo(String placa, String modelo) {
-        this.placa = placa;      // this diferencia vari·vel local de atributo
+        this.placa = placa;      // this diferencia vari√°vel local de atributo
         this.modelo = modelo;
     }
     
     public void exibir() {
-        System.out.println("Veiculo: " + this.placa); // ExplÌcito, legÌvel
+        System.out.println("Veiculo: " + this.placa); // Expl√≠cito, leg√≠vel
     }
 }
 ```
 
-### Super: ReferÍncia ‡ Classe Pai
+### Super: Refer√™ncia √† Classe Pai
 
 ```java
 public class Veiculo {
@@ -391,17 +700,17 @@ public class VeiculoEntrega extends Veiculo {
     
     @Override
     public void acelerar() {
-        super.acelerar(); // Chama mÈtodo da classe pai
-        System.out.println("AceleraÁ„o com carga: " + pesoMaximo);
+        super.acelerar(); // Chama m√©todo da classe pai
+        System.out.println("Acelera√ß√£o com carga: " + pesoMaximo);
     }
 }
 ```
 
 ---
 
-## 11. Sobrecarga de MÈtodos (Overloading)
+## 11. Sobrecarga de M√©todos (Overloading)
 
-Mesma classe, mesmo nome, par‚metros diferentes.
+Mesma classe, mesmo nome, par√¢metros diferentes.
 
 ```java
 public class Endereco {
@@ -409,7 +718,7 @@ public class Endereco {
     private String numero;
     private String complemento;
     
-    // Sobrecarga 1: construtor mÌnimo
+    // Sobrecarga 1: construtor m√≠nimo
     public Endereco(String rua) {
         this.rua = rua;
     }
@@ -434,7 +743,7 @@ Endereco e2 = new Endereco("Av. Dantas Barreto", "100");
 Endereco e3 = new Endereco("Av. Dantas Barreto", "100", "Apto 2001");
 ```
 
-### MÈtodos Sobrecarregados
+### M√©todos Sobrecarregados
 
 ```java
 public class NotificacaoCliente {
@@ -447,16 +756,16 @@ public class NotificacaoCliente {
     }
     
     public void enviar(Entrega entrega) {
-        // Envia notificaÁ„o padr„o
+        // Envia notifica√ß√£o padr√£o
     }
 }
 ```
 
 ---
 
-## 12. HeranÁa: Extends
+## 12. Heran√ßa: Extends
 
-Uma classe herda atributos e mÈtodos de outra.
+Uma classe herda atributos e m√©todos de outra.
 
 ```java
 // Classe pai
@@ -466,7 +775,7 @@ public class Veiculo {
     protected double velocidadeMaxima;
     
     public void ligar() {
-        System.out.println("VeÌculo ligado");
+        System.out.println("Ve√≠culo ligado");
     }
 }
 
@@ -487,7 +796,7 @@ public class Moto extends Veiculo {
     
     public void buscarDocumentacao() {
         if (temBau) {
-            System.out.println("Buscando documentaÁ„o r·pido");
+            System.out.println("Buscando documenta√ß√£o r√°pido");
         }
     }
 }
@@ -499,18 +808,18 @@ public class Moto extends Veiculo {
 Caminhao c = new Caminhao();
 c.placa = "ABC1234";      // Herdado
 c.ligar();                 // Herdado
-c.carregar(5000);          // PrÛprio
+c.carregar(5000);          // Pr√≥prio
 
 Moto m = new Moto();
 m.ligar();                 // Herdado
-m.buscarDocumentacao();    // PrÛprio
+m.buscarDocumentacao();    // Pr√≥prio
 ```
 
 ---
 
-## 13. @Override: Sobrescrita de MÈtodos
+## 13. @Override: Sobrescrita de M√©todos
 
-A classe filha reimplementa um mÈtodo da classe pai.
+A classe filha reimplementa um m√©todo da classe pai.
 
 ```java
 public class Veiculo {
@@ -523,21 +832,21 @@ public class Veiculo {
 public class Caminhao extends Veiculo {
     @Override
     public void calcularTempo(double distancia) {
-        double velocidadeMedia = 60; // Caminhıes mais lentos
-        System.out.println("Tempo caminh„o: " + distancia / velocidadeMedia + "h");
+        double velocidadeMedia = 60; // Caminh√µes mais lentos
+        System.out.println("Tempo caminh√£o: " + distancia / velocidadeMedia + "h");
     }
 }
 
 public class Moto extends Veiculo {
     @Override
     public void calcularTempo(double distancia) {
-        double velocidadeMedia = 100; // Motos mais r·pidas
+        double velocidadeMedia = 100; // Motos mais r√°pidas
         System.out.println("Tempo moto: " + distancia / velocidadeMedia + "h");
     }
 }
 ```
 
-### Uso PolimÛrfico
+### Uso Polim√≥rfico
 
 ```java
 List<Veiculo> frota = new ArrayList<>();
@@ -546,7 +855,7 @@ frota.add(new Moto());
 frota.add(new Veiculo());
 
 for (Veiculo v : frota) {
-    v.calcularTempo(100); // Cada um usa sua implementaÁ„o
+    v.calcularTempo(100); // Cada um usa sua implementa√ß√£o
 }
 ```
 
@@ -554,7 +863,7 @@ for (Veiculo v : frota) {
 
 ## 14. Interfaces: Contrato de Comportamento
 
-Define mÈtodos que a classe deve implementar.
+Define m√©todos que a classe deve implementar.
 
 ```java
 public interface Entregavel {
@@ -618,7 +927,7 @@ for (Entregavel e : entregas) {
 
 ## 15. Classes Abstratas
 
-Define comportamento comum, forÁa subclasses a implementar certos mÈtodos.
+Define comportamento comum, for√ßa subclasses a implementar certos m√©todos.
 
 ```java
 public abstract class DocumentoFiscal {
@@ -656,7 +965,7 @@ public class Recibo extends DocumentoFiscal {
 
 ---
 
-## 16. Encapsulamento: Pr·tica Completa
+## 16. Encapsulamento: Pr√°tica Completa
 
 Exemplo real de um sistema de entrega.
 
@@ -679,7 +988,7 @@ public class Entrega {
         this.dataCriacao = LocalDateTime.now();
     }
     
-    // Getters b·sicos
+    // Getters b√°sicos
     public String getId() {
         return id;
     }
@@ -688,23 +997,23 @@ public class Entrega {
         return endereco;
     }
     
-    // Getter com validaÁ„o
+    // Getter com valida√ß√£o
     public double getPeso() {
         return peso;
     }
     
-    // Setter com regra de negÛcio
+    // Setter com regra de neg√≥cio
     public void setPeso(double peso) {
         if (peso <= 0) {
             throw new IllegalArgumentException("Peso deve ser positivo");
         }
         if (status != StatusEntrega.PENDENTE) {
-            throw new IllegalStateException("N„o pode alterar peso apÛs processo iniciado");
+            throw new IllegalStateException("N√£o pode alterar peso ap√≥s processo iniciado");
         }
         this.peso = peso;
     }
     
-    // MÈtodo que valida antes de alterar status
+    // M√©todo que valida antes de alterar status
     public void marcarComoEmTransito() {
         if (status != StatusEntrega.PENDENTE) {
             throw new IllegalStateException("Apenas entregas pendentes podem ser marcadas");
@@ -712,17 +1021,17 @@ public class Entrega {
         this.status = StatusEntrega.EM_TRANSITO;
     }
     
-    // MÈtodo que calcula
+    // M√©todo que calcula
     public double calcularFrete() {
         double taxa = 10.0;
         double taxaPorKg = 2.5;
         return taxa + (peso * taxaPorKg);
     }
     
-    // MÈtodo que finaliza processo
+    // M√©todo que finaliza processo
     public void marcarComoEntregue() {
         if (status != StatusEntrega.EM_TRANSITO) {
-            throw new IllegalStateException("Apenas em tr‚nsito pode ser finalizada");
+            throw new IllegalStateException("Apenas em tr√¢nsito pode ser finalizada");
         }
         this.status = StatusEntrega.ENTREGUE;
         this.dataEntrega = LocalDateTime.now();
@@ -743,7 +1052,7 @@ public class Entrega {
 
 ---
 
-## 17. MÈtodos ⁄teis: toString, equals, hashCode
+## 17. M√©todos √öteis: toString, equals, hashCode
 
 ```java
 public class Motorista {
@@ -751,7 +1060,7 @@ public class Motorista {
     private String nome;
     private String telefone;
     
-    // RepresentaÁ„o em String
+    // Representa√ß√£o em String
     @Override
     public String toString() {
         return "Motorista{" +
@@ -761,7 +1070,7 @@ public class Motorista {
                 '}';
     }
     
-    // ComparaÁ„o entre objetos
+    // Compara√ß√£o entre objetos
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -770,7 +1079,7 @@ public class Motorista {
         return cpf.equals(motorista.cpf);
     }
     
-    // Hash para coleÁıes
+    // Hash para cole√ß√µes
     @Override
     public int hashCode() {
         return cpf.hashCode();
@@ -778,32 +1087,32 @@ public class Motorista {
 }
 
 // Uso
-Motorista m1 = new Motorista("12345678900", "Jo„o", "81999999999");
-Motorista m2 = new Motorista("12345678900", "Jo„o da Silva", "81988888888");
+Motorista m1 = new Motorista("12345678900", "Jo√£o", "81999999999");
+Motorista m2 = new Motorista("12345678900", "Jo√£o da Silva", "81988888888");
 
-System.out.println(m1); // Motorista{cpf='12345678900', nome='Jo„o', ...}
+System.out.println(m1); // Motorista{cpf='12345678900', nome='Jo√£o', ...}
 System.out.println(m1.equals(m2)); // true (mesmo CPF)
 
 Set<Motorista> motoristas = new HashSet<>();
 motoristas.add(m1);
-motoristas.add(m2); // N„o adiciona (hashCode igual)
+motoristas.add(m2); // N√£o adiciona (hashCode igual)
 ```
 
 ---
 
-## 18. Boas Pr·ticas em LogÌstica
+## 18. Boas Pr√°ticas em Log√≠stica
 
-### 1. Classes com Responsabilidade ⁄nica
+### 1. Classes com Responsabilidade √önica
 
 ```java
-// ? Ruim: mistura responsabilidades
+// ‚ùå Ruim: mistura responsabilidades
 public class Entrega {
     public void entregar() { }
     public void enviarEmail() { }
     public void salvarBancoDados() { }
 }
 
-// ? Bom: cada classe tem um propÛsito
+// ‚úÖ Bom: cada classe tem um prop√≥sito
 public class Entrega {
     public void entregar() { }
 }
@@ -817,10 +1126,10 @@ public class RepositorioEntrega {
 }
 ```
 
-### 2. Evitar ExposiÁ„o de Dados
+### 2. Evitar Exposi√ß√£o de Dados
 
 ```java
-// ? Ruim: dados p˙blicos
+// ‚ùå Ruim: dados p√∫blicos
 public class Pedido {
     public List<Entrega> entregas;
 }
@@ -828,7 +1137,7 @@ public class Pedido {
 // Problema: qualquer um modifica
 pedido.entregas.clear();
 
-// ? Bom: controle de acesso
+// ‚úÖ Bom: controle de acesso
 public class Pedido {
     private List<Entrega> entregas = new ArrayList<>();
     
@@ -844,28 +1153,28 @@ public class Pedido {
 }
 ```
 
-### 3. ValidaÁ„o no Setter
+### 3. Valida√ß√£o no Setter
 
 ```java
-// ? Ruim: sem validaÁ„o
+// ‚ùå Ruim: sem valida√ß√£o
 public void setVelocidade(double v) {
     this.velocidade = v;
 }
 
-// ? Bom: com validaÁ„o
+// ‚úÖ Bom: com valida√ß√£o
 public void setVelocidade(double v) {
     if (v < 0 || v > velocidadeMaxima) {
-        throw new IllegalArgumentException("Velocidade inv·lida");
+        throw new IllegalArgumentException("Velocidade inv√°lida");
     }
     this.velocidade = v;
 }
 ```
 
-### 4. DocumentaÁ„o MÌnima
+### 4. Documenta√ß√£o M√≠nima
 
 ```java
 /**
- * Calcula o frete baseado em dist‚ncia e peso.
+ * Calcula o frete baseado em dist√¢ncia e peso.
  * 
  * @param distancia em km
  * @param peso em kg
@@ -901,7 +1210,7 @@ public class Entrega {
     
     public void atribuirMotorista(Motorista m) {
         if (status != StatusEntrega.PENDENTE) {
-            throw new IllegalStateException("Entregar j· atribuÌda");
+            throw new IllegalStateException("Entregar j√° atribu√≠da");
         }
         this.motorista = m;
         this.status = StatusEntrega.EM_TRANSITO;
@@ -909,14 +1218,14 @@ public class Entrega {
     
     public void finalizar() {
         if (status != StatusEntrega.EM_TRANSITO) {
-            throw new IllegalStateException("N„o est· em tr‚nsito");
+            throw new IllegalStateException("N√£o est√° em tr√¢nsito");
         }
         this.status = StatusEntrega.ENTREGUE;
     }
     
     private void validar(String endereco, double peso) {
         if (endereco == null || endereco.isBlank()) {
-            throw new IllegalArgumentException("EndereÁo obrigatÛrio");
+            throw new IllegalArgumentException("Endere√ßo obrigat√≥rio");
         }
         if (peso <= 0) {
             throw new IllegalArgumentException("Peso deve ser positivo");
@@ -956,7 +1265,7 @@ public class Motorista {
     
     public void finalizarEntrega(Entrega e) {
         if (!entregas.contains(e)) {
-            throw new IllegalArgumentException("Entrega n„o pertence a este motorista");
+            throw new IllegalArgumentException("Entrega n√£o pertence a este motorista");
         }
         e.finalizar();
     }
@@ -966,7 +1275,7 @@ public class Motorista {
     }
 }
 
-// ServiÁo (coordenador)
+// Servi√ßo (coordenador)
 public class ServicoEntrega {
     private List<Entrega> todasEntregas = new ArrayList<>();
     private List<Motorista> motoristas = new ArrayList<>();
@@ -1000,7 +1309,7 @@ public class ServicoEntrega {
 
 ---
 
-## 20. Resumo Pr·tico
+## 20. Resumo Pr√°tico
 
 | Conceito | O que faz | Exemplo |
 |----------|-----------|---------|
@@ -1009,14 +1318,14 @@ public class ServicoEntrega {
 | **Construtor** | Inicializa o objeto | `public Entrega(...)` |
 | **Getter** | Acessa atributo | `public String getId()` |
 | **Setter** | Modifica atributo | `public void setStatus(...)` |
-| **MÈtodo** | AÁ„o do objeto | `public void finalizar()` |
+| **M√©todo** | A√ß√£o do objeto | `public void finalizar()` |
 | **Private** | Apenas dentro da classe | Encapsulamento |
-| **Public** | AcessÌvel de qualquer lugar | Interface da classe |
-| **Static** | Pertence ‡ classe, n„o ao objeto | Constantes, utilit·rios |
-| **HeranÁa** | Uma classe estende outra | `extends` |
-| **Interface** | Contrato de mÈtodos | `implements` |
-| **Sobrecarga** | Mesmo nome, par‚metros diferentes | M˙ltiplos construtores |
-| **@Override** | Reimplementa mÈtodo da classe pai | Polimorfismo |
+| **Public** | Acess√≠vel de qualquer lugar | Interface da classe |
+| **Static** | Pertence √† classe, n√£o ao objeto | Constantes, utilit√°rios |
+| **Heran√ßa** | Uma classe estende outra | `extends` |
+| **Interface** | Contrato de m√©todos | `implements` |
+| **Sobrecarga** | Mesmo nome, par√¢metros diferentes | M√∫ltiplos construtores |
+| **@Override** | Reimplementa m√©todo da classe pai | Polimorfismo |
 | **Encapsulamento** | Controla acesso aos dados | Private + getters/setters |
 
 ---
