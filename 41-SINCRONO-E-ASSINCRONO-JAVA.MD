@@ -130,12 +130,14 @@ public class AsincronoExemplo {
 Operações de **I/O** (ler arquivo, chamar API, banco de dados) são naturalmente bloqueantes: enquanto aguarda resposta do servidor, a thread fica parada.
 
 ```java
-public void processarPedidoSync(String id) throws IOException {
+public void processarPedidoSync(String id) throws InterruptedException {
     String resposta = buscarPedidoBD(id);  // BLOQUEIA aqui, esperando BD
     System.out.println("Pedido: " + resposta);
 }
 
-String buscarPedidoBD(String id) throws IOException {
+// Thread.sleep lança InterruptedException (checada): o 'throws' precisa cobri-la.
+// Declarar 'throws IOException' aqui NÃO compilaria.
+String buscarPedidoBD(String id) throws InterruptedException {
     Thread.sleep(5000);  // simula latência de rede/BD
     return "Pedido-" + id;
 }
@@ -318,6 +320,35 @@ try {
 
 Introduzido no **Java 8**, `CompletableFuture` permite compor operações assíncronas de forma elegante **sem bloquear manualmente**.
 
+> ### ⚠️ Antes de continuar: `Thread.sleep` dentro de lambda não compila
+>
+> `Thread.sleep()` lança `InterruptedException`, que é uma exceção **checada**. As interfaces
+> funcionais `Supplier`, `Function` e `Consumer` **não declaram** exceções checadas nos seus
+> métodos, então isto **não compila**:
+>
+> ```java
+> CompletableFuture.supplyAsync(() -> {
+>     Thread.sleep(1000);      // ❌ unreported exception InterruptedException
+>     return "Pedido";
+> });
+> ```
+>
+> (`Callable` é a exceção: seu `call()` declara `throws Exception`, então `executor.submit(() -> { Thread.sleep(1000); ... })` compila normalmente.)
+>
+> Nos exemplos a seguir usamos este auxiliar, que encapsula o tratamento e **restaura a flag
+> de interrupção** — prática recomendada ao capturar `InterruptedException`:
+>
+> ```java
+> static void simularLatencia(long ms) {
+>     try {
+>         Thread.sleep(ms);
+>     } catch (InterruptedException e) {
+>         Thread.currentThread().interrupt();   // nunca engula a interrupção
+>         throw new IllegalStateException("Tarefa interrompida", e);
+>     }
+> }
+> ```
+
 ### Criando um `CompletableFuture`
 
 ```java
@@ -341,7 +372,7 @@ System.out.println(futuro.join());  // espera sem lançar checked exception
 
 ```java
 CompletableFuture<String> futuro = CompletableFuture.supplyAsync(() -> {
-    Thread.sleep(1000);
+    simularLatencia(1000);          // ver o auxiliar definido acima
     return "Pedido-P001";
 });
 
@@ -361,14 +392,14 @@ Aplica uma função ao resultado e retorna novo `CompletableFuture`.
 
 ```java
 CompletableFuture<String> buscarPedido = CompletableFuture.supplyAsync(() -> {
-    Thread.sleep(500);
+    simularLatencia(500);
     return "Pedido-P001";
 });
 
 CompletableFuture<Double> calcularFrete = buscarPedido
     .thenApply(pedidoId -> {
         System.out.println("Transformando: " + pedidoId);
-        Thread.sleep(500);
+        simularLatencia(500);
         return 100.0;  // retorna Double
     });
 
@@ -403,12 +434,12 @@ buscarPedido
 
 ```java
 CompletableFuture<Double> frete = CompletableFuture.supplyAsync(() -> {
-    Thread.sleep(500);
+    simularLatencia(500);
     return 100.0;
 });
 
 CompletableFuture<Double> seguro = CompletableFuture.supplyAsync(() -> {
-    Thread.sleep(300);
+    simularLatencia(300);
     return 25.0;
 });
 
@@ -422,14 +453,14 @@ Quando a próxima operação depende do resultado da anterior e também é assí
 
 ```java
 CompletableFuture<String> etapa1 = CompletableFuture.supplyAsync(() -> {
-    Thread.sleep(500);
+    simularLatencia(500);
     return "P001";
 });
 
 CompletableFuture<Double> etapa2 = etapa1.thenCompose(pedidoId -> {
     // esta operação retorna um CompletableFuture
     return CompletableFuture.supplyAsync(() -> {
-        Thread.sleep(500);
+        simularLatencia(500);
         return 150.0;
     });
 });
@@ -673,12 +704,12 @@ public class ExercicioAsync {
         long inicio = System.currentTimeMillis();
         
         CompletableFuture<String> buscarPedido = CompletableFuture.supplyAsync(() -> {
-            simulaLatencia(800);
+            simularLatencia(800);
             return "PED-12345";
         });
         
         CompletableFuture<Double> buscarFrete = CompletableFuture.supplyAsync(() -> {
-            simulaLatencia(600);
+            simularLatencia(600);
             if (System.nanoTime() % 10 > 7) {
                 throw new RuntimeException("API de frete indisponível");
             }
@@ -687,7 +718,7 @@ public class ExercicioAsync {
         .exceptionally(ex -> 100.0);  // fallback
         
         CompletableFuture<String> buscarStatus = CompletableFuture.supplyAsync(() -> {
-            simulaLatencia(1000);
+            simularLatencia(1000);
             return "PROCESSANDO";
         });
         
@@ -706,7 +737,7 @@ public class ExercicioAsync {
         System.out.println("Tempo total: " + duracao + "ms (vs ~2400ms se síncrono)");
     }
     
-    static void simulaLatencia(long ms) {
+    static void simularLatencia(long ms) {
         try { Thread.sleep(ms); } 
         catch (InterruptedException e) { Thread.currentThread().interrupt(); }
     }

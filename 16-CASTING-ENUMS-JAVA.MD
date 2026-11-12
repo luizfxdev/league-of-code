@@ -503,7 +503,11 @@ if (tipo1 == tipo2) { }  // ✓ OK
 // equals também funciona
 if (tipo1.equals(tipo2)) { }  // ✓ OK
 
-// Prefira ==, é mais eficiente
+// Prefira == — e o motivo não é performance:
+// 1. == é NULL-SAFE: se tipo1 for null, == devolve false em vez de lançar NPE
+// 2. == é verificado em TEMPO DE COMPILAÇÃO: comparar enums de tipos diferentes
+//    vira erro de compilação, enquanto equals(Object) aceita qualquer coisa
+//    e simplesmente devolve false em silêncio
 ```
 
 ### Tentar Instanciar Enum

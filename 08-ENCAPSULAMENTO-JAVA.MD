@@ -2,7 +2,7 @@
 
 ## O que é Encapsulamento?
 
-Encapsulamento é o primeiro pilar da Programação Orientada a Objetos. É a prática de esconder os detalhes internos de um objeto e expor apenas o necessário através de uma interface controlada. Pense em um Pokémon: você não vê como o sistema interno dele processa um ataque ? você apenas chama o método `atacar()` e ele executa.
+Encapsulamento é o primeiro pilar da Programação Orientada a Objetos. É a prática de esconder os detalhes internos de um objeto e expor apenas o necessário através de uma interface controlada. Pense em um Pokémon: você não vê como o sistema interno dele processa um ataque — você apenas chama o método `atacar()` e ele executa.
 
 Sem encapsulamento, qualquer classe poderia mexer diretamente nos atributos internos de um Pokémon (reduzir HP fraudulentamente, mudar tipo, etc.). Com encapsulamento, você controla como esses dados são modificados.
 
@@ -26,8 +26,8 @@ public class Pokemon {
 
 // Código externo pode fazer qualquer coisa:
 Pokemon pikachu = new Pokemon();
-pikachu.hp = -9999;  // ? Inválido, mas o Java não impede
-pikachu.ataque = Integer.MAX_VALUE;  // ? Quebra lógica
+pikachu.hp = -9999;  // ❌ Inválido, mas o Java não impede
+pikachu.ataque = Integer.MAX_VALUE;  // ❌ Quebra lógica
 ```
 
 Resultado: sistema frágil, difícil de debugar, impossível manter.
@@ -38,18 +38,18 @@ Resultado: sistema frágil, difícil de debugar, impossível manter.
 
 Java oferece quatro níveis de encapsulamento:
 
-| Modificador | Mesma Classe | Mesmo Package | Subclass | Mundo | Uso |
+| Modificador | Mesma Classe | Mesmo Package | Subclasse (outro pacote) | Mundo | Uso |
 |---|---|---|---|---|---|
-| `private` | ? | ? | ? | ? | Dados sensíveis, métodos internos |
-| `package-private` (sem modificador) | ? | ? | ? | ? | Colaboradores no mesmo pacote |
-| `protected` | ? | ? | ? | ? | Dados/métodos para subclasses |
-| `public` | ? | ? | ? | ? | Interface oficial da classe |
+| `private` | ✅ | ❌ | ❌ | ❌ | Dados sensíveis, métodos internos |
+| `package-private` (sem modificador) | ✅ | ✅ | ❌ | ❌ | Colaboradores no mesmo pacote |
+| `protected` | ✅ | ✅ | ✅ | ❌ | Dados/métodos para subclasses |
+| `public` | ✅ | ✅ | ✅ | ✅ | Interface oficial da classe |
 
 ### Exemplo: Pokémon com Níveis de Acesso
 
 ```java
 public class Pokemon {
-    // Atributo privado ? só a classe acessa
+    // Atributo privado — só a classe acessa
     private int hp;
     private int ataque;
     private int defesa;
@@ -57,10 +57,10 @@ public class Pokemon {
     // Visível apenas dentro do pacote
     int experienciaInterna;
     
-    // Protegido ? subclasses (ex: PokemonLendario) acessam
+    // Protegido — subclasses (ex: PokemonLendario) acessam
     protected String habilidadeEspecial;
     
-    // Público ? parte da API oficial
+    // Público — parte da API oficial
     public String nome;
     public String tipo;
 }
@@ -131,9 +131,9 @@ public class Pokemon {
         recalcularStats();  // Atualiza atributos quando nível muda
     }
     
-    // Setter "somente leitura" ? não oferece setter
+    // Somente leitura — não oferece setter
     public String getNome() {
-        return nome;  // Sem setName() ? nome não pode mudar
+        return nome;  // Sem setNome() — nome não pode mudar
     }
 }
 ```
@@ -151,13 +151,13 @@ public class Pokemon {
     private int ataque;
     private int velocidade;
     
-    // Método público ? API oficial
+    // Método público — API oficial
     public int executarAtaque() {
         int dano = calcularDano();  // Chama método privado
         return dano;
     }
     
-    // Método privado ? detalhes internos
+    // Método privado — detalhes internos
     private int calcularDano() {
         int dano = ataque * 2;
         if (temVantagemTipo()) {
@@ -166,7 +166,7 @@ public class Pokemon {
         return dano + random(1, 10);  // Variação aleatória
     }
     
-    // Método privado ? lógica interna
+    // Método privado — lógica interna
     private boolean temVantagemTipo() {
         // Lógica complexa de tipo do Pokémon
         return false;
@@ -199,7 +199,7 @@ public final class PokemonStats {  // final = não pode ser herdado
         this.tipo = tipo;
     }
     
-    // Apenas getters ? SEM SETTERS
+    // Apenas getters — SEM SETTERS
     public int getHp() { return hp; }
     public int getAtaque() { return ataque; }
     public int getDefesa() { return defesa; }
@@ -220,7 +220,7 @@ public final class PokemonStats {  // final = não pode ser herdado
 **Vantagens:**
 - Thread-safe (sem sincronização necessária)
 - Seguro usar como chave de HashMap
-- Predictável ? estado nunca muda
+- Previsível — estado nunca muda
 
 **Trade-off:** Menos flexível, mais memória (cria novo objeto a cada mudança).
 
@@ -230,7 +230,7 @@ public final class PokemonStats {  // final = não pode ser herdado
 
 Coleções expostas diretamente são um furo de segurança.
 
-### ? Errado
+### ❌ Errado
 
 ```java
 public class Pokedex {
@@ -238,16 +238,16 @@ public class Pokedex {
 }
 
 Pokedex pokedex = new Pokedex();
-pokedex.pokemons.clear();  // ? Qualquer um limpa toda a Pokédex!
+pokedex.pokemons.clear();  // ❌ Qualquer um limpa toda a Pokédex!
 ```
 
-### ? Correto (Opção 1: Defensiva)
+### ✅ Correto (Opção 1: Defensiva)
 
 ```java
 public class Pokedex {
     private List<Pokemon> pokemons = new ArrayList<>();
     
-    // Retorna cópia ? não expõe original
+    // Retorna cópia — não expõe original
     public List<Pokemon> getPokemons() {
         return new ArrayList<>(this.pokemons);
     }
@@ -261,20 +261,20 @@ public class Pokedex {
 }
 ```
 
-### ? Correto (Opção 2: Imutável)
+### ✅ Correto (Opção 2: Imutável)
 
 ```java
 public class Pokedex {
     private List<Pokemon> pokemons = new ArrayList<>();
     
-    // Retorna lista imutável ? não pode modificar
+    // Retorna lista imutável — não pode modificar
     public List<Pokemon> getPokemons() {
         return Collections.unmodifiableList(this.pokemons);
     }
 }
 
 Pokedex pokedex = new Pokedex();
-pokedex.getPokemons().clear();  // ? Lança UnsupportedOperationException
+pokedex.getPokemons().clear();  // ✅ Lança UnsupportedOperationException
 ```
 
 ---
@@ -293,7 +293,7 @@ public class Pokemon {
     private final int velocidade;
     private final List<String> ataques;
     
-    // Construtor privado ? só Builder cria
+    // Construtor privado — só Builder cria
     private Pokemon(Builder builder) {
         this.nome = builder.nome;
         this.tipo = builder.tipo;
@@ -400,7 +400,7 @@ public class Charizard extends Pokemon {
 
 ---
 
-## Record: Encapsulamento Moderno (Java 14+)
+## Record: Encapsulamento Moderno (padrão desde o Java 16)
 
 Records são classes imutáveis de alto nível, ideais para DTOs e value objects.
 
@@ -421,13 +421,19 @@ System.out.println(pikachu.nome());  // Getter automático
 
 **Vantagens:**
 - Menos boilerplate
-- Imutável por padrão
+- Imutável por padrão (campos são `private final`, sem setters)
+- `equals`/`hashCode`/`toString` corretos de graça
 - Perfeito para encapsular dados puros
 
 **Limitações:**
-- Todos os campos são públicos (via getters)
-- Não permite métodos sem lógica adicional fácil
-- Não compatível com Java < 14
+- **Todo componente fica legível por fora** através do acessor público — um record não
+  consegue esconder um campo. Se você precisa de um dado interno invisível, use classe.
+- Não pode estender outra classe (todo record já herda de `java.lang.Record`)
+- É sempre imutável: para "alterar", você cria uma nova instância
+- Disponível como *preview* no Java 14/15 e **padrão a partir do Java 16**
+
+> Records **podem** ter métodos próprios, construtor compacto com validação, métodos
+> estáticos e implementar interfaces. Veja 07-CONSTRUTORES-JAVA.MD.
 
 ---
 
@@ -436,7 +442,7 @@ System.out.println(pikachu.nome());  // Getter automático
 ### 1. Getters/Setters Triviais (Sem Validação)
 
 ```java
-// ? Por que não apenas deixar público?
+// ⚠️ Por que não apenas deixar público?
 public class Pokemon {
     private int hp;
     
@@ -450,21 +456,28 @@ public class Pokemon {
 }
 ```
 
-**Solução:** Remova getter/setter trivial ou adicione lógica.
+**Solução:** Pergunte-se primeiro se o atributo precisa mesmo ser exposto. Um **setter**
+trivial costuma ser o problema real — ele devolve ao mundo externo o poder que o `private`
+tinha acabado de tirar. Prefira expor **operações do domínio** (`receberDano(int)`,
+`evoluir()`) em vez de `setHp(int)`.
+
+Já o **getter** trivial é prática padrão e defensável: ele mantém a liberdade de mudar a
+representação interna depois sem quebrar quem usa a classe. Se o objeto é só um pacote de
+dados imutáveis, use um `record` e o problema desaparece.
 
 ### 2. Expor Referências Mutáveis
 
 ```java
-// ? Errado
+// ❌ Errado
 private List<String> ataques;
 public List<String> getAtaques() {
     return ataques;  // Retorna referência direta!
 }
 
 // Externo pode fazer:
-pokemon.getAtaques().clear();  // ?? Limpa tudo
+pokemon.getAtaques().clear();  // 💥 Limpa tudo
 
-// ? Correto
+// ✅ Correto
 public List<String> getAtaques() {
     return new ArrayList<>(ataques);  // Cópia
 }
@@ -473,7 +486,7 @@ public List<String> getAtaques() {
 ### 3. Lógica de Negócio no Setter
 
 ```java
-// ? Errado ? setters devem ser simples
+// ❌ Errado — setters devem ser simples
 public void setNivel(int nivel) {
     this.nivel = nivel;
     recalcularStats();
@@ -481,7 +494,7 @@ public void setNivel(int nivel) {
     enviarNotificacao();
 }
 
-// ? Correto ? método separado
+// ✅ Correto — método separado
 public void subirNivel() {
     this.nivel++;
     recalcularStats();
@@ -493,10 +506,10 @@ public void subirNivel() {
 ### 4. Bloat de Getters/Setters
 
 ```java
-// ? Classe com 50 atributos = 50 getters + 50 setters
+// ❌ Classe com 50 atributos = 50 getters + 50 setters
 // Sinal de que a classe faz muito
 
-// ? Refatore em múltiplas classes
+// ✅ Refatore em múltiplas classes
 public class Pokemon {
     private Stats stats;  // Agrupa hp, ataque, etc
     private Inventario inventario;
@@ -509,11 +522,11 @@ public class Pokemon {
 
 | Situação | Solução | Motivo |
 |---|---|---|
-| Performance crítica (milhões de objetos) | `public final` ao invés de getter | Acesso direto é mais rápido |
+| Performance crítica (milhões de objetos) | Repensar a **estrutura de dados** (arrays de primitivos em vez de objetos) | Trocar getter por campo público **não** acelera nada: a JIT inlina getters triviais. O custo real está em alocação e cache miss |
 | Prototyping rápido | Sem encapsulamento rigoroso | Ganha velocidade inicial |
 | Framework (Hibernate, Jackson) | Aceitar acesso package-private | Framework precisa acessar |
 | Dados puramente imutáveis | Record ou final fields | Simplicidade |
-| API pública de bilioteca | Máximo encapsulamento | Compatibilidade de versões |
+| API pública de biblioteca | Máximo encapsulamento | Compatibilidade de versões |
 
 ---
 
@@ -530,12 +543,12 @@ public class Pokemon {
 
 ---
 
-## Resumo em Analógia Pokémon
+## Resumo em Analogia Pokémon
 
 Um Pokémon é uma "caixa preta" com controles:
-- **Atributos privados**: HP, ataque, evolução interna ? ninguém mexe
+- **Atributos privados**: HP, ataque, evolução interna — ninguém mexe
 - **Getters**: `getHp()` retorna estado, mas não deixa fraudar
-- **Métodos públicos**: `atacar()`, `defender()`, `evoluir()` ? interface oficial
+- **Métodos públicos**: `atacar()`, `defender()`, `evoluir()` — interface oficial
 - **Validação**: Pokémon nunca entra em estado inválido
 - **Mudanças internas**: Se trocar como `calcularDano()` funciona, API pública não quebra
 
@@ -547,7 +560,7 @@ Com encapsulamento: tudo funciona como esperado.
 
 ## Leitura Recomendada
 
-- **Effective Java** (Joshua Bloch) ? Item 15 (Minimize Mutability)
-- **Clean Code** (Robert Martin) ? Capítulo 6 (Objects and Data Structures)
-- **Java Concurrency in Practice** ? Capitulo 3 (Visibility)
+- **Effective Java** (Joshua Bloch) — Item 15 (Minimize Mutability)
+- **Clean Code** (Robert Martin) — Capítulo 6 (Objects and Data Structures)
+- **Java Concurrency in Practice** — Capítulo 3 (Visibility)
 - Documentação oficial: [Java Language Specification § 6.6 (Access Control)](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html#jls-6.6)

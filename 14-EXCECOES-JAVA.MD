@@ -85,6 +85,22 @@ public class Campeao {
 }
 ```
 
+> ⚠️ Este exemplo serve para mostrar a **sintaxe**, mas capturar `NullPointerException`
+> é um antipadrão: é mais barato e mais claro **verificar antes**. Compare:
+>
+> ```java
+> public void atacar(Campeao alvo) {
+>     if (alvo == null) {
+>         System.out.println("Erro: alvo inválido!");
+>         return;
+>     }
+>     alvo.levarDano(calcularDano());
+> }
+> ```
+>
+> Guarde o `try/catch` para o que você **não consegue prever** (arquivo sumiu, rede caiu),
+> não para o que você pode simplesmente testar com um `if`. Veja a seção 11.
+
 ---
 
 ## 3. Múltiplos Catches
@@ -113,9 +129,10 @@ try {
 try {
     // código
 } catch (Exception e) {
-    // ❌ Ordem errada: Exception é o pai de tudo!
+    // ❌ Ordem errada: Exception é a superclasse
 } catch (NullPointerException e) {
-    // Nunca chega aqui
+    // ERRO DE COMPILAÇÃO, e não apenas código inalcançável:
+    // "exception NullPointerException has already been caught"
 }
 
 // ✓ Ordem correta: filhos antes, pai depois
@@ -160,12 +177,19 @@ try {
 } catch (IOException e) {
     System.out.println("Erro ao ler arquivo!");
 } finally {
-    // Garante que fecha, mesmo com exceção
+    // Atenção: close() também lança IOException (checada).
+    // Sem este try/catch interno, o código NÃO COMPILA.
     if (reader != null) {
-        reader.close();
+        try {
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Falha ao fechar o arquivo!");
+        }
     }
 }
 ```
+
+É justamente essa verbosidade que o **try-with-resources** elimina.
 
 ### Try-With-Resources (Java 7+)
 
@@ -331,6 +355,11 @@ public class JogoException extends Exception {
     public JogoException(String mensagem) {
         super(mensagem);
     }
+
+    // Construtor com causa — necessário para encadear exceções (ver seção 10)
+    public JogoException(String mensagem, Throwable causa) {
+        super(mensagem, causa);
+    }
 }
 
 // Classe de Jogo
@@ -460,8 +489,11 @@ try {
 public class Campeao {
     private String nome;
     
-    public void setNome(String nome) throws IllegalArgumentException {
-        if (nome == null || nome.isEmpty()) {
+    // O "throws IllegalArgumentException" aqui é apenas DOCUMENTAÇÃO:
+    // como é uma exceção unchecked, o compilador não obriga ninguém a tratá-la.
+    // Para exceções unchecked, prefira documentar com @throws no Javadoc.
+    public void setNome(String nome) {
+        if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome inválido!");
         }
         this.nome = nome;
@@ -500,10 +532,14 @@ public int tentarConectar(int tentativas) throws JogoException {
 try {
     salvarDados();
 } catch (IOException e) {
-    // Envolver em exceção customizada
+    // Envolver em exceção customizada, PRESERVANDO a causa original
     throw new JogoException("Falha ao salvar jogo", e);
 }
 ```
+
+> Passar o `e` como segundo argumento é essencial: sem ele a causa raiz se perde e o
+> stack trace deixa de mostrar onde o erro realmente começou. Isso exige que a sua
+> exceção declare o construtor `(String, Throwable)` — veja `JogoException` na seção 8.
 
 ---
 

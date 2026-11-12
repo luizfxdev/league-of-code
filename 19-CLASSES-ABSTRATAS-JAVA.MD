@@ -414,21 +414,31 @@ public class Partida {
 // === Batalha Iniciada ===
 //
 // Garen carrega com investida!
+// Inimigo levou 100 de dano!     <- atacar() chama alvo.levarDano(), que imprime
 // Lux lança explosão!
+// Inimigo levou 200 de dano!
 // Lulu ataca com fraqueza!
+// Inimigo levou 50 de dano!
 //
-// Garen subiu para nível 4
+// Garen subiu para nível 4       <- nivel 1 + (300 / 100) = 4
 // Lux subiu para nível 4
 // Lulu subiu para nível 4
 //
-// Garen levou 50 de dano!
-// Lux levou 50 de dano!
-// Lulu levou 50 de dano!
+// Garen levou 50 de dano!        <- 800 - 50 = 750
+// Lux levou 50 de dano!          <- 400 - 50 = 350
+// Lulu levou 50 de dano!         <- 500 - 50 = 450
 //
-// Garen não cai tão fácil!
-// Lux desaparece em chamas!
-// Lulu protege os aliados até o fim!
+// (o último laço não imprime nada: nenhum campeão chegou a hp <= 0)
 ```
+
+> **Leia a saída com atenção.** Dois detalhes que costumam passar despercebidos:
+>
+> 1. `atacar()` chama `alvo.levarDano(...)`, e `levarDano` **também imprime**. Cada ataque
+>    gera **duas** linhas, não uma.
+> 2. O laço final (`if (c.getHp() <= 0) c.morrer();`) não produz saída alguma, porque
+>    todos terminaram com HP positivo. Para ver as mensagens de `morrer()`, aumente o dano —
+>    por exemplo `c.levarDano(1000)`, que aí dispara `morrer()` de dentro do próprio
+>    `levarDano`.
 
 ---
 
@@ -458,7 +468,7 @@ public abstract class ProcessoAtaque {
     }
 }
 
-public class AtaqueGuerrreiro extends ProcessoAtaque {
+public class AtaqueGuerreiro extends ProcessoAtaque {
     @Override
     protected void preparar() {
         System.out.println("Levantando espada...");
@@ -493,7 +503,7 @@ public class AtaqueMago extends ProcessoAtaque {
 }
 
 // Usando:
-ProcessoAtaque ataque1 = new AtaqueGuerrreiro();
+ProcessoAtaque ataque1 = new AtaqueGuerreiro();
 ataque1.executarAtaque(inimigo);
 
 ProcessoAtaque ataque2 = new AtaqueMago();
@@ -571,23 +581,26 @@ public abstract class Campeao {
     public abstract void defender();
 }
 
-// ❌ Se não implementa todos os abstratos, precisa ser abstract também
+// ❌ Erro de compilação: classe CONCRETA que não implementou todos os abstratos
+public class CampeaoHibrido extends Campeao {
+    @Override
+    public void atacar() { }
+
+    // Faltou defender()!
+    // "CampeaoHibrido is not abstract and does not override
+    //  abstract method defender() in Campeao"
+}
+
+// ✓ Opção 1: declarar a própria classe como abstract e repassar a obrigação
+//            de implementar defender() para quem herdar dela
 public abstract class CampeaoHibrido extends Campeao {
     @Override
     public void atacar() { }
-    
-    // Não implementou defender(), então precisa de abstract
+
+    // defender() continua abstrato — por isso a classe precisa ser abstract
 }
 
-// ✓ Correto
-public abstract class CampeaoHibrido extends Campeao {
-    @Override
-    public void atacar() { }
-    
-    // defendr() ainda é abstrato, então classe é abstract
-}
-
-// ✓ Ou implementar tudo
+// ✓ Opção 2: implementar tudo
 public class CampeaoCompleto extends Campeao {
     @Override
     public void atacar() { }

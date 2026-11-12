@@ -43,12 +43,18 @@ OrderStatus converted = OrderStatus.valueOf("DELIVERED");
 package entities.enums;
 
 public enum OrderStatus {
-    PENDING_PAYMENT,    // int 0
-    PROCESSING,         // int 1
-    SHIPPED,            // int 2
-    DELIVERED          // int 3
+    PENDING_PAYMENT,    // ordinal() == 0
+    PROCESSING,         // ordinal() == 1
+    SHIPPED,            // ordinal() == 2
+    DELIVERED           // ordinal() == 3
 }
 ```
+
+> ⚠️ **Nunca persista `ordinal()`** em banco de dados, arquivo ou API. O valor depende
+> apenas da **ordem em que as constantes foram escritas** — basta alguém inserir um novo
+> status no meio da lista para todos os registros antigos passarem a significar outra coisa.
+> Persista o `name()` (a String) ou um **código explícito** que você mesmo controla —
+> veja a versão com atributos logo adiante, que define um campo `code` justamente para isso.
 
 ### Uso na Entidade
 
@@ -194,13 +200,20 @@ src/
 
 ### 3. **Quando NÃO Usar**
 ```java
-// ❌ Evite: apenas 2 valores (use boolean)
+// ❌ Evite: enum que só replica true/false sem agregar significado
 public enum BooleanEnum {
     YES, NO
 }
 
-// ✅ Melhor:
+// ✅ Aqui o boolean basta:
 private boolean active;
+
+// ⚠️ Mas cuidado com a regra: um enum de DOIS valores costuma ser MELHOR
+// que um boolean quando os valores têm nome próprio no domínio.
+// Compare a legibilidade na chamada:
+//    enviar(pedido, true);                    // true do quê?
+//    enviar(pedido, Modalidade.EXPRESSA);     // óbvio
+// Além disso, o enum permite crescer para um terceiro valor sem quebrar a API.
 
 // ❌ Evite: valores que mudam frequentemente
 public enum Country {
@@ -254,7 +267,9 @@ public class Worker {
     }
     
     public Double income(int year, int month) {
-        // cálculo
+        // cálculo — stub ilustrativo; um método com retorno Double
+        // precisa de um return, senão não compila
+        return 0.0;
     }
 }
 ```
@@ -428,8 +443,14 @@ public class Client {
     private String email;
     private Date birthDate;
     
+    // ⚠️ Dois problemas conhecidos neste padrão (mantido aqui por ser o do curso):
+    //  1. SimpleDateFormat NÃO é thread-safe — um campo static compartilhado entre
+    //     threads corrompe a formatação silenciosamente.
+    //  2. Date/SimpleDateFormat são a API legada. Em código novo use java.time:
+    //     LocalDate birthDate + DateTimeFormatter (que é imutável e thread-safe).
+    //     Veja 18-DATA-HORA-JAVA.MD.
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    
+
     public Client(String name, String email, Date birthDate) {
         this.name = name;
         this.email = email;
@@ -567,6 +588,7 @@ public class Order {
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 import entities.Client;
 import entities.Order;
@@ -576,6 +598,10 @@ import entities.enums.OrderStatus;
 
 public class Program {
     public static void main(String[] args) throws ParseException {
+        // Sem esta linha, em máquina com locale pt-BR o nextDouble() espera
+        // vírgula decimal e lança InputMismatchException ao ler "1000.00"
+        Locale.setDefault(Locale.US);
+
         Scanner sc = new Scanner(System.in);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         

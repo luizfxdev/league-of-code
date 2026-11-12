@@ -1,10 +1,10 @@
-# Estrutura Condicional em Java ? Guia Pr·tico com League of Legends
+# Estrutura Condicional em Java ‚Äî Guia Pr√°tico com League of Legends
 
 ## 1. Operadores Comparativos
 
-Imagine vocÍ monitorando o **HP do campe„o inimigo**. VocÍ precisa tomar decisıes baseadas em quanto de vida ele tem.
+Imagine voc√™ monitorando o **HP do campe√£o inimigo**. Voc√™ precisa tomar decis√µes baseadas em quanto de vida ele tem.
 
-### Operadores DisponÌveis
+### Operadores Dispon√≠veis
 
 | Operador | Significado | Exemplo | Resultado |
 |----------|-------------|---------|-----------|
@@ -19,13 +19,14 @@ Imagine vocÍ monitorando o **HP do campe„o inimigo**. VocÍ precisa tomar decisıe
 
 ```java
 int hpInimigo = 250;
+int meuHp = 520;
 
-// Est· abaixo de 30% de vida? Pode "all-in"
+// Est√° abaixo de 30% de vida? Pode "all-in"
 if (hpInimigo < 300) {
     System.out.println("Engaje agora!");
 }
 
-// Est· com mais vida que a minha? Espera cooldown
+// Est√° com mais vida que a minha? Espera cooldown
 if (hpInimigo >= meuHp) {
     System.out.println("Aguarde...");
 }
@@ -33,17 +34,17 @@ if (hpInimigo >= meuHp) {
 
 ---
 
-## 2. Operadores LÛgicos
+## 2. Operadores L√≥gicos
 
-Agora vocÍ n„o toma decisıes por apenas UM fator. VocÍ precisa checar **m˙ltiplas condiÁıes** antes de agir.
+Agora voc√™ n√£o toma decis√µes por apenas UM fator. Voc√™ precisa checar **m√∫ltiplas condi√ß√µes** antes de agir.
 
-### Tipos de Operadores LÛgicos
+### Tipos de Operadores L√≥gicos
 
-#### `&&` (E) ? TODAS as condiÁıes devem ser verdadeiras
+#### `&&` (E) ‚Äî TODAS as condi√ß√µes devem ser verdadeiras
 
-**Analogia:** Para fazer **All-in** vocÍ precisa:
-- **E** n„o estar sozinho (aliados perto)
-- **E** ter cooldowns disponÌveis
+**Analogia:** Para fazer **All-in** voc√™ precisa:
+- **E** n√£o estar sozinho (aliados perto)
+- **E** ter cooldowns dispon√≠veis
 - **E** inimigo estar isolado
 
 ```java
@@ -67,9 +68,9 @@ if (temaliadosPerto && cooldownDisponivel && inimigoIsolado) {
 
 ---
 
-#### `||` (OU) ? PELO MENOS UMA condiÁ„o deve ser verdadeira
+#### `||` (OU) ‚Äî PELO MENOS UMA condi√ß√£o deve ser verdadeira
 
-**Analogia:** VocÍ faz **recall** se:
+**Analogia:** Voc√™ faz **recall** se:
 - **OU** tiver mana baixa
 - **OU** estiver com muita vida perdida
 - **OU** a lane estiver segura
@@ -95,21 +96,21 @@ if (!manaAlta || !vidaAlta || laneSeguradoInimigo) {
 
 ---
 
-#### `!` (N√O) ? Inverte a condiÁ„o
+#### `!` (N√ÉO) ‚Äî Inverte a condi√ß√£o
 
-**Analogia:** VocÍ d· **engage** se o inimigo **N√O** est· com ult disponÌvel.
+**Analogia:** Voc√™ d√° **engage** se o inimigo **N√ÉO** est√° com ult dispon√≠vel.
 
 ```java
 boolean ultimateDisponivel = true;
 
 if (!ultimateDisponivel) {
-    System.out.println("Engaje! Ult dele n„o est· pronta.");
+    System.out.println("Engaje! Ult dele n√£o est√° pronta.");
 }
 
 // Com x = 5:
 int x = 5;
-System.out.println(!(x == 10)); // true (5 È diferente de 10)
-System.out.println(!(x >= 2));  // false (5 È >= 2)
+System.out.println(!(x == 10)); // true (5 √© diferente de 10)
+System.out.println(!(x >= 2));  // false (5 √© >= 2)
 ```
 
 **Tabela verdade do `!`:**
@@ -121,14 +122,14 @@ System.out.println(!(x >= 2));  // false (5 È >= 2)
 
 ---
 
-### Exemplo Combinado: Decis„o de Equipe
+### Exemplo Combinado: Decis√£o de Equipe
 
 ```java
 int ouroEquipe = 8500;
 int ouroInimigos = 7200;
 boolean temaliadosDisponiveis = true;
 boolean ultimatesDisponiveis = true;
-boolean objetivo = true; // Baron/Dragon prÛximo
+boolean objetivo = true; // Baron/Dragon pr√≥ximo
 
 if ((ouroEquipe > ouroInimigos) && 
     (temaliadosDisponiveis || ultimatesDisponiveis) && 
@@ -143,7 +144,7 @@ if ((ouroEquipe > ouroInimigos) &&
 
 ## 3. Estrutura `if` e `if-else`
 
-### `if` Simples ? Executa OU n„o executa
+### `if` Simples ‚Äî Executa OU n√£o executa
 
 ```java
 int hpInimigo = 200;
@@ -154,32 +155,32 @@ if (hpInimigo < 300) {
 ```
 
 **Fluxo:**
-- CondiÁ„o **verdadeira** ? executa o bloco
-- CondiÁ„o **falsa** ? pula o bloco
+- Condi√ß√£o **verdadeira** ‚Üí executa o bloco
+- Condi√ß√£o **falsa** ‚Üí pula o bloco
 
 ---
 
-### `if-else` ? Executa um OU outro
+### `if-else` ‚Äî Executa um OU outro
 
 ```java
 int ouroMeu = 2800;
 
 if (ouroMeu >= 2800) {
-    System.out.println("Comprar item legend·rio!");
+    System.out.println("Comprar item legend√°rio!");
 } else {
-    System.out.println("Ainda n„o tenho ouro suficiente.");
+    System.out.println("Ainda n√£o tenho ouro suficiente.");
 }
 ```
 
 **Analogia LoL:**
 - **if** = Ult carregada? Ataque com ult
-- **else** = Ult n„o carregada? Ataque sem ult
+- **else** = Ult n√£o carregada? Ataque sem ult
 
 ---
 
-## 4. `if-else if-else` ? M˙ltiplas Decisıes
+## 4. `if-else if-else` ‚Äî M√∫ltiplas Decis√µes
 
-**Analogia:** No laning phase, sua aÁ„o depende da **composiÁ„o inimiga**:
+**Analogia:** No laning phase, sua a√ß√£o depende da **composi√ß√£o inimiga**:
 
 ```java
 String campeoninimigo = "Yasuo";
@@ -197,7 +198,7 @@ if (campeoninimigo.equals("Yasuo")) {
 
 ---
 
-### Exemplo Realista: Decis„o de Objetivos
+### Exemplo Realista: Decis√£o de Objetivos
 
 ```java
 int minuto = 25;
@@ -208,20 +209,24 @@ if (minuto < 10) {
     System.out.println("Prepare-se para primeiros teamfights");
 } else if (minuto >= 15 && minuto < 25) {
     System.out.println("Rotacione, tome objetivos, farm");
-} else if (minuto >= 25) {
-    System.out.println("TEAMFIGHT por Baron/Nexo");
 } else {
-    System.out.println("Game over");
+    // minuto >= 25 ‚Äî n√£o precisa repetir a condi√ß√£o:
+    // os if anteriores j√° cobriram todos os valores abaixo de 25
+    System.out.println("TEAMFIGHT por Baron/Nexo");
 }
 ```
 
+> **Cuidado com c√≥digo morto:** escrever `else if (minuto >= 25)` seguido de um `else`
+> final cria um bloco **inalcan√ß√°vel** ‚Äî a cadeia j√° cobre todos os inteiros, ent√£o
+> aquele √∫ltimo `else` nunca executa. O √∫ltimo ramo de uma cadeia exaustiva deve ser `else`.
+
 ---
 
-## 5. Estrutura `switch-case` ? Alternativa ao `if-else if`
+## 5. Estrutura `switch-case` ‚Äî Alternativa ao `if-else if`
 
-Quando vocÍ tem **muitas opÁıes baseadas em UM valor**, `switch` È mais limpo.
+Quando voc√™ tem **muitas op√ß√µes baseadas em UM valor**, `switch` √© mais limpo.
 
-### ComparaÁ„o: `if-else if` vs `switch`
+### Compara√ß√£o: `if-else if` vs `switch`
 
 **Com `if-else if`:**
 ```java
@@ -237,9 +242,9 @@ if (role == 1) {
 } else if (role == 4) {
     funcao = "ADC - Farm e dano no teamfight";
 } else if (role == 5) {
-    funcao = "Support - ProteÁ„o e engaje";
+    funcao = "Support - Prote√ß√£o e engaje";
 } else {
-    funcao = "Role inv·lido";
+    funcao = "Role inv√°lido";
 }
 ```
 
@@ -262,10 +267,10 @@ switch (role) {
         funcao = "ADC - Farm e dano no teamfight";
         break;
     case 5:
-        funcao = "Support - ProteÁ„o e engaje";
+        funcao = "Support - Prote√ß√£o e engaje";
         break;
     default:
-        funcao = "Role inv·lido";
+        funcao = "Role inv√°lido";
 }
 
 System.out.println(funcao);
@@ -273,9 +278,11 @@ System.out.println(funcao);
 
 ### Regras Importantes do `switch`
 
-1. **`break`** È obrigatÛrio ? sem ele, "cai" para o prÛximo case
-2. **`default`** È opcional ? executa se nenhum `case` bate
-3. Funciona com `int`, `String`, `enum` e outros tipos primitivos
+1. **`break`** √© obrigat√≥rio ‚Äî sem ele, "cai" para o pr√≥ximo case
+2. **`default`** √© opcional ‚Äî executa se nenhum `case` bate
+3. Aceita `byte`, `short`, `char`, `int` (e seus wrappers), `String` e `enum`.
+   **N√£o** aceita `long`, `float`, `double` nem `boolean`.
+   (`String` e `enum` n√£o s√£o tipos primitivos ‚Äî s√£o tipos de refer√™ncia que o `switch` trata como caso especial.)
 
 ### Exemplo com `break` errado (Fall-through)
 
@@ -288,15 +295,15 @@ switch (tier) {
     case 2:
         System.out.println("Bronze");  // Vai executar isto
     case 3:
-        System.out.println("Silver");  // E isto tambÈm!
+        System.out.println("Silver");  // E isto tamb√©m!
 }
 
-// SaÌda:
+// Sa√≠da:
 // Bronze
 // Silver
 ```
 
-**SoluÁ„o:** Adicione `break`
+**Solu√ß√£o:** Adicione `break`
 
 ```java
 switch (tier) {
@@ -314,14 +321,14 @@ switch (tier) {
 
 ---
 
-## 6. Operador Tern·rio ? Uma linha para decis„o simples
+## 6. Operador Tern√°rio ‚Äî Uma linha para decis√£o simples
 
-Use quando precisa **atribuir um valor** com base em uma condiÁ„o.
+Use quando precisa **atribuir um valor** com base em uma condi√ß√£o.
 
 ### Sintaxe
 
 ```
-(condiÁ„o) ? valor_se_verdadeiro : valor_se_falso
+(condi√ß√£o) ? valor_se_verdadeiro : valor_se_falso
 ```
 
 ### Exemplo
@@ -338,24 +345,27 @@ if (meuHp < hpMaximo / 2) {
     percentualVida = 1.0; // 100%
 }
 
-// Com tern·rio (uma linha)
-double percentualVida = (meuHp < hpMaximo / 2) ? 0.3 : 1.0;
+// Com tern√°rio (uma linha) ‚Äî mesmo resultado, outra vari√°vel
+double percentualVidaTernario = (meuHp < hpMaximo / 2) ? 0.3 : 1.0;
 ```
 
-### Analogia LoL: Efeito de PoÁ„o
+> Aten√ß√£o: os dois trechos acima fazem a mesma coisa. Se voc√™ colocar as duas declara√ß√µes
+> com o **mesmo nome** no mesmo escopo, o c√≥digo n√£o compila (`variable already defined`).
+
+### Analogia LoL: Efeito de Po√ß√£o
 
 ```java
 int hpAtual = 250;
 int hpMaximo = 600;
 
 // Se HP estiver abaixo de 40%, restaura 150
-// Se n„o, restaura 100
+// Se n√£o, restaura 100
 int restauracao = (hpAtual < hpMaximo * 0.4) ? 150 : 100;
 
 System.out.println("Restaurando: " + restauracao + " HP");
 ```
 
-### Tern·rio Aninhado (use com cuidado!)
+### Tern√°rio Aninhado (use com cuidado!)
 
 ```java
 int minuto = 12;
@@ -369,9 +379,9 @@ System.out.println(fase); // Mid Game
 
 ---
 
-## 7. Caso Pr·tico Completo: Sistema de Compra de Items
+## 7. Caso Pr√°tico Completo: Sistema de Compra de Items
 
-Recriando a lÛgica da loja do LoL:
+Recriando a l√≥gica da loja do LoL:
 
 ```java
 import java.util.Locale;
@@ -385,14 +395,14 @@ public class LojaItens {
         int ouro = sc.nextInt();
         int itemDesejado = sc.nextInt();
         
-        // 1 = C·lice (850), 2 = Bota (300), 3 = Espada Longa (1100)
+        // 1 = C√°lice (850), 2 = Bota (300), 3 = Espada Longa (1100)
         int precoItem = 0;
         String nomeItem = "";
         
         switch (itemDesejado) {
             case 1:
                 precoItem = 850;
-                nomeItem = "C·lice";
+                nomeItem = "C√°lice";
                 break;
             case 2:
                 precoItem = 300;
@@ -403,11 +413,14 @@ public class LojaItens {
                 nomeItem = "Espada Longa";
                 break;
             default:
-                nomeItem = "Item inv·lido";
+                nomeItem = "Item inv√°lido";
         }
         
-        // Pode comprar?
-        if (ouro >= precoItem && precoItem > 0) {
+        // Trate o item inv√°lido ANTES de comparar pre√ßos,
+        // sen√£o precoItem = 0 cai no else e imprime "faltam" um valor negativo
+        if (precoItem == 0) {
+            System.out.println(nomeItem);   // "Item inv√°lido"
+        } else if (ouro >= precoItem) {
             System.out.println("Item comprado: " + nomeItem);
             System.out.println("Ouro restante: " + (ouro - precoItem));
         } else {
@@ -421,22 +434,22 @@ public class LojaItens {
 }
 ```
 
-**Entrada/SaÌda:**
+**Entrada/Sa√≠da:**
 ```
 Entrada: 1200 (ouro), 1 (item)
-SaÌda: Item comprado: C·lice
+Sa√≠da: Item comprado: C√°lice
        Ouro restante: 350
 
 Entrada: 500 (ouro), 3 (item)
-SaÌda: Ouro insuficiente!
+Sa√≠da: Ouro insuficiente!
        Faltam: 600 ouro
 ```
 
 ---
 
-## 8. Operadores de AtribuiÁ„o Cumulativa
+## 8. Operadores de Atribui√ß√£o Cumulativa
 
-Atalhos para operaÁıes comuns:
+Atalhos para opera√ß√µes comuns:
 
 | Operador | Equivalente |
 |----------|-------------|
@@ -458,16 +471,16 @@ System.out.println("Mana restante: " + mana); // 255
 
 // Regenera durante o recall (soma 100 mana por segundo)
 mana += 100;
-System.out.println("Mana apÛs recall: " + mana); // 355
+System.out.println("Mana ap√≥s recall: " + mana); // 355
 ```
 
 ---
 
-## 9. Escopo e InicializaÁ„o
+## 9. Escopo e Inicializa√ß√£o
 
-**Regra de ouro:** Uma vari·vel sÛ existe **dentro do bloco** onde foi declarada.
+**Regra de ouro:** Uma vari√°vel s√≥ existe **dentro do bloco** onde foi declarada.
 
-### ? Correto
+### ‚úÖ Correto
 
 ```java
 double preco = sc.nextDouble();
@@ -478,7 +491,7 @@ if (preco > 100.0) {
 }
 ```
 
-### ? Errado
+### ‚ùå Errado
 
 ```java
 double preco = sc.nextDouble();
@@ -487,10 +500,10 @@ if (preco > 100.0) {
     double desconto = preco * 0.1;
 }
 
-System.out.println(desconto); // ERRO! desconto n„o existe aqui
+System.out.println(desconto); // ERRO! desconto n√£o existe aqui
 ```
 
-### SoluÁ„o: Declare fora do `if`
+### Solu√ß√£o: Declare fora do `if`
 
 ```java
 double preco = sc.nextDouble();
@@ -507,34 +520,34 @@ System.out.println("Desconto: " + desconto); // OK!
 
 ---
 
-## 10. Resumo R·pido ? Quando Usar Cada Uma
+## 10. Resumo R√°pido ‚Äî Quando Usar Cada Uma
 
-| SituaÁ„o | Use |
+| Situa√ß√£o | Use |
 |----------|-----|
-| Sim/N„o simples | `if` |
-| Sim ou N„o, com alternativa | `if-else` |
-| M˙ltiplas condiÁıes sequenciais | `if-else if-else` |
-| Muitos valores de UMA vari·vel | `switch-case` |
-| Atribuir valor em uma linha | Tern·rio `?:` |
-| Verificar V¡RIAS condiÁıes | `&&` ou `\|\|` |
+| Sim/N√£o simples | `if` |
+| Sim ou N√£o, com alternativa | `if-else` |
+| M√∫ltiplas condi√ß√µes sequenciais | `if-else if-else` |
+| Muitos valores de UMA vari√°vel | `switch-case` |
+| Atribuir valor em uma linha | Tern√°rio `?:` |
+| Verificar V√ÅRIAS condi√ß√µes | `&&` ou `\|\|` |
 
 ---
 
-## ExercÌcio Final: Sistema de Runes
+## Exerc√≠cio Final: Sistema de Runes
 
-Implemente um programa que leia um tipo de runa (1=Ofensiva, 2=Defensiva, 3=Utilit·ria) e mostre qual È o benefÌcio:
+Implemente um programa que leia um tipo de runa (1=Ofensiva, 2=Defensiva, 3=Utilit√°ria) e mostre qual √© o benef√≠cio:
 
 ```java
 // Dicas:
 // - Use switch para cada tipo
-// - Combine && ou || se precisar verificar m˙ltiplas condiÁıes
-// - Use tern·rio para c·lculos r·pidos
+// - Combine && ou || se precisar verificar m√∫ltiplas condi√ß√µes
+// - Use tern√°rio para c√°lculos r√°pidos
 ```
 
 **Resposta sugerida:**
 
 <details>
-<summary>Clique para ver a soluÁ„o</summary>
+<summary>Clique para ver a solu√ß√£o</summary>
 
 ```java
 import java.util.Scanner;
@@ -543,7 +556,7 @@ public class SistemaRunes {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         
-        System.out.print("Digite o tipo de runa (1=Ofensiva, 2=Defensiva, 3=Utilit·ria): ");
+        System.out.print("Digite o tipo de runa (1=Ofensiva, 2=Defensiva, 3=Utilit√°ria): ");
         int tipoRuna = sc.nextInt();
         
         String beneficio;
@@ -559,10 +572,10 @@ public class SistemaRunes {
                 beneficio = "Utilidade: +5% velocidade de movimento";
                 break;
             default:
-                beneficio = "Runa inv·lida!";
+                beneficio = "Runa inv√°lida!";
         }
         
-        System.out.println("BenefÌcio: " + beneficio);
+        System.out.println("Benef√≠cio: " + beneficio);
         sc.close();
     }
 }
@@ -572,25 +585,25 @@ public class SistemaRunes {
 
 ---
 
-## ReferÍncias R·pidas
+## Refer√™ncias R√°pidas
 
 **Tabela de Prioridade de Operadores:**
-1. `!` (N√O)
+1. `!` (N√ÉO)
 2. `&&` (E)
 3. `||` (OU)
 
-**Use parÍnteses para deixar claro:**
+**Use par√™nteses para deixar claro:**
 ```java
 // Evite ambiguidade
 if (a || b && c) { } // Qual tem prioridade?
 
-// Deixe explÌcito
-if (a || (b && c)) { } // Agora est· claro!
+// Deixe expl√≠cito
+if (a || (b && c)) { } // Agora est√° claro!
 ```
 
 ---
 
-**⁄ltima dica:** Debug suas condiÁıes imprimindo os valores intermedi·rios. Use `System.out.println()` para ver o que est· acontecendo.
+**√öltima dica:** Debug suas condi√ß√µes imprimindo os valores intermedi√°rios. Use `System.out.println()` para ver o que est√° acontecendo.
 
 ```java
 boolean condicao1 = meuHp < 300;

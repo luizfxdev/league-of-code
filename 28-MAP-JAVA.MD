@@ -270,7 +270,9 @@ capacidades.put("Truck", 8000);
 
 // Conjunto de chaves
 Set<String> veiculos = capacidades.keySet();
-System.out.println(veiculos); // [Fiorino, Truck, Sprinter]
+System.out.println(veiculos); // [Fiorino, Truck, Sprinter] - ordem NAO garantida
+// A ordem de um HashMap e detalhe de implementacao: nao escreva testes nem
+// logica que dependam dela. Precisa de ordem? TreeMap ou LinkedHashMap.
 
 // Coleção de valores
 Collection<Integer> caps = capacidades.values();
@@ -450,8 +452,27 @@ fretes.put("SP-BH", 480.0);
 // Aplicar reajuste de 10% em todos os fretes
 fretes.replaceAll((rota, valor) -> valor * 1.10);
 
-System.out.println(fretes); // {SP-RJ=385.0, SP-BH=528.0}
+System.out.println(fretes);
+// {SP-RJ=385.00000000000006, SP-BH=528.0}   <- repare no SP-RJ!
 ```
+
+> ⚠️ **Não é erro de digitação.** `350.0 * 1.10` em `double` resulta em
+> `385.00000000000006`, porque `1.10` não tem representação exata em binário.
+> Para **dinheiro**, `double` é a escolha errada — use `BigDecimal`:
+>
+> ```java
+> Map<String, BigDecimal> fretes = new HashMap<>();
+> fretes.put("SP-RJ", new BigDecimal("350.00"));   // construa sempre a partir de String
+> fretes.put("SP-BH", new BigDecimal("480.00"));
+>
+> fretes.replaceAll((rota, valor) ->
+>     valor.multiply(new BigDecimal("1.10")).setScale(2, RoundingMode.HALF_UP));
+>
+> System.out.println(fretes);  // {SP-RJ=385.00, SP-BH=528.00}
+> ```
+>
+> Se precisar mesmo usar `double`, ao menos **formate na exibição**
+> (`String.format("%.2f", valor)`) e nunca compare valores monetários com `==`.
 
 ### Map.of e Map.ofEntries — maps imutáveis (Java 9+)
 
@@ -592,19 +613,27 @@ public class TabelaFrete {
     }
     
     public Double consultarFrete(String cep) {
-        int cepNum = Integer.parseInt(cep.replace("-", ""));
-        
+        // ATENÇÃO à unidade: as faixas acima têm 5 dígitos ("01000-09999"),
+        // mas um CEP completo tem 8 ("01310-100"). Comparar os dois diretamente
+        // nunca casa — 1310100 jamais fica entre 1000 e 9999.
+        // Use apenas o PREFIXO de 5 dígitos para localizar a faixa.
+        String apenasDigitos = cep.replaceAll("[^0-9]", "");
+        if (apenasDigitos.length() < 5) {
+            throw new IllegalArgumentException("CEP invalido: " + cep);
+        }
+        int prefixo = Integer.parseInt(apenasDigitos.substring(0, 5));
+
         for (Map.Entry<String, Double> entry : precoPorFaixaCep.entrySet()) {
             String[] faixa = entry.getKey().split("-");
             int inicio = Integer.parseInt(faixa[0]);
             int fim = Integer.parseInt(faixa[1]);
-            
-            if (cepNum >= inicio && cepNum <= fim) {
+
+            if (prefixo >= inicio && prefixo <= fim) {
                 return entry.getValue();
             }
         }
-        
-        return null;
+
+        return null;   // nenhuma faixa atende
     }
 }
 ```

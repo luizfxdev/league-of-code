@@ -40,7 +40,20 @@ Martin Fowler estimou que ~30% do esforço de um sistema enterprise fica nessa c
 
 ## 2. O Que é JPA
 
-**JPA (Java Persistence API)** é uma **especificação** — ela define as regras de como o mapeamento objeto-relacional deve funcionar em Java EE. Pacote: `javax.persistence`.
+**JPA (Java Persistence API)** é uma **especificação** — ela define as regras de como o mapeamento objeto-relacional deve funcionar. **Hibernate** é uma implementação dela.
+
+> ⚠️ **Atenção ao pacote — `javax` vs `jakarta`.** Depois que o Java EE foi doado à Eclipse
+> Foundation e virou **Jakarta EE**, o pacote mudou de nome:
+>
+> | Stack | Pacote dos imports | Exemplos de versão |
+> |---|---|---|
+> | Java EE / Jakarta EE 8 | `javax.persistence.*` | Hibernate 5.x, Spring Boot 2.x |
+> | Jakarta EE 9+ | `jakarta.persistence.*` | Hibernate 6.x, Spring Boot 3.x |
+>
+> Este material usa **Hibernate 5.6**, portanto `javax.persistence`. Se você copiar estes
+> exemplos para um projeto Spring Boot 3 / Hibernate 6, troque todos os imports de
+> `javax.persistence` para `jakarta.persistence` — é a causa número um de
+> `ClassNotFoundException` e de anotações que "não funcionam" nessa migração.
 
 **Hibernate** é uma **implementação** dessa especificação. É o que de fato executa o trabalho.
 
@@ -366,9 +379,24 @@ private List<Pokemon> pokemons;
 private MochilaPokemon mochila;
 ```
 
-**Regra prática:**
-- `@OneToMany` e `@ManyToMany` → LAZY por padrão (correto)
-- `@ManyToOne` e `@OneToOne` → EAGER por padrão (geralmente ok)
+**Padrões da especificação:**
+- `@OneToMany` e `@ManyToMany` → **LAZY** por padrão (bom default)
+- `@ManyToOne` e `@OneToOne` → **EAGER** por padrão
+
+> ⚠️ O `EAGER` padrão de `@ManyToOne`/`@OneToOne` é justamente a **principal causa do
+> problema N+1** descrito abaixo: toda vez que você carrega a entidade, o Hibernate puxa
+> junto a associação — mesmo quando ninguém vai usá-la — e isso se multiplica em listagens.
+> A recomendação da maior parte da literatura é **marcar tudo como LAZY explicitamente** e
+> carregar o que precisar sob demanda com `JOIN FETCH`:
+>
+> ```java
+> @ManyToOne(fetch = FetchType.LAZY)
+> @JoinColumn(name = "mochila_id")
+> private MochilaPokemon mochila;
+> ```
+>
+> O preço do LAZY é precisar de um contexto de persistência aberto na hora do acesso —
+> fora dele, você recebe `LazyInitializationException`.
 
 Cuidado com o **N+1 problem**: buscar 100 pokémons e depois fazer 100 queries para carregar a mochila de cada um. Solução: `JOIN FETCH` no JPQL.
 

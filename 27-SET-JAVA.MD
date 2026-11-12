@@ -544,6 +544,38 @@ Set<Rota> rotasMultiplo = new TreeSet<>(
 );
 ```
 
+### ⚠️ Armadilha: no TreeSet, o comparador também define IGUALDADE
+
+Como visto na seção 10, `TreeSet` ignora `equals`/`hashCode` e decide tudo pelo
+`compareTo`/`Comparator`. Consequência: **qualquer elemento cujo comparador devolva `0`
+é tratado como duplicata e descartado em silêncio.**
+
+```java
+Set<Rota> porDestino = new TreeSet<>(Comparator.comparing(Rota::getDestino));
+porDestino.add(new Rota("SP", "RJ", 430));
+porDestino.add(new Rota("BH", "RJ", 340));   // destino "RJ" repetido!
+
+System.out.println(porDestino.size());  // 1 — a segunda rota foi DESCARTADA
+```
+
+As duas rotas são claramente diferentes, mas o comparador só olha o destino, devolve `0`
+e o `TreeSet` conclui que são o mesmo elemento.
+
+**Como evitar:** faça o comparador terminar sempre num critério **único** (um id, um código),
+para que só elementos realmente iguais devolvam `0`:
+
+```java
+Set<Rota> porDestino = new TreeSet<>(
+    Comparator.comparing(Rota::getDestino)
+              .thenComparing(Rota::getOrigem)        // desempate
+              .thenComparingDouble(Rota::getDistanciaKm)
+);
+System.out.println(porDestino.size());  // 2 — agora as duas são preservadas
+```
+
+> Essa é a razão pela qual a documentação recomenda que a ordenação de um `TreeSet` seja
+> *"consistente com equals"*: quando não é, o conjunto se comporta de forma que surpreende.
+
 ---
 
 ## 12. Iteração sobre Set

@@ -1,4 +1,4 @@
-# Operadores em JavaScript ? LoL Edition
+# Operadores em JavaScript — LoL Edition
 
 ## Exemplo Prático: Game Loop e Detecção de Combate
 
@@ -31,7 +31,7 @@ function podeAtacarAgora(campeao, alvo) {
     
     // Guard 2: Mana é suficiente?
     if (campeao.manaAtual <= 0) {
-        return false;  // Broke de mana ? não pode cashar habilidade
+        return false;  // Broke de mana → não pode cashar habilidade
     }
     
     // Guard 3: Alvo é válido e não tá morto?
@@ -49,7 +49,7 @@ function podeAtacarAgora(campeao, alvo) {
         return false;  // Ulti ainda no cooldown
     }
     
-    return true;  // Win condition ? pode atacar!
+    return true;  // Win condition → pode atacar!
 }
 
 // Executar ataque (mutação controlada)
@@ -74,43 +74,43 @@ function executarAtaque(campeao, alvo) {
 
 | Operador | Significado | LoL | Exemplo |
 |----------|------------|-----|---------|
-| `==` | Igual (coerção) | Mesmo nível? | `if (level == 6)` ? cuidado com type coercion |
+| `==` | Igual (coerção) | Mesmo nível? | `if (level == 6)` → cuidado com type coercion |
 | `===` | Estritamente igual | Mesmo nível + mesmo tipo | `if (level === 6)` |
 | `!=` | Diferente (coerção) | Campeões diferentes | `if (nome != "Garen")` |
 | `!==` | Estritamente diferente | Campeões diferentes (tipo importa) | `if (nome !== "Garen")` |
 | `>` | Maior que | Mais HP | `if (healthAtual > 100)` |
 | `<` | Menor que | Menos mana | `if (manaAtual < 50)` |
-| `>=` | Maior ou igual | HP >= necessário | `if (level >= 6)` ? ulti pronta |
-| `<=` | Menor ou igual | Mana <= cap | `if (cooldown <= 0)` ? ready |
+| `>=` | Maior ou igual | HP >= necessário | `if (level >= 6)` → ulti pronta |
+| `<=` | Menor ou igual | Mana <= cap | `if (cooldown <= 0)` → ready |
 
 ### Exemplo: `==` vs `===` (Trap comum)
 
 ```javascript
-// ? Evite ==, JS faz coerção invisível
-console.log(0 == "0");        // true  ? JavaScript converteu "0" pra 0!
-console.log(false == 0);      // true  ? false virou 0!
-console.log("" == null);      // false ? Confuso mesmo
+// ❌ Evite ==, JS faz coerção invisível
+console.log(0 == "0");        // true  → JavaScript converteu "0" pra 0!
+console.log(false == 0);      // true  → false virou 0!
+console.log("" == null);      // false → Confuso mesmo
 
-// ? Use ===, sem coerção ? explícito
-console.log(0 === "0");       // false ? Claro, tipos diferentes
-console.log(false === 0);     // false ? Esperado, bool != number
-console.log("" === null);     // false ? Óbvio
+// ✅ Use ===, sem coerção → explícito
+console.log(0 === "0");       // false → Claro, tipos diferentes
+console.log(false === 0);     // false → Esperado, bool != number
+console.log("" === null);     // false → Óbvio
 
 // Validação real em jogo
 const levelAtual = "6";  // Vindo de API, é string
 
-if (levelAtual == 6) {      // ?? Risco: "6" == 6 é TRUE
+if (levelAtual == 6) {      // ⚠️ Risco: "6" == 6 é TRUE
     console.log("Ulti pronta!");  // Pode quebrar se nivel for "5"
 }
 
-if (levelAtual === 6) {     // ? Seguro: "6" === 6 é FALSE
+if (levelAtual === 6) {     // ✅ Seguro: "6" === 6 é FALSE
     console.log("Ulti pronta!");  // Só executa se realmente for número 6
 }
 
 // Comparação correta
 const level = parseInt(levelAtual);
 if (level === 6) {
-    console.log("Agora é seguro!");  // ?
+    console.log("Agora é seguro!");  // ✅
 }
 ```
 
@@ -124,7 +124,7 @@ if (level === 6) {
 | `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas, valores padrão |
 | `!` | NÃO (NOT) | Inverte condição | Negar estado |
 
-### AND (`&&`) ? Decisão de Engajamento
+### AND (`&&`) — Decisão de Engajamento
 
 ```javascript
 const podeEngajar = temMana && estaVivo && !estaStunado && temAlvoVisivel;
@@ -150,7 +150,7 @@ if (alvo && alvo.healthAtual > 0 && calcularDistancia(alvo) < 550) {
 // calcularDistancia() NUNCA é chamado! (short-circuit)
 ```
 
-### OR (`||`) ? Valor Padrão (Fallback)
+### OR (`||`) — Valor Padrão (Fallback)
 
 ```javascript
 // Tenta usar o primeiro; se não existir, usa o segundo
@@ -181,21 +181,21 @@ if (podeEntrarNoFight) {
 }
 ```
 
-### NOT (`!`) ? Negação de Estado
+### NOT (`!`) — Negação de Estado
 
 ```javascript
-const podeRecuar = !estaEngajado;  // Inverte: true ? false, false ? true
+const podeRecuar = !estaEngajado;  // Inverte: true → false, false → true
 
 if (!estaStunado) {
     console.log("Posso me mover!");  // Executa se estaStunado for FALSE
 }
 
-// ? Evite dupla negação (confunde)
-if (!!temVisao) {  // ?? Converte para boolean (desnecessário)
+// ❌ Evite dupla negação (confunde)
+if (!!temVisao) {  // ⚠️ Converte para boolean (desnecessário)
     console.log("Tem visão");
 }
 
-// ? Melhor: use simples
+// ✅ Melhor: use simples
 if (temVisao) {  // Já é boolean
     console.log("Tem visão");
 }
@@ -284,13 +284,13 @@ console.log(lux.calcularDanoFinal());    // 50 + 7 = 57 (novo buff)
 ```
 
 **Analogia:**
-- **Atributo:** Garen tem 590 HP, Lux tem 520 HP ? stats únicos
-- **Estático:** Todos têm velocidade 330 ? é regra do jogo
+- **Atributo:** Garen tem 590 HP, Lux tem 520 HP → stats únicos
+- **Estático:** Todos têm velocidade 330 → é regra do jogo
   - Mudar `DANO_MINION_BASE` de 5 pra 7 = patch que afeta TODO mundo simultaneamente
 
 ---
 
-## Combinando Operadores ? Lógica Complexa em DOM
+## Combinando Operadores — Lógica Complexa em DOM
 
 ```javascript
 function habilitarBotaoOS(formulario) {
@@ -330,7 +330,7 @@ document.getElementById("veiculoId").addEventListener("change", function() {
 
 ## Operadores Especiais em JavaScript
 
-### Nullish Coalescing (`??`) ? Valor Padrão Seguro
+### Nullish Coalescing (`??`) — Valor Padrão Seguro
 
 ```javascript
 // Diferente de ||, só usa padrão se null/undefined
@@ -347,15 +347,15 @@ let valor1 = 0 || 100;      // 100 (0 é falsy, problema!)
 let valor2 = 0 ?? 100;      // 0 (0 não é null, seguro!)
 ```
 
-### Optional Chaining (`?.`) ? Acesso Seguro
+### Optional Chaining (`?.`) — Acesso Seguro
 
 ```javascript
 const veiculo = { placa: "ABC1234", manutencao: { tipo: "Preventiva" } };
 
-// ? Risco: erro se manutencao for undefined
+// ❌ Risco: erro se manutencao for undefined
 const tipo1 = veiculo.manutencao.tipo;  // OK (existe)
 
-// ? Seguro: retorna undefined se não existir
+// ✅ Seguro: retorna undefined se não existir
 const tipo2 = veiculo.manutencao?.tipo;  // "Preventiva"
 const tipo3 = veiculo.aro?.tamanho;      // undefined (sem erro)
 
@@ -363,7 +363,7 @@ const tipo3 = veiculo.aro?.tamanho;      // undefined (sem erro)
 const osAberta = osArray?.[0]?.status;  // Seguro mesmo se array for vazio
 ```
 
-### Ternário (`? :`) ? Quick Decision
+### Ternário (`? :`) — Quick Decision
 
 ```javascript
 const statusBotao = podeExecutar ? "btn-success" : "btn-disabled";
@@ -375,7 +375,7 @@ const mensagem = kmRequisicao > 50_000 ? "KM demais" : "KM OK";
 
 ---
 
-## typeof ? Verifica Tipo
+## typeof — Verifica Tipo
 
 ```javascript
 typeof "string"      // "string"
@@ -383,8 +383,8 @@ typeof 123           // "number"
 typeof true          // "boolean"
 typeof undefined     // "undefined"
 typeof {}            // "object"
-typeof []            // "object" ? Cuidado! Array é object
-typeof null          // "object" ? Bug histórico!
+typeof []            // "object" → Cuidado! Array é object
+typeof null          // "object" → Bug histórico!
 
 // Validação segura
 function processarOS(os) {
@@ -402,16 +402,16 @@ function processarOS(os) {
 
 ---
 
-## Boas Práticas ? Código Defensivo em JavaScript
+## Boas Práticas — Código Defensivo em JavaScript
 
 ```javascript
-// ? Ruim: Assume que tudo existe
+// ❌ Ruim: Assume que tudo existe
 function obterKmVeiculo(veiculoId) {
     const veiculo = buscarVeiculo(veiculoId);
     return veiculo.kmMilhao * 1_000_000 + veiculo.kmAtual;  // NPE risco!
 }
 
-// ? Bom: Validação + early return
+// ✅ Bom: Validação + early return
 function obterKmVeiculo(veiculoId) {
     const veiculo = buscarVeiculo(veiculoId);
     
@@ -468,7 +468,7 @@ function salvarOS() {
 
 ---
 
-## Precedência de Operadores ? Cuidado!
+## Precedência de Operadores — Cuidado!
 
 ```javascript
 // Operador && tem precedência sobre ||

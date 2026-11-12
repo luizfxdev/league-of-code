@@ -1,10 +1,10 @@
-# Checklist de Leitura de Código ? LoL Edition
+# Checklist de Leitura de Código — LoL Edition
 
 ## 1. Antes de Ler
 
 **Mapeie o terreno:**
 - [ ] Qual é o objetivo? (validação, transformação, persistência, integração, efeito colateral)
-- [ ] Em que "lane" está? (Controller ? BO ? DAO, JSP render, JavaScript event, SQL query, JasperReport)
+- [ ] Em que "lane" está? (Controller → BO → DAO, JSP render, JavaScript event, SQL query, JasperReport)
 - [ ] Quem chamou isso? (quem é a "lane ally" que depende desse código)
 - [ ] Quais são as entradas esperadas? (tipos, nulls, listas vazias)
 - [ ] Qual é a saída? (retorno, efeito colateral, estado alterado)
@@ -16,7 +16,7 @@
 **Siga a rotação passo a passo:**
 
 ### Fluxo e Execução
-- [ ] Onde começa? (entry point ? Controller, listener, callback)
+- [ ] Onde começa? (entry point → Controller, listener, callback)
 - [ ] Em que ordem as coisas acontecem?
 - [ ] Tem bifurcação? (if/else, switch, validações)
 - [ ] Loops criam overhead ou mudam lógica? (N+1 queries? Iterações desnecessárias)
@@ -33,15 +33,15 @@
 - [ ] Elas fazem o que prometem ou tem efeitos colaterais?
 - [ ] Qual é o contrato delas? (o que entra, o que sai)
 
-### Red Flags ? Procure Sempre Por:
-- [ ] `null`/`undefined` sem guarda? ? NPE risk
-- [ ] Array/Collection vazio não é tratado? ? IndexOutOfBoundsException ou loop que não executa
-- [ ] Mutação direta do objeto recebido? ? side effect invisível
-- [ ] String concatenação em SQL? ? SQL Injection
-- [ ] Date/Time hardcoded ou assumindo timezone? ? Bug em produção
-- [ ] Query sem índice ou JOIN pesado? ? Timeout
-- [ ] Exception não é logada ou re-lançada? ? Debug hell
-- [ ] Duplicação de lógica similar? ? Violação de DRY, SM vai reparar
+### Red Flags — Procure Sempre Por:
+- [ ] `null`/`undefined` sem guarda? → NPE risk
+- [ ] Array/Collection vazio não é tratado? → IndexOutOfBoundsException ou loop que não executa
+- [ ] Mutação direta do objeto recebido? → side effect invisível
+- [ ] String concatenação em SQL? → SQL Injection
+- [ ] Date/Time hardcoded ou assumindo timezone? → Bug em produção
+- [ ] Query sem índice ou JOIN pesado? → Timeout
+- [ ] Exception não é logada ou re-lançada? → Debug hell
+- [ ] Duplicação de lógica similar? → Violação de DRY, SM vai reparar
 
 ---
 
@@ -54,12 +54,12 @@
 - [ ] O nome da função/classe combina com o que ela faz?
 - [ ] Se algo der errado aqui, aonde procuro? (log, stack trace, database)
 - [ ] Existe forma mais simples? (menos variáveis, menos bifurcações, menos dependências)
-- [ ] Qual foi a decisão mais importante? (por que `for` e não `foreach`? Por que `Optional.orElse()` e não `if null`?)
+- [ ] Qual foi a decisão mais importante? (por que `for` e não `foreach`→ Por que `Optional.orElse()` e não `if null`?)
 - [ ] Se o SM perguntasse "por que assim?" eu tenho resposta sem balbuciar?
 
 ---
 
-## Script Mental ? 7 Passos
+## Script Mental — 7 Passos
 
 ### 1. **"Qual é a lane?"**
 Descubra o papel do código no sistema.
@@ -71,10 +71,10 @@ Descubra o papel do código no sistema.
 
 ### 2. **"Quem é o inimigo?"**
 Qual problema ele resolve?
-- Validação de entrada ? protege de lixo
-- Cálculo complexo ? evita erro manual
-- Integração com terceiro ? mantém contrato
-- Query otimizada ? evita timeout
+- Validação de entrada → protege de lixo
+- Cálculo complexo → evita erro manual
+- Integração com terceiro → mantém contrato
+- Query otimizada → evita timeout
 
 ### 3. **"Quem tem visão?"**
 Que dados o código vê?
@@ -92,7 +92,7 @@ Trace passo a passo.
 4. Calcula W
 5. Persiste ou retorna resultado
 
-Se travar em qualquer passo ? volte para red flags.
+Se travar em qualquer passo → volte para red flags.
 
 ### 5. **"Qual é a win condition?"**
 O que significa sucesso aqui?
@@ -118,7 +118,7 @@ Se não conseguir falar isso sem tropeçar, releia.
 
 ---
 
-## Analogias LoL ? Código
+## Analogias LoL — Código
 
 | LoL | Código |
 |-----|--------|
@@ -134,7 +134,7 @@ Se não conseguir falar isso sem tropeçar, releia.
 
 ---
 
-## Aplicação Prática ? Por Contexto
+## Aplicação Prática — Por Contexto
 
 ### Lendo DAO (Query/Persistência)
 - [ ] SQL está correto? (JOINs são necessários? Há ambiguidade? Índices ajudam?)
@@ -175,13 +175,13 @@ Se não conseguir falar isso sem tropeçar, releia.
 ### Lendo JasperReport (.jrxml)
 - [ ] Encoding está correto? (ISO-8859-1 for old systems)
 - [ ] Query está dentro? (de onde vêm dados? Há parâmetros?)
-- [ ] Acentuação usa `chr()`? (português funciona)
+- [ ] Acentuação usa `chr()`→ (português funciona)
 - [ ] Tem variável calculada? (e ela está em escopo certo?)
 - [ ] Tipo de dado da coluna está certo? (numeric, string, date)
 
 ---
 
-## Sinais de Alerta ? Red Flags Comuns
+## Sinais de Alerta — Red Flags Comuns
 
 ```
 ?? sem validação antes de usar
@@ -205,7 +205,7 @@ Se não conseguir falar isso sem tropeçar, releia.
 
 ---
 
-## Frases Prontas ? Use No Code Review
+## Frases Prontas — Use No Code Review
 
 **Quando descobrir problema:**
 > "Aqui pode vir null/vazio; precisamos validar com `if (list != null && !list.isEmpty())`."
@@ -224,24 +224,24 @@ Se não conseguir falar isso sem tropeçar, releia.
 
 ---
 
-## Treino Rápido Diário ? 10 Minutos
+## Treino Rápido Diário — 10 Minutos
 
 Pegue um trecho pequeno (5?15 linhas) e responda:
 
-1. **O quê?** ? Descreva em uma frase.
-   - ? "Valida se veículo tem km acima do limite antes de criar OS"
+1. **O quê?** → Descreva em uma frase.
+   - → "Valida se veículo tem km acima do limite antes de criar OS"
 
-2. **Como?** ? Passo a passo.
-   - ? Busca veículo por ID ? Calcula km total ? Compara com limite ? Lança exception ou continua
+2. **Como?** → Passo a passo.
+   - → Busca veículo por ID → Calcula km total → Compara com limite → Lança exception ou continua
 
-3. **Onde quebra?** ? Aponte 1 risco.
-   - ? "Se `kmMilhao` for null, `NPE` na multiplicação"
+3. **Onde quebra?** → Aponte 1 risco.
+   - → "Se `kmMilhao` for null, `NPE` na multiplicação"
 
-4. **Melhora?** ? Sugira refator.
-   - ? "Extrair cálculo de km num método `calcularKmTotal()` pra reusar"
+4. **Melhora?** → Sugira refator.
+   - → "Extrair cálculo de km num método `calcularKmTotal()` pra reusar"
 
-5. **Compare.** ? Releia, veja se acertou.
-   - ? "Tá, eu vi certo? Mesmo que o banco retorne null, o null é checado aqui?"
+5. **Compare.** → Releia, veja se acertou.
+   - → "Tá, eu vi certo? Mesmo que o banco retorne null, o null é checado aqui?"
 
 ---
 
@@ -249,7 +249,7 @@ Pegue um trecho pequeno (5?15 linhas) e responda:
 
 **Se travar em qualquer ponto, faça isso:**
 
-1. Volte ao contrato: entrada ? saída
+1. Volte ao contrato: entrada → saída
 2. Procure o null/empty case
 3. Procure onde o estado é alterado
 4. Procure chamadas a funções externas
@@ -260,4 +260,4 @@ Um desses 6 está causando confusão. Garanto.
 
 ---
 
-**Lembrete final:** Ler código é como mapear em LoL ? não olhe detalhes isolados, olhe fluxo, ameaça, visão e decisão. A win condition é entender por que aquele código existe e o que quebra se ele virar lixo.
+**Lembrete final:** Ler código é como mapear em LoL → não olhe detalhes isolados, olhe fluxo, ameaça, visão e decisão. A win condition é entender por que aquele código existe e o que quebra se ele virar lixo.

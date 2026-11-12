@@ -93,11 +93,12 @@ public interface Atacavel {
 
 **Características:**
 
-- ✓ Todos os métodos são **públicos** por padrão
-- ✓ Todos os atributos são **constantes** (public static final)
+- ✓ Métodos abstratos e `default` são **públicos** por padrão
+- ✓ Todos os atributos são **constantes** (`public static final` implícito)
 - ✓ NÃO tem construtor
-- ✓ NÃO tem atributos de instância
-- ✓ NÃO tem métodos private (antes de Java 9)
+- ✓ NÃO tem atributos de instância (logo, não guarda estado)
+- ✓ Desde o **Java 9** pode ter métodos `private` — usados só para compartilhar
+  código entre os métodos `default` da própria interface
 
 ---
 
@@ -390,6 +391,12 @@ public class Campeao {
 
 // Tank: Ataca e Esquiva
 public class Tank extends Campeao implements Atacavel, Esquivavel {
+    // Campeao não tem construtor sem argumentos: a subclasse precisa
+    // declarar o seu e repassar os valores com super(...)
+    public Tank(String nome) {
+        super(nome, 650, 300);
+    }
+
     @Override
     public void atacar(Campeao alvo) {
         System.out.println(nome + " carrega com investida!");
@@ -409,6 +416,10 @@ public class Tank extends Campeao implements Atacavel, Esquivavel {
 
 // Mago: Ataca e Cura
 public class Mago extends Campeao implements Atacavel, Curavel {
+    public Mago(String nome) {
+        super(nome, 450, 500);
+    }
+
     @Override
     public void atacar(Campeao alvo) {
         System.out.println(nome + " lança explosão mágica!");
@@ -431,6 +442,10 @@ public class Mago extends Campeao implements Atacavel, Curavel {
 
 // Suporte: Cura e Esquiva
 public class Suporte extends Campeao implements Curavel, Esquivavel {
+    public Suporte(String nome) {
+        super(nome, 500, 450);
+    }
+
     @Override
     public void curar(Campeao alvo) {
         System.out.println(nome + " ativa cura em área!");
@@ -579,16 +594,23 @@ public interface Atacavel {
     void atacar(Campeao alvo);
 }
 
+// ❌ Sem @Override: o erro de digitação passa despercebido
 public class Guerreiro implements Atacavel {
-    // ❌ Sem @Override, erros passam despercebidos
-    public void atacar(Campeao alvo) {  // Typo: deveria ser atacar
+    public void atakar(Campeao alvo) {   // "atakar" — nome errado
         System.out.println("Atacando!");
     }
-    
-    // ✓ Com @Override, Java avisa
+}
+// Resultado: erro só aparece mais tarde, e confuso —
+// "Guerreiro is not abstract and does not override abstract method atacar"
+// O método atakar() virou um método novo, que ninguém chama.
+```
+
+```java
+// ✓ Com @Override: o compilador acusa na hora, na linha certa
+public class Guerreiro implements Atacavel {
     @Override
-    public void atacar(Campeao alvo) {
-        System.out.println("Atacando!");
+    public void atakar(Campeao alvo) {   // erro: "method does not override
+        System.out.println("Atacando!"); //         or implement a method from a supertype"
     }
 }
 ```

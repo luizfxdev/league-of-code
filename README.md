@@ -11,7 +11,7 @@
 ![Hibernate](https://img.shields.io/badge/JPA-Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-GitHub-F05032?style=for-the-badge&logo=git&logoColor=white)
 
-![Conteúdo](https://img.shields.io/badge/anota%C3%A7%C3%B5es-42%20arquivos-blue?style=flat-square)
+![Conteúdo](https://img.shields.io/badge/anota%C3%A7%C3%B5es-43%20arquivos-blue?style=flat-square)
 ![Idioma](https://img.shields.io/badge/idioma-PT--BR-green?style=flat-square)
 ![Formato](https://img.shields.io/badge/formato-Markdown-lightgrey?style=flat-square&logo=markdown)
 ![Status](https://img.shields.io/badge/status-em%20evolu%C3%A7%C3%A3o-orange?style=flat-square)
@@ -83,6 +83,7 @@ flowchart LR
 | ⚡ **Funcional e Concorrência** | [30-THREADS-CONCORRENCIA-JAVA](30-THREADS-CONCORRENCIA-JAVA.MD) | 🧵 Race condition, `synchronized`, `Lock`, deadlock, `ExecutorService`, `CompletableFuture`, virtual threads |
 | ⚡ **Funcional e Concorrência** | [31-PARALELISMO-JAVA](31-PARALELISMO-JAVA.MD) | 🚀 `parallelStream`, `ForkJoinPool`, `RecursiveTask`, quando paralelizar |
 | ⚡ **Funcional e Concorrência** | [32-IDEMPOTENCIA-JAVA](32-IDEMPOTENCIA-JAVA.MD) | ♻️ Chaves de idempotência, upsert, constraints únicas, filas *at-least-once* |
+| ⚡ **Funcional e Concorrência** | [41-SINCRONO-E-ASSINCRONO-JAVA](41-SINCRONO-E-ASSINCRONO-JAVA.MD) | ⏳ Bloqueio vs não-bloqueio, callbacks, `Future`, `CompletableFuture`, tratamento de erro assíncrono, virtual threads |
 | 🌐 **APIs e Banco de Dados** | [33-API-JAVA](33-API-JAVA.MD) | 🔗 Camadas, HTTP, status codes, JSON, validação, paginação, versionamento |
 | 🌐 **APIs e Banco de Dados** | [34-CRUD-JAVA](34-CRUD-JAVA.MD) | 🛠️ Repository, soft delete, transações, REST, *optimistic locking* |
 | 🌐 **APIs e Banco de Dados** | [35-JDBC-JAVA](35-JDBC-JAVA.MD) | 🔌 `PreparedStatement`, SQL Injection, transações, batch, HikariCP, padrão DAO |
@@ -105,6 +106,6 @@ flowchart LR
 
 <div align="center">
 
-Desenvolvido por[**luizfxdev**](https://www.linkedin.com/in/luizfxdev/)
+Desenvolvido por [**luizfxdev**](https://www.linkedin.com/in/luizfxdev/)
 
 </div>

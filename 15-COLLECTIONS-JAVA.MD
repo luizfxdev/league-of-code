@@ -21,8 +21,10 @@ campeoes[2] = "Ahri";
 // 2. Sem métodos úteis
 // Quer remover um elemento? Faz manualmente!
 
-// 3. Sem type safety
-Object[] misturado = {"Garen", 123, true};  // Sem erro!
+// 3. Covariância de arrays: o compilador deixa passar, e quebra em runtime
+Object[] nomes = new String[2];   // permitido (arrays são covariantes)
+nomes[0] = 123;                   // compila, mas lança ArrayStoreException!
+// Com List<String> isso nem compilaria — genéricos são mais seguros
 ```
 
 ### A Solução: Collections
@@ -109,12 +111,23 @@ for (Campeao c : time) {
 // ArrayList: bom para acesso (O(1))
 List<String> lista1 = new ArrayList<>();
 
-// LinkedList: bom para inserção/remoção (O(1) no começo/fim)
-List<String> lista2 = new LinkedList<>();
+// LinkedList: bom para inserção/remoção nas PONTAS
+// Atenção ao tipo declarado: addFirst/addLast não existem na interface List
+// (no Java 17). Para usá-los, declare a variável como LinkedList.
+LinkedList<String> lista2 = new LinkedList<>();
 lista2.add("Garen");
 lista2.addFirst("Raiz");  // Adiciona no começo
 lista2.addLast("Fim");    // Adiciona no fim
+
+// Se declarar como List, só a API de List fica disponível:
+List<String> lista3 = new LinkedList<>();
+lista3.add("Garen");      // ✓ existe em List
+// lista3.addFirst("X");  // ❌ não compila em Java 17
+lista3.add(0, "Raiz");    // ✓ equivalente via List
 ```
+
+> No **Java 21** a interface `List` passou a estender `SequencedCollection`, que traz
+> `addFirst`/`addLast`. Em Java 17, use `LinkedList` como tipo declarado ou `add(0, x)`.
 
 ---
 
@@ -322,6 +335,11 @@ Map (chave-valor, sem duplicata de chave)
 // Array → List
 String[] array = {"Garen", "Lux"};
 List<String> lista = Arrays.asList(array);
+// ⚠️ Esta lista tem TAMANHO FIXO e é uma "visão" do array:
+//    lista.add("Ahri")  -> UnsupportedOperationException
+//    lista.set(0, "X")  -> altera também o array original!
+// Para uma lista realmente independente e mutável:
+List<String> copiaMutavel = new ArrayList<>(Arrays.asList(array));
 
 // List → Array
 List<String> lista2 = new ArrayList<>();
@@ -462,19 +480,30 @@ public class Time {
 
 ## 9. Performance: Qual Usar?
 
-| Estrutura | Acesso | Inserção | Remoção | Duplicata | Ordem |
-|-----------|--------|----------|---------|-----------|-------|
-| **ArrayList** | O(1) | O(n) | O(n) | Sim | Sim |
-| **LinkedList** | O(n) | O(1) | O(1) | Sim | Sim |
-| **HashSet** | O(1)* | O(1)* | O(1)* | Não | Não |
-| **TreeSet** | O(log n) | O(log n) | O(log n) | Não | Sim |
-| **HashMap** | O(1)* | O(1)* | O(1)* | Não (chaves) | Não |
-| **TreeMap** | O(log n) | O(log n) | O(log n) | Não (chaves) | Sim |
+| Estrutura | Acesso por índice | Inserir no fim | Inserir/remover no meio | Duplicata | Ordem |
+|-----------|-------------------|----------------|--------------------------|-----------|-------|
+| **ArrayList** | O(1) | O(1) amortizado | O(n) | Sim | Inserção |
+| **LinkedList** | O(n) | O(1) | O(n) para achar + O(1) para ligar | Sim | Inserção |
+| **HashSet** | — | O(1)* | O(1)* | Não | Nenhuma |
+| **TreeSet** | — | O(log n) | O(log n) | Não | Ordenada |
+| **HashMap** | — | O(1)* | O(1)* | Não (chaves) | Nenhuma |
+| **TreeMap** | — | O(log n) | O(log n) | Não (chaves) | Ordenada por chave |
+
+\* Caso médio; degrada com colisões de `hashCode`.
+
+**Leitura honesta da tabela:**
+- O famoso "LinkedList é melhor para inserir/remover" só vale quando você **já está na posição**
+  (via `Iterator` ou nas pontas). `list.add(500, x)` numa `LinkedList` precisa **percorrer**
+  até o índice 500 — fica O(n), igual ou pior que `ArrayList`.
+- Na prática, **`ArrayList` é o padrão** e vence na maioria dos casos reais, porque a memória
+  contígua é muito mais amigável ao cache do processador.
 
 **Regra prática:**
-- Precisa de **ordem**? → **ArrayList ou LinkedList**
-- Precisa de **sem duplicatas**? → **HashSet ou TreeSet**
-- Precisa de **pares chave-valor**? → **HashMap ou TreeMap**
+- Lista ordenada por inserção, acesso por índice? → **`ArrayList`**
+- Fila/pilha com muita operação nas pontas? → **`ArrayDeque`** (melhor que `LinkedList`)
+- Sem duplicatas, ordem não importa? → **`HashSet`**
+- Sem duplicatas e ordenado? → **`TreeSet`**
+- Pares chave-valor? → **`HashMap`** (ou **`TreeMap`** se precisar das chaves ordenadas)
 
 ---
 

@@ -166,7 +166,7 @@ switch (dia) {
 }
 ```
 
-### Switch Moderno (Java 12+)
+### Switch Moderno (expressão — padrão desde o Java 14)
 
 ```java
 String tipo = "Mago";
@@ -182,6 +182,14 @@ String resultado = switch (tipo) {
 
 System.out.println(resultado);  // "Poder mágico alto!"
 ```
+
+Vantagens sobre o `switch` clássico:
+- **Sem `break`** — não existe fall-through acidental
+- **É uma expressão** — devolve valor, dá para atribuir direto a uma variável
+- **Exaustividade verificada** — com `enum`, o compilador exige que todos os casos sejam cobertos
+
+> Histórico: apareceu como *preview* no Java 12 e 13, e virou recurso **padrão no Java 14**.
+> Em projetos Java 11 ou anteriores, use a forma clássica com `break`.
 
 ---
 
@@ -206,8 +214,9 @@ if (hp > 0) {
     status = "Morto";
 }
 
-// Forma curta (ternário)
-String status = (hp > 0) ? "Vivo" : "Morto";
+// Forma curta (ternário) — equivalente, mas não declare com o mesmo nome
+// no mesmo escopo, senão o código não compila
+String statusCurto = (hp > 0) ? "Vivo" : "Morto";
 
 // Aninhado (não recomendado)
 String descricao = (hp > 250) ? "Saudável" : (hp > 100) ? "Ferido" : "Crítico";
@@ -314,14 +323,16 @@ for (int i = 0; i < 5; i++) {
 ### Loops Aninhados: Cuidado!
 
 ```java
-// ❌ Cuidado: O(n²) complexidade
+// ⚠️ Atenção ao custo: o corpo roda 100 × 100 = 10.000 vezes.
+// Loop aninhado não é "errado" — mas o custo cresce com O(n²),
+// então dobrar n quadruplica o trabalho.
 for (int i = 0; i < 100; i++) {
     for (int j = 0; j < 100; j++) {
         // Executa 10.000 vezes!
     }
 }
 
-// ✓ Quando necessário (ex: matriz)
+// ✓ Quando o aninhamento é inerente ao problema (ex: percorrer uma matriz)
 int[][] mapa = new int[5][5];
 for (int linha = 0; linha < mapa.length; linha++) {
     for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
@@ -594,7 +605,7 @@ public class Jogo {
 // Output:
 // === Placar da Partida ===
 // Garen: 15 kills - Bom desempenho!
-// Lux: 22 kills - Ótimo jogo!
+// Lux: 22 kills - PENTAKILL!
 // Ahri: 18 kills - Ótimo jogo!
 // Darius: 25 kills - PENTAKILL!
 //

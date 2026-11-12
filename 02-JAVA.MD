@@ -1,4 +1,4 @@
-# Operadores em Java ? LoL Edition
+# Operadores em Java — LoL Edition
 
 ## Exemplo Prático: Validação de Campeão em Teamfight
 
@@ -11,7 +11,7 @@ public class Champion {
     private double attackDamage;        // AD (aumenta com itens)
     private double armorResist;         // Resistência física
     private boolean estaStunado;        // Estado: CC aplicado?
-    private boolean ultimaAbilitadePronta;  // Ulti ready?
+    private boolean ultimaAbilidadePronta;  // Ulti ready?
     private int nivel;                  // Level (1-18)
     private double ouro;                // Gold (para itens)
     
@@ -45,9 +45,11 @@ public class Champion {
             return false;  // Fora do range de ataque
         }
         
-        // Guard 5: cooldown da ulti venceu?
-        if (ultimaAbilitadePronta && nivel < 6) {
-            return false;  // Ulti não destravou ainda
+        // Guard 5: a ultimate só existe a partir do nível 6
+        // (ATENÇÃO: escrever "ultimaAbilidadePronta && nivel < 6" seria contraditório —
+        //  diria "não pode atacar JUSTAMENTE porque a ulti está pronta")
+        if (nivel < 6 || !ultimaAbilidadePronta) {
+            return false;  // Ulti indisponível
         }
         
         // Passou em todas as validações = win condition
@@ -93,12 +95,12 @@ public class Champion {
 
 | Operador | Significado | LoL | Exemplo |
 |----------|------------|-----|---------|
-| `==` | Igual a | Mesmo level | `if (nivel == 6)` ? ulti destravou |
-| `!=` | Diferente de | Campeões diferentes | `if (!nome.equals("Garen"))` ? não é Garen |
-| `>` | Maior que | Mais HP | `if (healthAtual > 100)` ? tankeável |
-| `<` | Menor que | Menos ouro | `if (ouro < 1300)` ? broke de components |
-| `>=` | Maior ou igual | HP >= necessário | `if (manaAtual >= custoAbilidade)` ? pode cashar |
-| `<=` | Menor ou igual | Mana <= cap | `if (nivel <= 3)` ? early game |
+| `==` | Igual a | Mesmo level | `if (nivel == 6)` → ulti destravou |
+| `!=` | Diferente de | Campeões diferentes | `if (!nome.equals("Garen"))` → não é Garen |
+| `>` | Maior que | Mais HP | `if (healthAtual > 100)` → tankeável |
+| `<` | Menor que | Menos ouro | `if (ouro < 1300)` → broke de components |
+| `>=` | Maior ou igual | HP >= necessário | `if (manaAtual >= custoAbilidade)` → pode cashar |
+| `<=` | Menor ou igual | Mana <= cap | `if (nivel <= 3)` → early game |
 
 ### Exemplos:
 ```java
@@ -107,19 +109,19 @@ double ouro = 800.0;
 int nivel = 5;
 
 if (nivel > 3) {
-    System.out.println("Pode fazer double buff na jungla");  // ?
+    System.out.println("Pode fazer double buff na jungla");  // ✅
 }
 
 if (ouro >= 1300) {
-    System.out.println("Tem gold pra completar item");  // ?
+    System.out.println("Tem gold pra completar item");  // ✅
 }
 
 if (!garen.isEstaStunado()) {
-    System.out.println("Pode atacar");  // ? Negação
+    System.out.println("Pode atacar");  // → Negação
 }
 
 if (garen.estaVivo()) {
-    System.out.println("Ainda está na luta");  // ?
+    System.out.println("Ainda está na luta");  // ✅
 }
 ```
 
@@ -133,7 +135,7 @@ if (garen.estaVivo()) {
 | `\|\|` | OU (OR) | **Um ou outro** vale | Alternativas aceitáveis |
 | `!` | NÃO (NOT) | Inverte condição | Negar um estado |
 
-### AND (`&&`) ? Decisão no Teamfight
+### AND (`&&`) — Decisão no Teamfight
 
 ```java
 boolean podeAtacar = temMana && estaVivo && !estaStunado && temAlvoVisivel;
@@ -154,15 +156,15 @@ Champion inimigo = new Champion("Garen", 600, 100, 100, 50, true, false, 9, 3000
 
 if (lux.estaVivo() && lux.getManaAtual() > 100 && !inimigo.estaStunado()) {  
     // TRUE && TRUE && FALSE = FALSE
-    System.out.println("Nunca vai rodar");  // ? Inimigo é stun
+    System.out.println("Nunca vai rodar");  // → Inimigo é stun
 }
 
 if (lux.estaVivo() && lux.getManaAtual() > 0) {  // TRUE && TRUE
-    System.out.println("Pode Q!");  // ? Passou nas validações
+    System.out.println("Pode Q!");  // → Passou nas validações
 }
 ```
 
-### OR (`||`) ? Estratégia de Ganho
+### OR (`||`) — Estratégia de Ganho
 
 ```java
 boolean timeGanhou = destroiNexoInimigo || destroiTodasAsTorres || surrenderInimigo;
@@ -185,10 +187,10 @@ if (deveBanirChampion) {
 }
 ```
 
-### NOT (`!`) ? Negação de Estado
+### NOT (`!`) — Negação de Estado
 
 ```java
-boolean podeRecuar = !estaEngajado;  // Inverte: se true ? false, se false ? true
+boolean podeRecuar = !estaEngajado;  // Inverte: se true → false, se false → true
 
 if (!estaStunado) {
     System.out.println("Posso me mover!");  // Executa se estaStunado for FALSE
@@ -199,7 +201,7 @@ if (!estaStunado) {
 
 ---
 
-## Classes, Atributos e Estáticos ? LoL Mindset
+## Classes, Atributos e Estáticos — LoL Mindset
 
 ### Classes = Campeões Únicos
 
@@ -245,7 +247,9 @@ public class Champion {
     //                          Todos os campeões têm essa velocidade base
     
     // Variável estática = Pode mudar, mas afeta TODO mundo
-    private static double DANO_MINION_BASE = 5.0;
+    // (public aqui só para o exemplo de acesso externo abaixo funcionar;
+    //  em código real, exponha um método em vez de um campo mutável público)
+    public static double DANO_MINION_BASE = 5.0;
     //     ^^^^^^ Buff dinâmico (muda para TODOS)
     
     public double calcularDanoFinal(Champion alvo) {
@@ -263,13 +267,13 @@ Champion.DANO_MINION_BASE = 7.0;  // Alterou o buff global
 ```
 
 **Analogia:**
-- **Atributo:** Garen tem 590 HP, Lux tem 520 HP ? stats únicos de cada champ
-- **Estático:** Todos têm velocidade 330 ? é regra do jogo, não do champ
+- **Atributo:** Garen tem 590 HP, Lux tem 520 HP → stats únicos de cada champ
+- **Estático:** Todos têm velocidade 330 → é regra do jogo, não do champ
   - Mudar `DANO_MINION_BASE` de 5 para 7 = patch que afeta TODO mundo simultaneamente
 
 ---
 
-## Combinando Operadores ? Decisão no Teamfight
+## Combinando Operadores — Decisão no Teamfight
 
 ```java
 public boolean podeJuntarNoTeamfight(Champion eu, Champion aliado1, Champion aliado2) {
@@ -307,10 +311,10 @@ podeJuntarNoTeamfight(
     aliado2(Janna, alive=false, mana=100)
 )
 
-temRiscoAlto = false || false || false = FALSE     ? Sem risco
-temSuporteAliados = (true && true) || (false && true) = TRUE || FALSE = TRUE  ? Leona tá pronto
+temRiscoAlto = false || false || false = FALSE     → Sem risco
+temSuporteAliados = (true && true) || (false && true) = TRUE || FALSE = TRUE  → Leona tá pronto
 podeEntraNoFight = !FALSE && TRUE && TRUE = TRUE  ?
-? Resultado: true (ENTRAR NO FIGHT!)
+→ Resultado: true (ENTRAR NO FIGHT!)
 ```
 
 **Outro cenário:**
@@ -321,15 +325,15 @@ podeJuntarNoTeamfight(
     aliado2(Janna, alive=false, mana=0)           // Morto
 )
 
-temRiscoAlto = false || true || false = TRUE      ? Sem mana!
-? Resultado: false (NÃO ENTRA) ? short-circuit, não precisou checar o resto
+temRiscoAlto = false || true || false = TRUE      → Sem mana!
+→ Resultado: false (NÃO ENTRA) → short-circuit, não precisou checar o resto
 ```
 
 ---
 
 ## Operadores Especiais em Java
 
-### Ternário (`? :`) ? Quick Decision
+### Ternário (`? :`) — Quick Decision
 
 ```java
 String status = emManutencao ? "Indisponível" : "Disponível";
@@ -339,9 +343,9 @@ String status = emManutencao ? "Indisponível" : "Disponível";
 int custoFinal = isPrioritario ? (valor * 2) : valor;
 ```
 
-**Analogia:** Se tem ulti ready ? ataca; senão, recua.
+**Analogia:** Se tem ulti ready → ataca; senão, recua.
 
-### instanceof ? Verifica Tipo
+### instanceof — Verifica Tipo
 
 ```java
 if (veiculo instanceof VeiculoFrota) {
@@ -353,10 +357,10 @@ if (veiculo instanceof VeiculoFrota) {
 
 ---
 
-## Boas Práticas ? Guard Clauses no Engajamento
+## Boas Práticas — Guard Clauses no Engajamento
 
 ```java
-// ? Ruim: Aninhamento profundo (nested hell)
+// ❌ Ruim: Aninhamento profundo (nested hell)
 public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantagem) {
     if (eu != null) {
         if (eu.estaVivo()) {
@@ -364,7 +368,7 @@ public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantag
                 if (inimigo.estaVivo()) {
                     if (temVantagem) {
                         if (eu.getManaAtual() > 100) {
-                            // 6 níveis deep ? difícil de ler
+                            // 6 níveis deep → difícil de ler
                             atacarInimigo(eu, inimigo);
                         }
                     }
@@ -374,7 +378,7 @@ public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantag
     }
 }
 
-// ? Bom: Guard clauses (rejeição rápida = early escape)
+// ✅ Bom: Guard clauses (rejeição rápida = early escape)
 public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantagem) {
     // Rejeita rápido se alguma condição crítica falhar
     if (eu == null || !eu.estaVivo()) return;       // Guard 1
@@ -382,7 +386,7 @@ public void realizarEngajamento(Champion eu, Champion inimigo, boolean temVantag
     if (!temVantagem) return;                       // Guard 3
     if (eu.getManaAtual() <= 100) return;           // Guard 4
     
-    // Aqui é 100% seguro ? todas as validações passaram
+    // Aqui é 100% seguro → todas as validações passaram
     atacarInimigo(eu, inimigo);
 }
 ```

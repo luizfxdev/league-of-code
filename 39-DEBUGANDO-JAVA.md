@@ -789,9 +789,13 @@ public class ProcessadorEntrega {
 public class CalculadoraCustos {
     void calcularFrete(Entrega entrega, List<String> paradas) {
         var valorBase = 50.0;
-        var taxaPorKm = 2.5;
+        var taxaPorKg = 2.5;          // R$ por quilo transportado
         var taxaPorParada = 15.0;
-        
+
+        // Estado no momento do breakpoint, para os exemplos abaixo:
+        //   paradas        = ["Lorena", "Taubate", "Guaratingueta"]  (3 itens)
+        //   entrega.getPeso() = 25.0 kg
+
         // BREAKPOINT AQUI
         var frete = 0.0;
     }
@@ -804,13 +808,13 @@ Durante pausa no breakpoint, abra **Evaluate Expression** (`Alt+F8`):
 ```
 valorBase + (paradas.size() * taxaPorParada)
 ```
-Resultado: `110.0` (50 + 3 paradas * 15)
+Resultado: `95.0` — porque `50 + (3 × 15) = 50 + 45 = 95`
 
 **Expressão 2:**
 ```
-entrega.getPeso() * taxaPorKm
+entrega.getPeso() * taxaPorKg
 ```
-Resultado: `62.5` (25kg * 2.5)
+Resultado: `62.5` — porque `25,0 kg × 2,5 = 62,5`
 
 **Expressão 3:**
 ```
@@ -818,7 +822,8 @@ new java.util.ArrayList<>(paradas).stream()
     .map(p -> p.length())
     .reduce(0, Integer::sum)
 ```
-Resultado: `45` (soma dos comprimentos)
+Resultado: `26` — soma dos comprimentos dos nomes:
+`"Lorena"` (6) + `"Taubate"` (7) + `"Guaratingueta"` (13) = **26**
 
 ### Alterar valor em runtime
 

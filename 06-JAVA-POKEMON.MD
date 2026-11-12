@@ -48,22 +48,22 @@ charmander.hp = 39;
 ### Estrutura em Memória
 
 ```
-Stack                          Heap
-???????????????               ????????????????????
-? pikachu ???????????????????>? Pokemon          ?
-? charmander ?????????????    ? nome: "Pikachu"  ?
-???????????????          ?    ? tipo: "Elétrico" ?
-                         ?    ? nivel: 5         ?
-                         ?    ? hp: 35           ?
-                         ?    ????????????????????
-                         ?
-                         ????>????????????????????
-                              ? Pokemon          ?
-                              ? nome: "Charmander"
-                              ? tipo: "Fogo"     ?
-                              ? nivel: 5         ?
-                              ? hp: 39           ?
-                              ????????????????????
+Stack                           Heap
+┌───────────────┐              ┌──────────────────────┐
+│ pikachu    ●──┼─────────────▶│ Pokemon              │
+├───────────────┤              │   nome:  "Pikachu"   │
+│ charmander ●──┼──────┐       │   tipo:  "Elétrico"  │
+└───────────────┘      │       │   nivel: 5           │
+                       │       │   hp:    35          │
+                       │       └──────────────────────┘
+                       │
+                       │       ┌──────────────────────┐
+                       └──────▶│ Pokemon              │
+                               │   nome:  "Charmander"│
+                               │   tipo:  "Fogo"      │
+                               │   nivel: 5           │
+                               │   hp:    39          │
+                               └──────────────────────┘
 ```
 
 ---
@@ -98,7 +98,7 @@ pikachu.hp = pikachu.hp - 10;       // Modificação
 
 **Referência Clean Code (Robert Martin):**
 - Use nomes descritivos
-- Evite prefixos/sufixos redundantes: ? `pokemonNome`, ? `nome`
+- Evite prefixos/sufixos redundantes: ❌ `pokemonNome`, ✅ `nome`
 - Um atributo = uma responsabilidade
 
 ---
@@ -241,7 +241,7 @@ public class Pokemon {
 }
 
 Pokemon pikachu = new Pokemon();
-pikachu.hp = -500;  // ? Inválido! HP nunca deve ser negativo
+pikachu.hp = -500;  // ❌ Inválido! HP nunca deve ser negativo
 ```
 
 ### A Solução: Getters e Setters com Validação
@@ -268,8 +268,8 @@ public class Pokemon {
 }
 
 Pokemon pikachu = new Pokemon();
-pikachu.setHp(50);      // ? Válido
-pikachu.setHp(-100);    // ? Ajustado para 0
+pikachu.setHp(50);      // ✅ Válido
+pikachu.setHp(-100);    // ⚠️ Ajustado para 0
 System.out.println(pikachu.getHp());  // 0
 ```
 
@@ -277,10 +277,10 @@ System.out.println(pikachu.getHp());  // 0
 
 | Modificador | Mesmo Pacote | Pacotes Diferentes | Observação |
 |------------|-----------|--------|-----------|
-| `public` | ? | ? | Acessível de qualquer lugar |
-| `private` | ? | ? | Acessível apenas dentro da classe |
-| `protected` | ? | ? (subclasses) | Herdável, restrito |
-| (padrão) | ? | ? | Padrão do pacote |
+| `public` | ✅ | ✅ | Acessível de qualquer lugar |
+| `private` | ❌ | ❌ | Acessível apenas dentro da classe |
+| `protected` | ✅ | ✅ (apenas em subclasses) | Herdável, restrito |
+| (padrão / *package-private*) | ✅ | ❌ | Visível só no próprio pacote |
 
 ```java
 public class Pokemon {
@@ -591,10 +591,10 @@ public class Pokemon extends Criatura {
     }
 }
 
-// ? Não pode fazer isso
+// ❌ Não pode fazer isso
 // Criatura c = new Criatura();
 
-// ? Mas pode fazer assim
+// ✅ Mas pode fazer assim
 Criatura pikachu = new Pokemon("Pikachu");
 pikachu.atacar();
 ```
@@ -658,12 +658,12 @@ public class Pokemon {
 ### Exemplo Prático
 
 ```java
-// ? Herança excessiva (errado)
+// ❌ Herança excessiva (errado)
 public class Pikachu extends Pokemon {
     // Pikachu herda tudo de Pokemon
 }
 
-// ? Composição (correto - "um Pikachu tem características específicas")
+// ✅ Composição (correto - "um Pikachu tem características específicas")
 public class Pokemon {
     private String especie = "Pikachu";  // Atributo
     private Habilidade habilidade;       // Composição
@@ -684,14 +684,14 @@ public class Habilidade {
 Uma classe, uma responsabilidade.
 
 ```java
-// ? Violando SRP
+// ❌ Violando SRP
 public class Pokemon {
     public void atacar() { }
     public void guardarEmBancoDados() { }
     public void renderizarGrafico() { }
 }
 
-// ? Respeitando SRP
+// ✅ Respeitando SRP
 public class Pokemon {
     private String nome;
     public void atacar() { }
@@ -711,7 +711,7 @@ public class PokemonRenderer {
 Aberto para extensão, fechado para modificação.
 
 ```java
-// ? Violando OCP - precisa modificar a classe a cada novo tipo
+// ❌ Violando OCP - precisa modificar a classe a cada novo tipo
 public class Ataque {
     public int calcularDano(String tipo) {
         if (tipo.equals("Elétrico")) return 50;
@@ -720,7 +720,7 @@ public class Ataque {
     }
 }
 
-// ? Respeitando OCP
+// ✅ Respeitando OCP
 public abstract class Ataque {
     public abstract int calcularDano();
 }
@@ -741,7 +741,7 @@ public class AtaqueFogo extends Ataque {
 Objetos de subclasses devem ser substituíveis pelos da superclasse.
 
 ```java
-// ? LSP respeitado
+// ✅ LSP respeitado
 public class Pokemon extends Criatura {
     @Override
     public void atacar() {
@@ -759,7 +759,7 @@ c.atacar();  // Funciona perfeitamente
 Interfaces pequenas, específicas.
 
 ```java
-// ? Interface gigante (errado)
+// ❌ Interface gigante (errado)
 public interface Criatura {
     void atacar();
     void defender();
@@ -768,7 +768,7 @@ public interface Criatura {
     void cavar();
 }
 
-// ? Interfaces pequenas
+// ✅ Interfaces pequenas
 public interface Combatente {
     void atacar();
     void defender();
@@ -792,7 +792,7 @@ public class Dragonite implements Combatente, Voador {
 Dependa de abstrações, não de implementações concretas.
 
 ```java
-// ? Dependência de implementação concreta
+// ❌ Dependência de implementação concreta
 public class Treinador {
     private PokemonBancoDados banco = new PokemonBancoDados();
     
@@ -801,7 +801,7 @@ public class Treinador {
     }
 }
 
-// ? Dependência de abstração
+// ✅ Dependência de abstração
 public interface RepositorioPokemon {
     void salvar(Pokemon p);
 }
@@ -930,13 +930,13 @@ public class Main {
 ### Nomes Significativos
 
 ```java
-// ? Ruim
+// ❌ Ruim
 public class P {
     public int x;
     public void a(P p) { }
 }
 
-// ? Bom
+// ✅ Bom
 public class Pokemon {
     private int hp;
     public void atacar(Pokemon alvo) { }
@@ -946,12 +946,12 @@ public class Pokemon {
 ### Métodos Pequenos e Focados
 
 ```java
-// ? Método grande
+// ❌ Método grande
 public void batalha(Pokemon p1, Pokemon p2) {
     // 50 linhas de lógica
 }
 
-// ? Métodos pequenos e compostos
+// ✅ Métodos pequenos e compostos
 public void batalha(Pokemon p1, Pokemon p2) {
     inicializarBatalha(p1, p2);
     executarTurnos(p1, p2);
@@ -966,12 +966,12 @@ private void finalizarBatalha(Pokemon p1, Pokemon p2) { }
 ### Evite Magic Numbers
 
 ```java
-// ? O que é 0.5? Por que 100?
+// ❌ O que é 0.5? Por que 100?
 public int calcularDano(Pokemon atacante) {
     return (int)(atacante.ataque * 0.5 + 100);
 }
 
-// ? Claro
+// ✅ Claro
 private static final double MULTIPLICADOR_DANO = 0.5;
 private static final int DANO_BASE = 100;
 
@@ -983,13 +983,13 @@ public int calcularDano(Pokemon atacante) {
 ### Uso de Exceções Apropriadamente
 
 ```java
-// ? Retorna null (confuso)
+// ❌ Retorna null (confuso)
 public Pokemon buscarPokemon(String nome) {
     if (nome == null) return null;
     return banco.buscar(nome);
 }
 
-// ? Lança exceção (claro)
+// ✅ Lança exceção (claro)
 public Pokemon buscarPokemon(String nome) {
     if (nome == null || nome.isEmpty()) {
         throw new IllegalArgumentException("Nome inválido");
@@ -1015,7 +1015,7 @@ class PokemonNaoEncontradoException extends RuntimeException {
 ### Exercício 1: Classe Rectangle
 
 Crie uma classe `Rectangle` com largura e altura. Implemente:
-- Getters e setters com validação (não permitir valores ? 0)
+- Getters e setters com validação (não permitir valores ≤ 0)
 - Método `calcularArea()`
 - Método `calcularPerimetro()`
 - Sobrescrita de `toString()`
@@ -1064,7 +1064,7 @@ Depois: João Silva, $ 5600.00
 Crie uma classe `Student` com nome e 3 notas. Implemente:
 - Construtor que recebe nome e 3 notas
 - Método `calcularNotaFinal()` (média ponderada: 30%, 35%, 35%)
-- Método `passou()` retorna true se nota ? 60
+- Método `passou()` retorna true se nota ≥ 60
 - Método `pontosFaltantes()` retorna quantos pontos faltam para passar
 - Sobrescrita de `toString()`
 
@@ -1166,7 +1166,7 @@ Crie:
 ### Exercício 9: Validação e Exceções
 
 Crie:
-- Classe `Pokemon` que valida: nome não vazio, hp > 0, ataque ? 0
+- Classe `Pokemon` que valida: nome não vazio, hp > 0, ataque ≥ 0
 - Exceção customizada `PokemonInvalidoException`
 - Lançar a exceção quando dados inválidos
 

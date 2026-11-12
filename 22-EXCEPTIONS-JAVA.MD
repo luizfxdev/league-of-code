@@ -43,6 +43,9 @@ Problemas: quem chama pode esquecer de checar o retorno; a lógica de despacho s
 ### Solução boa — exceção
 
 ```java
+// Para este 'throws' funcionar, CapacidadeExcedidaException e EnderecoInvalidoException
+// precisam estender DespachoException — é isso que permite tratar as duas
+// com um único catch (DespachoException e).
 public void despachar(Entrega entrega) throws DespachoException {
     if (entrega.getPeso() > veiculo.getCapacidade()) {
         throw new CapacidadeExcedidaException("Peso excede capacidade do veículo");
@@ -240,22 +243,28 @@ Regras: só pode atualizar reserva para datas futuras; data de devolução deve 
 package model.entities;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import model.exceptions.ReservaException;
 
 public class ReservaVeiculo {
 
-    private Integer placaVeiculo;
+    private String placaVeiculo;          // placa é texto ("ABC1D23"), não número
     private LocalDate dataRetirada;
     private LocalDate dataDevolucao;
 
-    public ReservaVeiculo(Integer placaVeiculo, LocalDate dataRetirada, LocalDate dataDevolucao) {
+    public ReservaVeiculo(String placaVeiculo, LocalDate dataRetirada, LocalDate dataDevolucao) {
         this.placaVeiculo = placaVeiculo;
         this.dataRetirada = dataRetirada;
         this.dataDevolucao = dataDevolucao;
     }
 
     public long duracaoDias() {
-        return dataRetirada.until(dataDevolucao).getDays();
+        // ❌ ERRADO: dataRetirada.until(dataDevolucao).getDays()
+        //    until() devolve um Period, e getDays() é apenas o COMPONENTE "dias".
+        //    Para 01/01 -> 15/02 o Period é "1 mês e 14 dias", e getDays() devolve 14,
+        //    não os 45 dias reais.
+        // ✅ CERTO: ChronoUnit.DAYS conta o total de dias entre as duas datas.
+        return ChronoUnit.DAYS.between(dataRetirada, dataDevolucao);
     }
 
     public void atualizarDatas(LocalDate novaRetirada, LocalDate novaDevolucao) {

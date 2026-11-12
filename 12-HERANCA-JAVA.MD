@@ -133,13 +133,21 @@ Caminhao caminhao = new Caminhao("ABC1234", 8000, 4.2);
 ```java
 public class Veiculo {
     protected String placa;
-    
+
+    public Veiculo(String placa) {
+        this.placa = placa;
+    }
+
     public void apresentar() {
         System.out.println("Veículo de placa " + placa);
     }
 }
 
 public class Caminhao extends Veiculo {
+    public Caminhao(String placa) {
+        super(placa);
+    }
+
     @Override
     public void apresentar() {
         super.apresentar();  // Chama o método do pai
@@ -151,7 +159,7 @@ public class Caminhao extends Veiculo {
 Uso:
 
 ```java
-Caminhao caminhao = new Caminhao();
+Caminhao caminhao = new Caminhao("ABC1234");
 caminhao.apresentar();
 
 // Output:
@@ -355,23 +363,47 @@ public class GerenciadorFrota {
 
 ### Esquecer o `super()` no construtor
 
+Quando a superclasse **não tem** construtor sem argumentos, omitir `super(...)` é **erro de compilação** — Java tenta inserir um `super()` implícito que não existe.
+
 ```java
+public class Veiculo {
+    protected String placa;
+    protected double capacidadeCarga;
+
+    // Só existe este construtor — não há um Veiculo() sem argumentos
+    public Veiculo(String placa, double capacidadeCarga) {
+        this.placa = placa;
+        this.capacidadeCarga = capacidadeCarga;
+    }
+}
+```
+
+```java
+// ❌ Errado: não compila
 public class Caminhao extends Veiculo {
     private double alturaMaxima;
-    
-    // ❌ Erro: atributos do pai não são inicializados
+
     public Caminhao(String placa, double alturaMaxima) {
         this.alturaMaxima = alturaMaxima;
-        // placa nunca foi definida!
+        // Erro: "constructor Veiculo in class Veiculo cannot be applied to given types"
+        // Java inseriu super() implicitamente, mas Veiculo() não existe
     }
-    
-    // ✓ Correto
-    public Caminhao(String placa, double alturaMaxima) {
-        super(placa, 0);
+}
+```
+
+```java
+// ✓ Correto: chama explicitamente o construtor do pai
+public class Caminhao extends Veiculo {
+    private double alturaMaxima;
+
+    public Caminhao(String placa, double capacidadeCarga, double alturaMaxima) {
+        super(placa, capacidadeCarga);   // primeira instrução, obrigatoriamente
         this.alturaMaxima = alturaMaxima;
     }
 }
 ```
+
+> Se a superclasse **tiver** um construtor sem argumentos, o `super()` implícito funciona e a omissão compila — mas os atributos herdados ficam com os valores padrão (`null`, `0`), o que costuma ser um bug silencioso.
 
 ### Tentar acessar atributo `private` do pai
 

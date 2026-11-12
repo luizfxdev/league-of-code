@@ -1,32 +1,32 @@
-# Mem�ria, Arrays e Listas em Java ? Guia Pr�tico com League of Legends
+# Memória, Arrays e Listas em Java — Guia Prático com League of Legends
 
-## 1. Tipos Primitivos vs Tipos Refer�ncia
+## 1. Tipos Primitivos vs Tipos Referência
 
-A diferen�a fundamental: como Java gerencia dados na mem�ria.
+A diferença fundamental: como Java gerencia dados na memória.
 
-### Tipos Primitivos (Tipo Valor) ? CAIXAS
+### Tipos Primitivos (Tipo Valor) — CAIXAS
 
-S�o como **slots de invent�rio**. Cada vari�vel � uma caixa f�sica que guarda o valor.
+São como **slots de inventário**. Cada variável é uma caixa física que guarda o valor.
 
 ```java
 int meuDano = 150;
-int seuDano = meuDano; // C�pia do valor
+int seuDano = meuDano; // Cópia do valor
 
 meuDano = 200;
-System.out.println(seuDano); // Ainda 150 - c�pia independente
+System.out.println(seuDano); // Ainda 150 - cópia independente
 ```
 
-**Na mem�ria (Stack):**
+**Na memória (Stack):**
 ```
-meuDano: [150]
-seuDano: [150]  ? C�pia separada
+meuDano: [200]   ← alterado depois
+seuDano: [150]   ← cópia independente, não acompanhou a mudança
 ```
 
-Quando voc� atribui `seuDano = meuDano`, ele **copia o conte�do**, n�o compartilha a refer�ncia.
+Quando você atribui `seuDano = meuDano`, ele **copia o conteúdo**, não compartilha a referência.
 
-### Tipos Refer�ncia (Classes) ? PONTEIROS
+### Tipos Referência (Classes) — PONTEIROS
 
-S�o como **nomes de campe�es na tela**. A vari�vel n�o � o objeto, � um "tent�culo" apontando para ele.
+São como **nomes de campeões na tela**. A variável não é o objeto, é um "tentáculo" apontando para ele.
 
 ```java
 class Campeao {
@@ -41,48 +41,50 @@ p1.hp = 650;
 Campeao p2 = p1; // Ambas apontam para o MESMO objeto
 
 p2.nome = "Changed";
-System.out.println(p1.nome); // "Changed" - mesma refer�ncia!
+System.out.println(p1.nome); // "Changed" - mesma referência!
 ```
 
-**Na mem�ria:**
+**Na memória:**
 ```
-Stack              Heap
-p1 ???         [Campeao]
-p2 ???????????? nome: "Changed"
-     ?          hp: 650
+Stack                     Heap
+┌──────────┐             ┌─────────────────────┐
+│ p1  ●────┼────────────▶│ Campeao             │
+├──────────┤        ┌───▶│   nome: "Changed"   │
+│ p2  ●────┼────────┘    │   hp:   650         │
+└──────────┘             └─────────────────────┘
 ```
 
 Ambas `p1` e `p2` apontam para o mesmo Campeao no Heap.
 
 ---
 
-### Resumo: A Diferen�a
+### Resumo: A Diferença
 
-| Aspecto | Primitivo | Refer�ncia |
+| Aspecto | Primitivo | Referência |
 |---------|-----------|------------|
-| O que � | Valor direto | Ponteiro para objeto |
+| O que é | Valor direto | Ponteiro para objeto |
 | Armazenamento | Stack | Heap |
-| C�pia | Cria novo valor | Cria nova refer�ncia (mesmo obj) |
-| Pode ser null? | N�o | Sim |
+| Cópia | Cria novo valor | Cria nova referência (mesmo obj) |
+| Pode ser null? | Não | Sim |
 | Exemplo | `int x = 5;` | `Campeao c = new Campeao();` |
 
 ---
 
-## 2. Stack e Heap ? A Mem�ria do Java
+## 2. Stack e Heap — A Memória do Java
 
-### Stack ? R�pido, Organizado
+### Stack — Rápido, Organizado
 
-- Guarda **vari�veis locais** e **tipos primitivos**
+- Guarda **variáveis locais** e **tipos primitivos**
 - Desaloca **automaticamente** quando sai do escopo
-- Primeiro a entrar, �ltimo a sair (LIFO)
-- Pequeno, mas r�pido
+- Primeiro a entrar, último a sair (LIFO)
+- Pequeno, mas rápido
 
-### Heap ? Flex�vel, Lento
+### Heap — Flexível, Lento
 
-- Guarda **objetos** (refer�ncia)
-- N�o desaloca automaticamente
-- Precisa do **Garbage Collector** para limpar
-- Grande, mas mais lento
+- Guarda **objetos**
+- Não é liberado ao sair do escopo: o objeto sobrevive enquanto **alguém apontar para ele**
+- A liberação é feita pelo **Garbage Collector**, em momento que você não controla
+- Grande, mas o acesso e a alocação são mais lentos que na Stack
 
 ### Exemplo Visual: Laning Phase
 
@@ -91,27 +93,27 @@ void jogarLaning() {
     int minuto = 10;              // Stack
     int ouro = 500;               // Stack
     
-    Campeao meuChampion = new Campeao();  // Stack: refer�ncia
+    Campeao meuChampion = new Campeao();  // Stack: referência
                                            // Heap: objeto
     meuChampion.ouro = ouro;
     
 } // Ao sair: minuto, ouro, meuChampion desaparecem
-  // Mas o objeto no Heap pode permanecer se algu�m apontar para ele
+  // Mas o objeto no Heap pode permanecer se alguém apontar para ele
 ```
 
 ---
 
-## 3. Valor NULL ? O Vazio
+## 3. Valor NULL — O Vazio
 
-S� tipos refer�ncia podem ser null.
+Só tipos referência podem ser null.
 
 ```java
-Campeao campeao = null; // OK - ningu�m est� usando
+Campeao campeao = null; // OK - ninguém está usando
 
-int numero = null; // ERRO - primitivos n�o aceitam null
+int numero = null; // ERRO - primitivos não aceitam null
 ```
 
-### Analogia: Quando um campe�o n�o foi escolhido
+### Analogia: Quando um campeão não foi escolhido
 
 ```java
 class TimesGame {
@@ -129,11 +131,11 @@ class TimesGame {
 
 ---
 
-## 4. Garbage Collector ? Limpeza Autom�tica
+## 4. Garbage Collector — Limpeza Automática
 
-Java **monitora objetos** no Heap. Se ningu�m aponta para um objeto, ele � deletado.
+Java **monitora objetos** no Heap. Se ninguém aponta para um objeto, ele é deletado.
 
-### Exemplo: Troca de Campe�o
+### Exemplo: Troca de Campeão
 
 ```java
 Campeao p1 = new Campeao(); // Garen no Heap
@@ -144,17 +146,17 @@ p2.nome = "Darius";
 
 p1 = p2; // p1 agora aponta para Darius
 
-// Garen ficou sem refer�ncia
+// Garen ficou sem referência
 // Garbage Collector vai deletar Garen do Heap em breve
 ```
 
-**Voc� n�o precisa fazer nada** ? Java cuida disso.
+**Você não precisa fazer nada** — Java cuida disso.
 
 ---
 
-## 5. Escopo ? Quando Vari�veis Morrem
+## 5. Escopo — Quando Variáveis Morrem
 
-Vari�veis locais s�o desalocadas quando saem do escopo.
+Variáveis locais são desalocadas quando saem do escopo.
 
 ```java
 void exemplo() {
@@ -164,28 +166,28 @@ void exemplo() {
         int y = 20; // Existe apenas aqui
     } // y morre aqui
     
-    System.out.println(y); // ERRO - y n�o existe mais
+    System.out.println(y); // ERRO - y não existe mais
 }
 ```
 
-**Analogia:** Como um buff de curta dura��o. Quando o timer acaba, o efeito desaparece.
+**Analogia:** Como um buff de curta duração. Quando o timer acaba, o efeito desaparece.
 
 ---
 
-## 6. Arrays (Vetores) ? Estrutura Fixa
+## 6. Arrays (Vetores) — Estrutura Fixa
 
-Array � uma **cole��o de elementos do mesmo tipo**, **tamanho fixo**, em posi��es sequenciais.
+Array é uma **coleção de elementos do mesmo tipo**, **tamanho fixo**, em posições sequenciais.
 
-### Declara��o e Instancia��o
+### Declaração e Instanciação
 
 ```java
-// Declara��o
+// Declaração
 int[] notas;
 
-// Instancia��o
-notas = new int[5]; // Array com 5 posi��es
+// Instanciação
+notas = new int[5]; // Array com 5 posições
 
-// Os valores padr�o s�o atribu�dos automaticamente:
+// Os valores padrão são atribuídos automaticamente:
 // int: 0
 // double: 0.0
 // boolean: false
@@ -209,15 +211,15 @@ System.out.println(notas[2]); // 92
 System.out.println(notas.length); // 5
 ```
 
-### Analogia LoL: Slots de Invent�rio
+### Analogia LoL: Slots de Inventário
 
 ```java
-// Invent�rio com 6 slots
+// Inventário com 6 slots
 Item[] inventario = new Item[6];
 
 inventario[0] = new Item("Bota");
 inventario[1] = new Item("Espada Longa");
-inventario[2] = new Item("C�lice");
+inventario[2] = new Item("Cálice");
 inventario[3] = null; // Vazio
 inventario[4] = null;
 inventario[5] = null;
@@ -228,7 +230,7 @@ System.out.println(inventario[1].nome); // Espada Longa
 
 ---
 
-### Exemplo Pr�tico: M�dia de Alturas
+### Exemplo Prático: Média de Alturas
 
 ```java
 import java.util.Locale;
@@ -263,9 +265,9 @@ public class MediaAlturas {
 
 ## 7. Arrays de Objetos
 
-Arrays podem conter refer�ncias a objetos.
+Arrays podem conter referências a objetos.
 
-### Exemplo: Array de Campe�es
+### Exemplo: Array de Campeões
 
 ```java
 class Campeao {
@@ -295,7 +297,7 @@ public class Main {
 }
 ```
 
-### Inicializa��o com Valores Padr�o
+### Inicialização com Valores Padrão
 
 ```java
 Campeao[] time = new Campeao[3];
@@ -304,7 +306,7 @@ System.out.println(time[0]); // null - nenhum objeto ainda
 
 ---
 
-## 8. For-Each ? Itera��o Simplificada
+## 8. For-Each — Iteração Simplificada
 
 Sintaxe mais limpa para percorrer arrays.
 
@@ -316,7 +318,7 @@ for (int i = 0; i < campeoes.length; i++) {
     System.out.println(campeoes[i]);
 }
 
-// For-each (sem �ndice)
+// For-each (sem índice)
 for (String champ : campeoes) {
     System.out.println(champ);
 }
@@ -324,11 +326,11 @@ for (String champ : campeoes) {
 // Ambos imprimem a mesma coisa
 ```
 
-**Use for-each quando n�o precisa do �ndice. Use for tradicional quando precisa da posi��o.**
+**Use for-each quando não precisa do índice. Use for tradicional quando precisa da posição.**
 
 ---
 
-## 9. Boxing e Unboxing ? Convers�o Autom�tica
+## 9. Boxing e Unboxing — Conversão Automática
 
 ### Wrapper Classes
 
@@ -341,25 +343,30 @@ Cada tipo primitivo tem uma classe equivalente:
 | `boolean` | `Boolean` |
 | `char` | `Character` |
 
-### Boxing ? Primitivo ? Refer�ncia
+### Boxing — Primitivo → Referência
 
 ```java
 int dano = 150;
-Integer danoPack = dano; // Boxing autom�tico
 
-// Ou expl�cito
-Integer danoPack = Integer.valueOf(dano);
+Integer danoBoxAuto = dano;                      // Boxing automático
+Integer danoBoxExplicito = Integer.valueOf(dano); // Forma explícita (equivalente)
 ```
 
-### Unboxing ? Refer�ncia ? Primitivo
+### Unboxing — Referência → Primitivo
 
 ```java
 Integer danoPack = 150;
-int dano = danoPack; // Unboxing autom�tico
 
-// Ou expl�cito
-int dano = danoPack.intValue();
+int danoAuto = danoPack;              // Unboxing automático
+int danoExplicito = danoPack.intValue(); // Forma explícita (equivalente)
 ```
+
+> **Cuidado com o unboxing de `null`:** se o wrapper for `null`, o unboxing automático
+> lança `NullPointerException`.
+> ```java
+> Integer semValor = null;
+> int x = semValor;   // NullPointerException em tempo de execução
+> ```
 
 ### Por que usar Wrapper?
 
@@ -368,7 +375,7 @@ Em **banco de dados e entidades**, campos podem ser null:
 ```java
 class Item {
     String nome;
-    Double preco;      // Pode ser null (sem pre�o)
+    Double preco;      // Pode ser null (sem preço)
     Integer quantidade; // Pode ser null (desconhecido)
     
     // Em vez de:
@@ -380,9 +387,9 @@ class Item {
 
 ## 10. Listas (List, ArrayList)
 
-Array com **tamanho vari�vel**. Ideal quando n�o sabe quantos elementos ter�.
+Array com **tamanho variável**. Ideal quando não sabe quantos elementos terá.
 
-### Declara��o e Instancia��o
+### Declaração e Instanciação
 
 ```java
 import java.util.ArrayList;
@@ -397,24 +404,27 @@ campeoes.add("Ahri");
 System.out.println(campeoes.size()); // 3
 ```
 
-### Opera��es Principais
+### Operações Principais
 
 ```java
 List<String> campeoes = new ArrayList<>();
 
 // Adicionar
 campeoes.add("Garen");          // Adiciona no final
-campeoes.add(1, "Lee Sin");     // Adiciona na posi��o 1
+campeoes.add(1, "Lee Sin");     // Adiciona na posição 1
 
 // Acessar
 System.out.println(campeoes.get(0)); // Garen
 
-// Encontrar posi��o
+// Encontrar posição
 System.out.println(campeoes.indexOf("Lee Sin")); // 1
 
 // Remover
-campeoes.remove(0);             // Remove posi��o 0
-campeoes.remove("Ahri");        // Remove por valor
+campeoes.remove(0);             // Remove por ÍNDICE (recebe int)
+campeoes.remove("Garen");       // Remove por VALOR (recebe Object); devolve false se não achar
+
+// ⚠️ Pegadinha com List<Integer>: remove(1) remove o ÍNDICE 1,
+// enquanto remove(Integer.valueOf(1)) remove o VALOR 1
 
 // Verificar
 System.out.println(campeoes.contains("Garen")); // true/false
@@ -428,19 +438,25 @@ campeoes.clear();
 
 ---
 
-### Array vs List ? Quando Usar
+### Array vs List — Quando Usar
 
-| Situa��o | Use |
+| Situação | Use |
 |----------|-----|
-| Sabe exatamente quantos elementos | Array |
-| Vai adicionar/remover elementos | List |
-| Quer acesso r�pido por �ndice | Array |
-| Quer facilidade | List |
-| Quer performance | Array |
+| Tamanho conhecido e fixo | Array |
+| Vai adicionar/remover elementos | `List` (`ArrayList`) |
+| Precisa de `add`, `remove`, `contains`, streams | `List` |
+| Trabalha com primitivos e o volume é grande | Array (`int[]` evita boxing) |
+
+> **Sobre performance:** `ArrayList` é internamente um array, então o acesso por índice
+> (`get(i)`) tem o mesmo custo O(1) de `array[i]`. A diferença real aparece em dois pontos:
+> `ArrayList` armazena **objetos** (um `List<Integer>` paga boxing e mais memória que um `int[]`),
+> e `add` pode precisar **redimensionar** o array interno. Para a grande maioria do código,
+> escolha `List` pela flexibilidade — array só quando o tamanho é fixo ou o volume de
+> primitivos justifica.
 
 ---
 
-### Exemplo Pr�tico: Lista de Campe�es do Time
+### Exemplo Prático: Lista de Campeões do Time
 
 ```java
 import java.util.ArrayList;
@@ -464,7 +480,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         List<Campeao> time = new ArrayList<>();
         
-        System.out.print("Quantos campe�es? ");
+        System.out.print("Quantos campeões? ");
         int n = sc.nextInt();
         
         for (int i = 0; i < n; i++) {
@@ -486,9 +502,9 @@ public class Main {
 
 ---
 
-## 11. Opera��es Avan�adas em Listas
+## 11. Operações Avançadas em Listas
 
-### RemoveIf ? Remover com Condi��o
+### RemoveIf — Remover com Condição
 
 ```java
 List<Integer> danos = new ArrayList<>();
@@ -503,7 +519,7 @@ danos.removeIf(x -> x < 60);
 // Lista agora: [100, 75, 120]
 ```
 
-### Stream e Filter ? Buscar com Crit�rio
+### Stream e Filter — Buscar com Critério
 
 ```java
 List<String> campeoes = new ArrayList<>();
@@ -512,7 +528,7 @@ campeoes.add("Darius");
 campeoes.add("Ahri");
 campeoes.add("Annie");
 
-// Encontra primeira que come�a com 'A'
+// Encontra primeira que começa com 'A'
 String resultado = campeoes.stream()
     .filter(x -> x.charAt(0) == 'A')
     .findFirst()
@@ -525,9 +541,9 @@ System.out.println(resultado); // Ahri
 
 ## 12. Matrizes (Arrays Bidimensionais)
 
-Matriz � um **"vetor de vetores"** ? tem linhas E colunas.
+Matriz é um **"vetor de vetores"** — tem linhas E colunas.
 
-### Declara��o e Acesso
+### Declaração e Acesso
 
 ```java
 int[][] mapa = new int[3][4]; // 3 linhas, 4 colunas
@@ -548,7 +564,7 @@ System.out.println(mapa.length);      // 3 (linhas)
 System.out.println(mapa[0].length);   // 4 (colunas da linha 0)
 ```
 
-### Itera��o com For Duplo
+### Iteração com For Duplo
 
 ```java
 int[][] terreno = {
@@ -564,7 +580,7 @@ for (int i = 0; i < terreno.length; i++) {
     System.out.println();
 }
 
-// Sa�da:
+// Saída:
 // 1 2 3
 // 4 5 6
 // 7 8 9
@@ -627,9 +643,9 @@ System.out.println("Negativos: " + negativos); // 2
 
 ---
 
-## 13. Exerc�cio Final: Sistema de Invent�rio Completo
+## 13. Exercício Final: Sistema de Inventário Completo
 
-Sistema de itens com array, lista e opera��es.
+Sistema de itens com array, lista e operações.
 
 ```java
 import java.util.ArrayList;
@@ -667,13 +683,13 @@ public class Inventario {
             System.out.print("Nome: ");
             sc.nextLine();
             String nome = sc.nextLine();
-            System.out.print("Pre�o: ");
+            System.out.print("Preço: ");
             double preco = sc.nextDouble();
             
             itens.add(new Item(id, nome, preco));
         }
         
-        System.out.println("\n--- INVENT�RIO ---");
+        System.out.println("\n--- INVENTÁRIO ---");
         for (Item item : itens) {
             System.out.println(item);
         }
@@ -688,7 +704,7 @@ public class Inventario {
         if (encontrado != null) {
             System.out.println("Encontrado: " + encontrado);
         } else {
-            System.out.println("Item n�o encontrado");
+            System.out.println("Item não encontrado");
         }
         
         sc.close();
@@ -698,27 +714,27 @@ public class Inventario {
 
 ---
 
-## 14. Resumo R�pido
+## 14. Resumo Rápido
 
-### Mem�ria
-- **Stack**: vari�veis locais, primitivos, r�pido
+### Memória
+- **Stack**: variáveis locais, primitivos, rápido
 - **Heap**: objetos, gerenciado pelo GC
 
 ### Arrays
-- Tamanho **fixo**, �ndice come�a em **0**
-- Acesso **r�pido** mas sem flexibilidade
+- Tamanho **fixo**, índice começa em **0**
+- Acesso **rápido** mas sem flexibilidade
 
 ### Listas
-- Tamanho **vari�vel**, adicione/remova � vontade
-- Mais flex�vel que array
+- Tamanho **variável**, adicione/remova à vontade
+- Mais flexível que array
 
-### Tipos Primitivos vs Refer�ncia
-- **Primitivo**: c�pia de valor
-- **Refer�ncia**: c�pia de ponteiro (mesmo objeto)
+### Tipos Primitivos vs Referência
+- **Primitivo**: cópia de valor
+- **Referência**: cópia de ponteiro (mesmo objeto)
 
 ### For-each
-- Use quando n�o precisa do �ndice
-- Mais limpo e leg�vel
+- Use quando não precisa do índice
+- Mais limpo e legível
 
 ### Matrizes
 - 2D = linhas + colunas

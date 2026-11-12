@@ -1,16 +1,16 @@
-# HeranÁa e Polimorfismo em Java ? Guia Pr·tico com League of Legends
+# Heran√ßa e Polimorfismo em Java ‚Äî Guia Pr√°tico com League of Legends
 
-## 1. HeranÁa (Inheritance)
+## 1. Heran√ßa (Inheritance)
 
 **Conceito:** Uma classe herda todos os dados e comportamentos de outra.
 
 **Analogia LoL:**
-Imagine campeıes especializados que herdam de um "Campe„o Base":
-- **Campe„o Base** tem: atributos genÈricos (HP, mana, velocidade, AD)
-- **Campe„o Top** herda tudo e adiciona: resistÍncia a CC
-- **Campe„o ADC** herda tudo e adiciona: alcance de ataque
+Imagine campe√µes especializados que herdam de um "Campe√£o Base":
+- **Campe√£o Base** tem: atributos gen√©ricos (HP, mana, velocidade, AD)
+- **Campe√£o Top** herda tudo e adiciona: resist√™ncia a CC
+- **Campe√£o ADC** herda tudo e adiciona: alcance de ataque
 
-### Sintaxe B·sica
+### Sintaxe B√°sica
 
 ```java
 // Superclasse (classe base)
@@ -40,7 +40,7 @@ public class Mago extends Campeao {
     }
     
     public void lancarUltimate() {
-        System.out.println(nome + " lanÁa ultimate com " + poderMagico + " de poder!");
+        System.out.println(nome + " lan√ßa ultimate com " + poderMagico + " de poder!");
     }
 }
 ```
@@ -54,29 +54,29 @@ Mago ahri = new Mago("Ahri", 500, 80.0, 150.0);
 ahri.nome;        // "Ahri"
 ahri.hp;          // 500
 ahri.dano;        // 80.0
-ahri.atacar();    // MÈtodo da superclasse
+ahri.atacar();    // M√©todo da superclasse
 
 // Ahri adicionou isso:
 ahri.poderMagico; // 150.0
-ahri.lancarUltimate(); // MÈtodo prÛprio
+ahri.lancarUltimate(); // M√©todo pr√≥prio
 ```
 
 ---
 
 ## 2. Modificadores de Acesso: `public`, `private`, `protected`
 
-| Modificador | Mesma Classe | Mesmo Pacote | Subclasse | Outro Pacote |
+| Modificador | Mesma Classe | Mesmo Pacote | Subclasse (outro pacote) | Outro Pacote |
 |-------------|--------------|--------------|-----------|--------------|
-| `public` | ? | ? | ? | ? |
-| `protected` | ? | ? | ? | ? |
-| (padr„o) | ? | ? | ? | ? |
-| `private` | ? | ? | ? | ? |
+| `public` | ‚úÖ | ‚úÖ | ‚úÖ | ‚úÖ |
+| `protected` | ‚úÖ | ‚úÖ | ‚úÖ | ‚ùå |
+| (padr√£o / *package-private*) | ‚úÖ | ‚úÖ | ‚ùå | ‚ùå |
+| `private` | ‚úÖ | ‚ùå | ‚ùå | ‚ùå |
 
 ### Por Que `protected`?
 
 ```java
 public class Conta {
-    private double saldo;      // Privado: sÛ Conta pode acessar
+    private double saldo;      // Privado: s√≥ Conta pode acessar
     
     protected void sacar(double valor) {  // Subclasses podem usar
         saldo -= valor;
@@ -86,45 +86,45 @@ public class Conta {
 public class ContaPoupanca extends Conta {
     @Override
     protected void sacar(double valor) {
-        // Pode sobrepor o mÈtodo protegido
-        super.sacar(valor);     // Chama a vers„o da superclasse
+        // Pode sobrepor o m√©todo protegido
+        super.sacar(valor);     // Chama a vers√£o da superclasse
         System.out.println("Taxa de saque: R$ 2.00");
     }
 }
 ```
 
-Se `sacar()` fosse **private**, `ContaPoupanca` n„o conseguiria **sobrepor** o mÈtodo.
-Se fosse **public**, qualquer classe poderia acessar. **protected** È o meio termo.
+Se `sacar()` fosse **private**, `ContaPoupanca` n√£o conseguiria **sobrepor** o m√©todo.
+Se fosse **public**, qualquer classe poderia acessar. **protected** √© o meio termo.
 
 ---
 
 ## 3. Upcasting e Downcasting
 
-### Upcasting ? Subclasse ? Superclasse (Seguro ?)
+### Upcasting ‚Äî Subclasse ‚Üí Superclasse (Seguro ‚úÖ)
 
 ```java
 Mago ahri = new Mago("Ahri", 500, 80.0, 150.0);
 
-// Upcasting: autom·tico, sempre seguro
-Campeao c = ahri;  // Ahri È um Campeao
+// Upcasting: autom√°tico, sempre seguro
+Campeao c = ahri;  // Ahri √© um Campeao
 
 c.atacar();  // Ok - Campeao tem atacar()
-// c.lancarUltimate(); // ERRO - Campeao n„o tem este mÈtodo
+// c.lancarUltimate(); // ERRO - Campeao n√£o tem este m√©todo
 ```
 
-**Analogia:** Um Mago **È um** Campe„o. Sumir com os atributos m·gicos n„o quebra o contrato.
+**Analogia:** Um Mago **√© um** Campe√£o. Sumir com os atributos m√°gicos n√£o quebra o contrato.
 
-### Downcasting ? Superclasse ? Subclasse (Perigoso ??)
+### Downcasting ‚Äî Superclasse ‚Üí Subclasse (Perigoso ‚ö†Ô∏è)
 
 ```java
 Campeao c = new Mago("Ahri", 500, 80.0, 150.0);
 
-// Downcasting: precisa de cast explÌcito
-Mago mago = (Mago) c;  // Cast explÌcito
+// Downcasting: precisa de cast expl√≠cito
+Mago mago = (Mago) c;  // Cast expl√≠cito
 mago.lancarUltimate(); // Ok agora
 
 // MAS CUIDADO:
-Campeao c2 = new Campeao("Teste", 100, 50.0); // N„o È Mago!
+Campeao c2 = new Campeao("Teste", 100, 50.0); // N√£o √© Mago!
 Mago mago2 = (Mago) c2; // CRASH! ClassCastException em runtime
 ```
 
@@ -138,17 +138,35 @@ if (c instanceof Mago) {
     mago.lancarUltimate(); // Seguro!
 }
 
+// Supondo que exista: class Guerreiro extends Campeao { void ativarEscudo() {...} }
 if (c instanceof Guerreiro) {
     Guerreiro g = (Guerreiro) c;
-    g.ativarEscudo(); // N„o executa
+    g.ativarEscudo(); // N√£o executa: c √© um Mago, n√£o um Guerreiro
+}
+```
+
+### Java 16+: `instanceof` com padr√£o (*pattern matching*)
+
+Evita repetir o cast:
+
+```java
+// Antes
+if (c instanceof Mago) {
+    Mago mago = (Mago) c;
+    mago.lancarUltimate();
+}
+
+// A partir do Java 16 ‚Äî testa e declara a vari√°vel j√° convertida
+if (c instanceof Mago mago) {
+    mago.lancarUltimate();
 }
 ```
 
 ---
 
-## 4. Sobrescrita (Override) de MÈtodos
+## 4. Sobrescrita (Override) de M√©todos
 
-Quando uma subclasse oferece sua prÛpria implementaÁ„o de um mÈtodo da superclasse.
+Quando uma subclasse oferece sua pr√≥pria implementa√ß√£o de um m√©todo da superclasse.
 
 ### Exemplo: Saque com Taxa
 
@@ -163,7 +181,7 @@ public class Conta {
 }
 
 public class ContaPoupanca extends Conta {
-    @Override  // AnotaÁ„o: informa ao compilador que est· sobrescrevendo
+    @Override  // Anota√ß√£o: informa ao compilador que est√° sobrescrevendo
     public void sacar(double valor) {
         saldo -= valor;  // Sem taxa!
         System.out.println("Saque: " + valor + ", Taxa: NENHUMA");
@@ -183,7 +201,7 @@ c2.sacar(100.0);  // Saque: 100.0, Taxa: NENHUMA
 
 ### A Palavra `super`
 
-Acessa a implementaÁ„o da superclasse.
+Acessa a implementa√ß√£o da superclasse.
 
 ```java
 public class ContaEmpresa extends Conta {
@@ -198,39 +216,43 @@ public class ContaEmpresa extends Conta {
 
 ---
 
-## 5. Classe `final` e MÈtodo `final`
+## 5. Classe `final` e M√©todo `final`
 
-### Classe `final` ? N„o pode ser Herdada
+### Classe `final` ‚Äî N√£o pode ser Herdada
 
 ```java
 public final class ContaPoupanca {
     // Impede que surjam subclasses de ContaPoupanca
 }
 
-// Isto gera ERRO de compilaÁ„o:
+// Isto gera ERRO de compila√ß√£o:
 public class ContaPoupancaPremium extends ContaPoupanca {
     // ERRO!
 }
 ```
 
-**Por quÍ usar?**
-- SeguranÁa: Garante que ninguÈm mude o comportamento crÌtico
-- Performance: Compilador otimiza mÈtodos `final`
-- Exemplo real: String È `final` (protege dados)
+**Por qu√™ usar?**
+- **Seguran√ßa/invariantes:** garante que ningu√©m altere comportamento cr√≠tico por heran√ßa
+- **Imutabilidade:** classes imut√°veis costumam ser `final` para que ningu√©m quebre a garantia
+- **Exemplo real:** `String` √© `final` ‚Äî √© o que permite a ela ser imut√°vel e compartilhada com seguran√ßa
 
-### MÈtodo `final` ? N„o pode ser Sobreposto
+> Sobre performance: o ganho √© hoje praticamente irrelevante. A JVM moderna j√°
+> *desvirtualiza* a chamada em tempo de execu√ß√£o quando detecta uma s√≥ implementa√ß√£o.
+> Use `final` por raz√µes de **design**, n√£o por micro-otimiza√ß√£o.
+
+### M√©todo `final` ‚Äî N√£o pode ser Sobreposto
 
 ```java
 public class Conta {
     public final void transferir(double valor, Conta destino) {
-        // ImplementaÁ„o crÌtica que N√O deve ser alterada
+        // Implementa√ß√£o cr√≠tica que N√ÉO deve ser alterada
     }
 }
 
 public class ContaPoupanca extends Conta {
     @Override
     public final void transferir(double valor, Conta destino) {
-        // ERRO! MÈtodo È final
+        // ERRO! M√©todo √© final
     }
 }
 ```
@@ -239,15 +261,15 @@ public class ContaPoupanca extends Conta {
 
 ## 6. Polimorfismo
 
-**DefiniÁ„o:** Uma vari·vel de tipo genÈrico (superclasse) pode apontar para objetos de tipos especÌficos (subclasses), tendo comportamentos diferentes.
+**Defini√ß√£o:** Uma vari√°vel de tipo gen√©rico (superclasse) pode apontar para objetos de tipos espec√≠ficos (subclasses), tendo comportamentos diferentes.
 
-### Exemplo Cl·ssico
+### Exemplo Cl√°ssico
 
 ```java
 List<Conta> contas = new ArrayList<>();
 
 contas.add(new Conta());           // Conta comum
-contas.add(new ContaPoupanca());   // PoupanÁa
+contas.add(new ContaPoupanca());   // Poupan√ßa
 contas.add(new ContaEmpresa());    // Empresa
 
 // Tratamento uniforme, mas comportamento diferente:
@@ -255,21 +277,22 @@ for (Conta c : contas) {
     c.sacar(100.0);  // Cada uma saca de forma diferente!
 }
 
-// SaÌda:
-// Saque: 100.0, Taxa: 5.00
-// Saque: 100.0, Taxa: NENHUMA
-// Saque: 100.0, Taxa empresarial: 2.00
+// Sa√≠da:
+// Saque: 100.0, Taxa: 5.00          <- Conta
+// Saque: 100.0, Taxa: NENHUMA       <- ContaPoupanca
+// Saque: 100.0, Taxa: 5.00          <- ContaEmpresa: veio do super.sacar(valor)
+// Taxa empresarial: 2.00            <- e s√≥ ent√£o a linha pr√≥pria da subclasse
 ```
 
-**Por que È poderoso?**
+**Por que √© poderoso?**
 
-VocÍ n„o precisa saber o tipo especÌfico de cada conta. Apenas chama `c.sacar()` e Java descobre automaticamente qual implementaÁ„o usar. Isso È **polimorfismo em aÁ„o**.
+Voc√™ n√£o precisa saber o tipo espec√≠fico de cada conta. Apenas chama `c.sacar()` e Java descobre automaticamente qual implementa√ß√£o usar. Isso √© **polimorfismo em a√ß√£o**.
 
 ---
 
 ## 7. Classes Abstratas
 
-Classe que **n„o pode ser instanciada**, apenas herdada.
+Classe que **n√£o pode ser instanciada**, apenas herdada.
 
 ```java
 public abstract class Veiculo {
@@ -280,17 +303,23 @@ public abstract class Veiculo {
         this.placa = placa;
     }
     
-    // MÈtodo normal
+    // M√©todo normal
     public void buzinar() {
         System.out.println("Bibi!");
     }
     
-    // MÈtodo abstrato (sem implementaÁ„o)
+    // M√©todo abstrato (sem implementa√ß√£o)
     public abstract void acelerar();
 }
 
-// Subclasses DEVEM implementar os mÈtodos abstratos
+// Subclasses DEVEM implementar os m√©todos abstratos
 public class Carro extends Veiculo {
+    // Veiculo s√≥ tem Veiculo(String): sem este construtor, Java insere
+    // super() impl√≠cito, que n√£o existe -> N√ÉO COMPILA
+    public Carro(String placa) {
+        super(placa);
+    }
+
     @Override
     public void acelerar() {
         velocidade += 20.0;
@@ -299,6 +328,10 @@ public class Carro extends Veiculo {
 }
 
 public class Bicicleta extends Veiculo {
+    public Bicicleta(String placa) {
+        super(placa);
+    }
+
     @Override
     public void acelerar() {
         velocidade += 5.0;
@@ -307,34 +340,34 @@ public class Bicicleta extends Veiculo {
 }
 ```
 
-### Tentativas Inv·lidas
+### Tentativas Inv√°lidas
 
 ```java
-// Isto È ERRO:
-Veiculo v = new Veiculo("ABC-1234");  // ERRO! Classe abstrata n„o pode ser instanciada
+// Isto √© ERRO:
+Veiculo v = new Veiculo("ABC-1234");  // ERRO! Classe abstrata n√£o pode ser instanciada
 
-// Isto È OK:
-Veiculo v = new Carro("ABC-1234");    // Ok! Carro È concreto
-Veiculo v2 = new Bicicleta("XYZ-9999"); // Ok! Bicicleta È concreto
+// Isto √© OK:
+Veiculo v = new Carro("ABC-1234");    // Ok! Carro √© concreto
+Veiculo v2 = new Bicicleta("XYZ-9999"); // Ok! Bicicleta √© concreto
 ```
 
 ### Por Que Abstratas?
 
-**Cen·rio:** Um sistema de banco com contas poupanÁa e empresarial.
+**Cen√°rio:** Um sistema de banco com contas poupan√ßa e empresarial.
 
 ```java
-// Sem abstraÁ„o (RUIM):
-Conta c = new Conta();  // O que È uma "conta comum"? AmbÌguo!
+// Sem abstra√ß√£o (RUIM):
+Conta c = new Conta();  // O que √© uma "conta comum"? Amb√≠guo!
 
-// Com abstraÁ„o (BOM):
-// Conta È abstrata ? forÁa criar ContaPoupanca ou ContaEmpresa
+// Com abstra√ß√£o (BOM):
+// Conta √© abstrata ‚Äî for√ßa criar ContaPoupanca ou ContaEmpresa
 ```
 
 ---
 
-## 8. MÈtodos Abstratos
+## 8. M√©todos Abstratos
 
-MÈtodos **sem implementaÁ„o** na superclasse. Subclasses **obrigadas** a implementar.
+M√©todos **sem implementa√ß√£o** na superclasse. Subclasses **obrigadas** a implementar.
 
 ```java
 public abstract class Funcionario {
@@ -344,12 +377,12 @@ public abstract class Funcionario {
         this.nome = nome;
     }
     
-    // MÈtodo concreto
+    // M√©todo concreto
     public void apresentar() {
-        System.out.println("Ol·, sou " + nome);
+        System.out.println("Ol√°, sou " + nome);
     }
     
-    // MÈtodo abstrato - subclasses DEVEM implementar
+    // M√©todo abstrato - subclasses DEVEM implementar
     public abstract double calcularSalario();
 }
 
@@ -379,7 +412,7 @@ public class FuncionarioTerceirizado extends Funcionario {
     
     @Override
     public double calcularSalario() {
-        return valorHora * horasTrabalhadas + (valorHora * horasTrabalhadas * 0.1); // +10% bÙnus
+        return valorHora * horasTrabalhadas + (valorHora * horasTrabalhadas * 0.1); // +10% b√¥nus
     }
 }
 ```
@@ -390,7 +423,7 @@ public class FuncionarioTerceirizado extends Funcionario {
 List<Funcionario> funcionarios = new ArrayList<>();
 
 funcionarios.add(new FuncionarioComum("Maria", 3000.0));
-funcionarios.add(new FuncionarioTerceirizado("Jo„o", 50.0, 100));
+funcionarios.add(new FuncionarioTerceirizado("Jo√£o", 50.0, 100));
 
 double totalSalarios = 0;
 for (Funcionario f : funcionarios) {
@@ -401,25 +434,25 @@ for (Funcionario f : funcionarios) {
 
 System.out.println("Total: R$ " + totalSalarios);
 
-// SaÌda:
+// Sa√≠da:
 // Maria: R$ 3000.0
-// Jo„o: R$ 5500.0
+// Jo√£o: R$ 5500.0
 // Total: R$ 8500.0
 ```
 
 ---
 
-## 9. Hierarquia Pr·tica: Contas Banc·rias
+## 9. Hierarquia Pr√°tica: Contas Banc√°rias
 
 ```
          Conta (abstrata)
-           ? ?
-           | |
-           | ?? ContaEmpresa
-           ????? ContaPoupanca
+              ‚îÇ
+      ‚îå‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚î¥‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îê
+      ‚îÇ                ‚îÇ
+ContaPoupanca    ContaEmpresa
 ```
 
-### ImplementaÁ„o Completa
+### Implementa√ß√£o Completa
 
 ```java
 // ============= SUPERCLASSE ABSTRATA =============
@@ -434,13 +467,13 @@ public abstract class Conta {
         this.saldo = saldo;
     }
     
-    // MÈtodo concreto (todos usam igual)
+    // M√©todo concreto (todos usam igual)
     public void depositar(double valor) {
         saldo += valor;
         System.out.println("Deposito de R$ " + valor + " realizado");
     }
     
-    // MÈtodo abstrato (cada um implementa diferente)
+    // M√©todo abstrato (cada um implementa diferente)
     public abstract void sacar(double valor);
     
     public double getSaldo() {
@@ -450,7 +483,7 @@ public abstract class Conta {
     public abstract String toString();
 }
 
-// ============= SUBCLASSE: POUPAN«A =============
+// ============= SUBCLASSE: POUPAN√áA =============
 public class ContaPoupanca extends Conta {
     private double taxaJuros;
     
@@ -522,9 +555,9 @@ public class Main {
         
         contas.add(new ContaPoupanca(101, "Maria", 1000.0, 2.0));
         contas.add(new ContaEmpresa(102, "Tech Corp", 5000.0, 10000.0));
-        contas.add(new ContaPoupanca(103, "Jo„o", 500.0, 2.0));
+        contas.add(new ContaPoupanca(103, "Jo√£o", 500.0, 2.0));
         
-        // OperaÁıes polimÛrficas
+        // Opera√ß√µes polim√≥rficas
         for (Conta c : contas) {
             c.depositar(200.0);
             c.sacar(100.0);
@@ -532,24 +565,29 @@ public class Main {
             System.out.println();
         }
         
-        // SaÌda:
+        // Sa√≠da (primeira conta ‚Äî ContaPoupanca de Maria):
         // Deposito de R$ 200.0 realizado
-        // Saque realizado
+        // (ContaPoupanca.sacar nao imprime nada ‚Äî so altera o saldo)
         // ContaPoupanca{numero=101, titular='Maria', saldo=1100.0}
-        // ...
+        //
+        // Segunda conta ‚Äî ContaEmpresa:
+        // Deposito de R$ 200.0 realizado
+        // Saque empresarial realizado
+        // ContaEmpresa{numero=102, titular='Tech Corp', saldo=5098.0, limiteDisponivel=10000.0}
     }
 }
 ```
 
 ---
 
-## 10. ExercÌcio Completo: Sistema de Funcion·rios
+## 10. Exerc√≠cio Completo: Sistema de Funcion√°rios
 
 ```
        Funcionario (abstrata)
-          ? ?
-          | |
-    Comum ?? Terceirizado
+              ‚îÇ
+      ‚îå‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚î¥‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îê
+      ‚îÇ                ‚îÇ
+FuncionarioComum  FuncionarioTerceirizado
 ```
 
 ```java
@@ -584,7 +622,7 @@ public class FuncionarioComum extends Funcionario {
     
     @Override
     public String toString() {
-        return nome + ", Sal·rio: R$ " + String.format("%.2f", calcularSalario());
+        return nome + ", Sal√°rio: R$ " + String.format("%.2f", calcularSalario());
     }
 }
 
@@ -607,7 +645,7 @@ public class FuncionarioTerceirizado extends Funcionario {
     
     @Override
     public String toString() {
-        return nome + ", Sal·rio: R$ " + String.format("%.2f", calcularSalario());
+        return nome + ", Sal√°rio: R$ " + String.format("%.2f", calcularSalario());
     }
 }
 
@@ -632,44 +670,44 @@ public class Main {
 
 ---
 
-## 11. Resumo: Quando Usar O QuÍ
+## 11. Resumo: Quando Usar O Qu√™
 
 | Conceito | Use Quando | Exemplo |
 |----------|-----------|---------|
-| **HeranÁa** | Classe A **È um** tipo de Classe B | PoupanÁa **È uma** Conta |
-| **Classe Abstrata** | Precisa de contrato comum mas implementaÁıes diferentes | Veiculo base para Carro, Moto |
-| **MÈtodo Abstrato** | MÈtodo muda por tipo | `calcularSalario()` diferente por tipo |
+| **Heran√ßa** | Classe A **√© um** tipo de Classe B | Poupan√ßa **√© uma** Conta |
+| **Classe Abstrata** | Precisa de contrato comum mas implementa√ß√µes diferentes | Veiculo base para Carro, Moto |
+| **M√©todo Abstrato** | M√©todo muda por tipo | `calcularSalario()` diferente por tipo |
 | **Polimorfismo** | Tratar diferentes tipos uniformemente | Loop em `List<Conta>` chamando `sacar()` |
 | **Override** | Subclasse customiza comportamento | ContaPoupanca customiza `sacar()` |
-| **Super** | Subclasse quer usar implementaÁ„o da superclasse | Chamar `super.sacar()` + taxa extra |
-| **Protected** | Subclasses precisam acessar, outros n„o | Atributo `saldo` protegido |
-| **Final** | Evitar sobrescrita perigosa | MÈtodo de seguranÁa crÌtica |
+| **Super** | Subclasse quer usar implementa√ß√£o da superclasse | Chamar `super.sacar()` + taxa extra |
+| **Protected** | Subclasses precisam acessar, outros n√£o | Atributo `saldo` protegido |
+| **Final** | Evitar sobrescrita perigosa | M√©todo de seguran√ßa cr√≠tica |
 
 ---
 
 ## 12. Checklist de Aprendizado
 
-- [ ] Entendo a relaÁ„o "È-um" (heranÁa)
+- [ ] Entendo a rela√ß√£o "√©-um" (heran√ßa)
 - [ ] Consigo criar classe com `extends`
 - [ ] Sei quando usar `protected` vs `private`
 - [ ] Entendo upcasting (seguro) e downcasting (perigoso)
 - [ ] Sei usar `instanceof` para verificar tipo
-- [ ] Consigo sobrepor (`@Override`) mÈtodos
-- [ ] Uso `super` para chamar vers„o da superclasse
-- [ ] Entendo classe `final` e mÈtodo `final`
-- [ ] Entendo polimorfismo na pr·tica
+- [ ] Consigo sobrepor (`@Override`) m√©todos
+- [ ] Uso `super` para chamar vers√£o da superclasse
+- [ ] Entendo classe `final` e m√©todo `final`
+- [ ] Entendo polimorfismo na pr√°tica
 - [ ] Consigo criar classes abstratas
-- [ ] Consigo criar mÈtodos abstratos e forÁar implementaÁ„o
-- [ ] Consigo aplicar heranÁa em problemas reais
-- [ ] Sei quando usar heranÁa vs composiÁ„o (futura)
+- [ ] Consigo criar m√©todos abstratos e for√ßar implementa√ß√£o
+- [ ] Consigo aplicar heran√ßa em problemas reais
+- [ ] Sei quando usar heran√ßa vs composi√ß√£o (futura)
 
 ---
 
 ## Analogia Final: LoL
 
-**Sem heranÁa (RUIM):**
+**Sem heran√ßa (RUIM):**
 ```java
-class MagoAhri { // Toda a implementaÁ„o do zero
+class MagoAhri { // Toda a implementa√ß√£o do zero
     void atacar() { ... }
     void andar() { ... }
     void tomarDano() { ... }
@@ -684,7 +722,7 @@ class MagoLux { // Repetindo tudo de novo!
 }
 ```
 
-**Com heranÁa (BOM):**
+**Com heran√ßa (BOM):**
 ```java
 abstract class Campeao { // Base compartilhada
     void atacar() { ... }
@@ -695,17 +733,17 @@ abstract class Campeao { // Base compartilhada
 
 class MagoAhri extends Campeao {
     @Override
-    void lancarHabilidade() { // SÛ customiza o diferente
-        // ImplantaÁ„o especÌfica de Ahri
+    void lancarHabilidade() { // S√≥ customiza o diferente
+        // Implanta√ß√£o espec√≠fica de Ahri
     }
 }
 
 class MagoLux extends Campeao {
     @Override
-    void lancarHabilidade() { // SÛ customiza o diferente
-        // ImplantaÁ„o especÌfica de Lux
+    void lancarHabilidade() { // S√≥ customiza o diferente
+        // Implanta√ß√£o espec√≠fica de Lux
     }
 }
 ```
 
-**Reuso + Polimorfismo + SeguranÁa = Sucesso!**
+**Reuso + Polimorfismo + Seguran√ßa = Sucesso!**

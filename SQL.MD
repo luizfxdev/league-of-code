@@ -1,4 +1,4 @@
-# Operadores em PostgreSQL ? LoL Edition
+# Operadores em PostgreSQL — LoL Edition
 
 ## Exemplo Prático: Database de Game Server
 
@@ -33,7 +33,7 @@ CREATE TABLE matches (
     player_id INT REFERENCES players(id),
     kills INT DEFAULT 0,
     deaths INT DEFAULT 0,
-    assists INT DEFAULT 1,
+    assists INT DEFAULT 0,
     damage_dealt FLOAT DEFAULT 0,
     damage_taken FLOAT DEFAULT 0,
     gold_earned FLOAT DEFAULT 0,
@@ -112,7 +112,7 @@ WHERE summoner_name LIKE '%King%';
 | `OR` | OU (OR) | **Um ou outro** vale | Alternativas |
 | `NOT` | NÃO (NOT) | Inverte condição | Negar |
 
-### AND ? Validações em Série
+### AND — Validações em Série
 
 ```sql
 -- Players vivos AND com nível alto AND Com ouro suficiente
@@ -139,7 +139,7 @@ AND p.mana_current > 50                    -- Com mana
 AND p.is_stunned = false;                  -- Sem CC
 ```
 
-### OR ? Alternativas Aceitáveis
+### OR — Alternativas Aceitáveis
 
 ```sql
 -- Qualquer player que seja Garen OU Lux OU Ahri
@@ -162,7 +162,27 @@ WHERE m.match_date >= NOW() - INTERVAL '1 hour'  -- Última hora
 OR m.kills >= 5;                                   -- Ou com 5+ kills
 ```
 
-### NOT ? Negação
+> ⚠️ **Armadilha clássica: condição da tabela da direita no `WHERE` anula o `LEFT JOIN`.**
+>
+> No exemplo acima, um player **sem nenhuma match** produz `m.kills = NULL` e
+> `m.match_date = NULL`. Em SQL, `NULL >= algo` não é `TRUE` — é `NULL` — então a linha
+> é descartada pelo `WHERE`. Resultado: o `LEFT JOIN` se comporta como `INNER JOIN`.
+>
+> Se você quer **manter** os players sem match, mova a condição para o `ON`:
+>
+> ```sql
+> SELECT p.summoner_name, m.kills, m.match_date
+> FROM players p
+> LEFT JOIN matches m
+>        ON p.id = m.player_id
+>       AND (m.match_date >= NOW() - INTERVAL '1 hour' OR m.kills >= 5);
+> -- Agora players sem match aparecem, com as colunas de match em NULL
+> ```
+>
+> **Regra:** filtro no `ON` decide **o que casa**; filtro no `WHERE` decide
+> **o que sobrevive** — e o `WHERE` roda depois do join, eliminando as linhas nulas.
+
+### NOT — Negação
 
 ```sql
 -- Players que NÃO estão stunados
@@ -182,7 +202,7 @@ WHERE NOT champion_id = 1;
 
 ---
 
-## JOINs ? Combinação de Tabelas (Operador de Relacionamento)
+## JOINs — Combinação de Tabelas (Operador de Relacionamento)
 
 | Tipo | Significado | LoL | Uso |
 |------|------------|-----|-----|
@@ -191,7 +211,7 @@ WHERE NOT champion_id = 1;
 | `RIGHT JOIN` | Mantém direita | Todos matches (com/sem player) | Todos do lado direito |
 | `FULL OUTER JOIN` | Ambos lados | Tudo que existe | Combinação completa |
 
-### INNER JOIN ? "E ambos existem"
+### INNER JOIN — "E ambos existem"
 
 ```sql
 -- Players E seus campeões (só quem tem campeão atribuído)
@@ -204,7 +224,7 @@ INNER JOIN champions c ON p.champion_id = c.id;
 
 **Analogia:** Só mostra jogadores que têm campeão selecionado. Se `champion_id` é NULL, não aparece.
 
-### LEFT JOIN ? "Jogadores + seus matches (mesmo sem match)"
+### LEFT JOIN — "Jogadores + seus matches (mesmo sem match)"
 
 ```sql
 -- Todos os players, mas com dados de matches se existirem
@@ -220,7 +240,7 @@ ORDER BY m.match_date DESC;
 
 ---
 
-## Operadores Agregados ? Resumir Dados
+## Operadores Agregados — Resumir Dados
 
 | Operador | Significado | LoL | Exemplo |
 |----------|------------|-----|---------|
@@ -277,7 +297,7 @@ LIMIT 1;
 
 ---
 
-## WHERE vs HAVING ? Diferença Crítica
+## WHERE vs HAVING — Diferença Crítica
 
 | Comando | Usa | Quando | Exemplo |
 |---------|-----|--------|---------|
@@ -285,34 +305,34 @@ LIMIT 1;
 | `HAVING` | Filtro agregado | Depois de GROUP BY | `HAVING SUM(kills) > 10` |
 
 ```sql
--- ? Errado: não pode usar agregado em WHERE
+-- ❌ Errado: não pode usar agregado em WHERE
 SELECT champion_id, SUM(kills)
 FROM matches m
 JOIN players p ON m.player_id = p.id
-WHERE SUM(kills) > 5       -- ? ERRO!
+WHERE SUM(kills) > 5       -- ❌ ERRO!
 GROUP BY champion_id;
 
--- ? Certo: usar HAVING para filtrar agregados
+-- ✅ Certo: usar HAVING para filtrar agregados
 SELECT champion_id, SUM(kills) AS total_kills
 FROM matches m
 JOIN players p ON m.player_id = p.id
 GROUP BY champion_id
-HAVING SUM(kills) > 5;     -- ? Correto!
+HAVING SUM(kills) > 5;     -- ✅ Correto!
 
--- ? Também certo: WHERE antes de GROUP BY
+-- ✅ Também certo: WHERE antes de GROUP BY
 SELECT champion_id, SUM(kills) AS total_kills
 FROM matches m
 JOIN players p ON m.player_id = p.id
-WHERE level >= 5           -- ? Filtra antes de agrupar
+WHERE level >= 5           -- ✅ Filtra antes de agrupar
 GROUP BY champion_id;
 ```
 
 ---
 
-## Boas Práticas ? Query Otimizada
+## Boas Práticas — Query Otimizada
 
 ```sql
--- ? Ruim: sem índices, sem constraints
+-- ❌ Ruim: sem índices, sem constraints
 SELECT p.summoner_name, c.nome, m.kills
 FROM players p
 LEFT JOIN champions c ON p.champion_id = c.id
@@ -320,7 +340,7 @@ LEFT JOIN matches m ON p.id = m.player_id
 WHERE p.level > 5;
 -- Pode ser LENTO se tabelas crescerem
 
--- ? Bom: com índices, com validação
+-- ✅ Bom: com índices, com validação
 CREATE INDEX idx_players_level ON players(level);
 CREATE INDEX idx_matches_player ON matches(player_id);
 
@@ -330,7 +350,8 @@ INNER JOIN champions c ON p.champion_id = c.id
 LEFT JOIN matches m ON p.id = m.player_id
 WHERE p.level >= 6              -- Guard: nível válido
 AND p.is_alive = true           -- Guard: vivo
-AND m.match_date >= NOW() - INTERVAL '7 days'  -- Guard: semana recente
+AND m.match_date >= NOW() - INTERVAL '7 days'  -- ⚠️ no WHERE, isto anula o LEFT JOIN
+                                               --    (ver alerta na seção de OR acima)
 GROUP BY p.id, p.summoner_name, c.nome
 HAVING COUNT(m.id) > 0          -- Guard: tem ao menos 1 match
 ORDER BY matches DESC
@@ -341,7 +362,7 @@ LIMIT 10;
 
 ---
 
-## Case Expression ? Condicional em SELECT
+## Case Expression — Condicional em SELECT
 
 ```sql
 -- Classificar players por performance
@@ -357,9 +378,14 @@ SELECT
 FROM players p
 ORDER BY p.level DESC;
 
--- Resultado:
--- ProGamer123    | Pro           | 9      (não é realmente "Pro", mas está em 9)
--- MidLaneKing    | Intermediate  | 8
+-- Resultado (confira a lógica do CASE!):
+-- ProGamer123    | Beginner | 9    -- 9 não alcança 15 nem 10; cai no >= 5
+-- MidLaneKing    | Beginner | 8    -- idem
+
+-- Para ProGamer123 virar "Intermediate" ele precisaria de level >= 10.
+-- O CASE avalia os WHEN DE CIMA PARA BAIXO e para no primeiro que der TRUE,
+-- por isso as faixas precisam estar em ordem DECRESCENTE: se 'level >= 5'
+-- viesse primeiro, TODOS cairiam em "Beginner", inclusive um player de nível 20.
 ```
 
 **Analogia:** CASE é como um if/else/else dentro do SELECT. Classifica resultado dinamicamente.

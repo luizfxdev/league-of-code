@@ -140,9 +140,11 @@ public void criarTimeFinal() {
 
 **Regras importantes:**
 
-- **Tipos primitivos** (`int`, `double`, `boolean`) vivem na **Stack**
+- **Variáveis locais** — primitivos e referências — vivem na **Stack**
 - **Objetos** e **Strings** vivem na **Heap**
-- **Referências** (variáveis que apontam para objetos) vivem na **Stack**
+- **Atributos de um objeto vivem na Heap junto com ele**, mesmo quando são primitivos:
+  um `int hp` dentro de `Campeao` está na Heap, não na Stack. O que fica na Stack é só a
+  variável local que *aponta* para o objeto
 - Quando a variável sai do escopo, a referência é deletada, mas o objeto na Heap pode ser coletado pelo **Garbage Collector**
 
 ---
@@ -227,8 +229,9 @@ String upper = campeao.toUpperCase();      // "AHRI"
 String lower = descricao.toLowerCase();    // "rainha nórdica"
 
 // Procurar caractere ou substring
-int posicao = campeao.indexOf('h');        // 1
-boolean contem = descricao.contains("Rei"); // true
+int posicao = campeao.indexOf('h');          // 1
+boolean contem = descricao.contains("Rainha"); // true
+boolean naoContem = descricao.contains("Rei"); // false — "Rei" não aparece em "Rainha Nórdica"
 
 // Extrair partes (substring)
 String parte = campeao.substring(0, 2);    // "Ah"
@@ -311,6 +314,14 @@ String titulo = "O Campeão Desafiador";
 String nomeCompleto = nomeHeroi.concat(" - ").concat(titulo);
 System.out.println(nomeCompleto);  // "Garen - O Campeão Desafiador"
 ```
+
+> **Diferença prática com `null`:** `concat` lança `NullPointerException` se o argumento
+> for `null`, enquanto `+` converte `null` no texto `"null"`.
+> ```java
+> String x = null;
+> System.out.println("Campeão: " + x);   // imprime "Campeão: null"
+> System.out.println("Campeão: ".concat(x)); // NullPointerException
+> ```
 
 ### StringBuilder: Para Muitas Concatenações
 
@@ -590,7 +601,7 @@ O escopo define **onde uma variável existe e pode ser acessada**:
 
 ```java
 public class Game {
-    private int roundas = 0;  // Escopo: toda a classe
+    private int rodadas = 0;  // Escopo: toda a classe
     
     public void jogar() {
         int score = 100;  // Escopo: método jogar()
@@ -616,8 +627,14 @@ Um método recebe parâmetros (entrada) e retorna um valor (saída):
 
 ```java
 public class Campeao {
+    private String nome;
     private int hp;
-    
+
+    public Campeao(String nome, int hp) {
+        this.nome = nome;
+        this.hp = hp;
+    }
+
     // Método sem retorno (void)
     public void levarDano(int dano) {
         this.hp -= dano;
@@ -663,7 +680,7 @@ public class Campeao {
         totalCampeoesCriados++;
     }
     
-    public static int getTotalCriadosCriados() {
+    public static int getTotalCampeoesCriados() {
         return totalCampeoesCriados;
     }
 }

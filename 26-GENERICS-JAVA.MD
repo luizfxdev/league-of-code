@@ -46,7 +46,13 @@ Contêiner<?>           → carrega qualquer coisa (mas você não sabe o quê)
 |-------|-------------|-------------|
 | **Reuso** | Uma classe para cada tipo | Uma classe para todos os tipos |
 | **Segurança de tipo** | Erros em tempo de execução (`ClassCastException`) | Erros em tempo de compilação |
-| **Performance** | Casting manual (boxing/unboxing) | Sem casting desnecessário |
+| **Legibilidade** | `Object` em toda parte, intenção escondida | A assinatura documenta o tipo esperado |
+
+> ⚠️ **Generics não deixam o código mais rápido.** Por causa do *type erasure* (seção 13),
+> o compilador **insere os mesmos casts** que você escreveria à mão — o bytecode gerado é
+> praticamente idêntico. O ganho real é **segurança em tempo de compilação** e legibilidade,
+> não performance. (`List<Integer>` inclusive continua pagando boxing, porque genéricos não
+> aceitam tipos primitivos.)
 
 ### Exemplo sem Generics
 
@@ -140,8 +146,9 @@ ServicoEtiqueta servico = new ServicoEtiqueta();
 servico.adicionarEtiqueta("ETQ-001");
 servico.adicionarEtiqueta(42); // Compila, mas não faz sentido!
 
-String etiqueta = (String) servico.primeiraEtiqueta(); // OK
-String segunda = (String) servico.segundaEtiqueta();   // ClassCastException!
+String etiqueta = (String) servico.primeiraEtiqueta(); // OK — o índice 0 é a String
+// Supondo um getter por índice, o item da posição 1 é o Integer 42:
+String segunda = (String) servico.etiquetaEm(1);       // ClassCastException em runtime!
 ```
 
 ### Etapa 3 — Usando Generics
@@ -384,6 +391,7 @@ imprimirManifesto(codigos); // OK
 List<?> lista = new ArrayList<Integer>();
 // lista.add(3);   // ERRO! Não sabe qual tipo a lista aceita
 // lista.add("x"); // ERRO!
+lista.add(null);   // única exceção: null é compatível com qualquer tipo de referência
 
 // Só pode ler como Object
 Object obj = lista.get(0); // OK
